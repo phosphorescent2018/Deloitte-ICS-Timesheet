@@ -260,9 +260,9 @@ const I18nContext = createContext<I18nValue | null>(null);
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>(() => {
     try {
-      return window.localStorage.getItem(LANG_STORAGE_KEY) === 'en' ? 'en' : 'zh';
+      return window.localStorage.getItem(LANG_STORAGE_KEY) === 'zh' ? 'zh' : 'en';
     } catch {
-      return 'zh';
+      return 'en';
     }
   });
 
