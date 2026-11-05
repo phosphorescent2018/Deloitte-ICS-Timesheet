@@ -5,7 +5,8 @@
   "description": "Deloitte Internal Client Service Timesheet（ICS 工时填报）高保真原型 · 独立 Axhub Make 项目",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "node scripts/sync-project-metadata.mjs && vite",
+    "metadata:sync": "node scripts/sync-project-metadata.mjs",
     "build": "tsc --noEmit -p tsconfig.json && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit -p tsconfig.json"

@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "updatedAt": "2026-11-05T10:03:37.424Z",
+  "prototypes": [
+    {
+      "id": "item-prototypes-timesheet",
+      "kind": "item",
+      "title": "timesheet",
+      "itemKey": "prototypes/timesheet"
+    }
+  ],
+  "docs": [],
+  "themesTree": [],
+  "themes": [],
+  "data": [],
+  "templates": [],
+  "components": [],
+  "canvas": []
+}
