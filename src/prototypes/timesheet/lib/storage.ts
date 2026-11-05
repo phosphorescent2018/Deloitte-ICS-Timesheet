@@ -3,7 +3,7 @@ import { addDays, startOfWeekMonday, toKey } from './date';
 import type { AppState, DayRecord } from './model';
 import { createLine } from './model';
 
-const STORAGE_KEY = 'deloitte-ics-timesheet.v2';
+const STORAGE_KEY = 'deloitte-ics-timesheet.v3';
 
 interface SeedLine {
   code: string;

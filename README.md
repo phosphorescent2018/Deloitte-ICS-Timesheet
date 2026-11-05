@@ -86,7 +86,7 @@ npm run typecheck  # TypeScript 全量检查
 
 ## 数据与演示数据
 
-- 存储位置：`localStorage`，key 为 `deloitte-ics-timesheet.v2`。
+- 存储位置：`localStorage`，key 为 `deloitte-ics-timesheet.v3`。
 - 首次打开会自动生成「本周已填」的演示数据（周一至周五，每天 8h）。
 - 顶栏 `••• → Reset demo data` 可清空并恢复演示数据；`Export JSON` 可导出当前全部记录。
 
