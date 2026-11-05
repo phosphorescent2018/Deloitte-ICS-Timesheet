@@ -1,3 +1,4 @@
+import { findActivity } from './catalog';
 import { daysInMonth, fromKey, isWeekend, round1, toKey } from './date';
 
 export interface ActivityLine {
@@ -57,6 +58,10 @@ export function dayTotal(day: DayRecord | undefined): number {
 export function overtimeHours(day: DayRecord): number {
   const total = dayTotal(day);
   if (total <= 0) return 0;
+  const worked = day.lines.filter((line) => line.hours > 0 && line.code);
+  if (worked.length > 0 && worked.every((line) => findActivity(line.code)?.category === 'Leave')) {
+    return 0;
+  }
   if (isWeekend(fromKey(day.date))) return total;
   const standard = day.target > 0 ? day.target : 8;
   return round1(Math.max(0, total - standard));
