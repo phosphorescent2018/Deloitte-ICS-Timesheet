@@ -9,7 +9,7 @@
   --brand: #86bc25;
   --brand-dark: #5d8b12;
   --done: #43a047;
-  --partial: #e3f2e0;
+  --partial: #fdf1cf;
   --ot: #ef8a00;
   --danger: #c62828;
   --blue: #00a3e0;
@@ -530,8 +530,8 @@ input[type='number'] {
 
 .cal-day.is-partial {
   background: var(--partial);
-  border-color: #b6d9b1;
-  color: #3d6b3f;
+  border-color: #e8cf8a;
+  color: #7a5a00;
 }
 
 .cal-day.is-selected {
@@ -618,7 +618,7 @@ input[type='number'] {
 
 .swatch-partial {
   background: var(--partial);
-  border-color: #b6d9b1;
+  border-color: #e8cf8a;
 }
 
 .swatch-done {
@@ -1606,8 +1606,8 @@ input[type='number'] {
 }
 
 .ws-day.is-partial {
-  background: #fffaf0;
-  border-color: #f0dcb4;
+  background: #fdf1cf;
+  border-color: #e8cf8a;
 }
 
 .ws-day.is-selected {
