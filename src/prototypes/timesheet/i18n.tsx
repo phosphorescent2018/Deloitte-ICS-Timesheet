@@ -76,9 +76,9 @@ const DICT: Record<string, Entry> = {
   'btn.copyLast': { zh: '复制上一天', en: 'Copy last day' },
   'btn.save': { zh: '保存', en: 'Save' },
 
-  'picker.placeholder': { zh: '选择活动代码…', en: 'Select activity code…' },
-  'picker.search': { zh: '搜索代码、客户或活动…', en: 'Search code, client or activity…' },
-  'picker.empty': { zh: '没有匹配“{{query}}”的活动代码。', en: 'No activity code matches “{{query}}”.' },
+  'picker.placeholder': { zh: '选择业务线-产品-业务阶段…', en: 'Select business line / product / stage…' },
+  'picker.search': { zh: '搜索业务线、产品或阶段…', en: 'Search business line, product or stage…' },
+  'picker.empty': { zh: '没有匹配“{{query}}”的选项。', en: 'No option matches “{{query}}”.' },
   'picker.clear': { zh: '清空搜索', en: 'Clear' },
 
   'mv.kicker': { zh: '月度概览', en: 'Month overview' },
@@ -190,12 +190,9 @@ const DICT: Record<string, Entry> = {
   'toast.reset': { zh: '演示数据已恢复。', en: 'Demo data restored.' },
   'toast.exported': { zh: '已导出 JSON 文件。', en: 'Timesheet JSON exported.' },
 
-  'cat.ESH': { zh: 'ESH', en: 'ESH' },
-  'cat.Tax': { zh: '税务', en: 'Tax' },
-  'cat.Consulting': { zh: '咨询', en: 'Consulting' },
-  'cat.Risk Advisory': { zh: '风险咨询', en: 'Risk Advisory' },
-  'cat.Administration': { zh: '行政', en: 'Administration' },
-  'cat.Leave': { zh: '休假', en: 'Leave' },
+  'cat.UG': { zh: 'UG 业务线', en: 'UG' },
+  'cat.CDI': { zh: 'CDI 业务线', en: 'CDI' },
+  'cat.GH': { zh: 'GH 业务线', en: 'GH' },
 
   'err.targetMin': { zh: '目标工时必须大于 0。', en: 'Target hours must be greater than 0.' },
   'err.targetMax': { zh: '目标工时不能超过 24 小时。', en: 'Target hours cannot exceed 24 hours per day.' },

@@ -3,7 +3,7 @@ import { addDays, startOfWeekMonday, toKey } from './date';
 import type { AppState, DayRecord } from './model';
 import { createLine } from './model';
 
-const STORAGE_KEY = 'deloitte-ics-timesheet.v1';
+const STORAGE_KEY = 'deloitte-ics-timesheet.v2';
 
 interface SeedLine {
   code: string;
@@ -15,14 +15,14 @@ interface SeedLine {
 export function seedState(): AppState {
   const monday = startOfWeekMonday(new Date());
   const plan: SeedLine[][] = [
-    [{ code: 'ICS-GDC-ESH-20100', hours: 4 }, { code: 'ICS-GDC-ESH-20110', hours: 4 }],
-    [{ code: 'ICS-GDC-ESH-20100', hours: 8, remark: 'Billing batch #2410-03' }],
+    [{ code: 'UG-OD-运营', hours: 4 }, { code: 'UG-OD-交付', hours: 4 }],
+    [{ code: 'CDI-OD-运营', hours: 8, remark: 'Billing batch #2410-03' }],
     [
-      { code: 'ICS-GDC-ESH-20100', hours: 8 },
-      { code: 'ICS-GDC-ESH-20120', hours: 1.5, remark: 'Month-end closing support' },
+      { code: 'GH-OD-运营', hours: 8 },
+      { code: 'GH-OD-交付', hours: 1.5, remark: 'Month-end closing support' },
     ],
-    [{ code: 'ICS-GDC-ESH-20100', hours: 8 }],
-    [{ code: 'ICS-GDC-ESH-20110', hours: 8, remark: 'Evidence index hand-off' }],
+    [{ code: 'UG-AirtimeLending-运营', hours: 8 }],
+    [{ code: 'CDI-BL-交付', hours: 8, remark: 'Evidence index hand-off' }],
   ];
 
   const days: Record<string, DayRecord> = {};

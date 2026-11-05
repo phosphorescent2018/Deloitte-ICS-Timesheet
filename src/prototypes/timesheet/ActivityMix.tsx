@@ -50,7 +50,7 @@ export default function ActivityMix({ year, month, days }: Props) {
             return (
               <li key={code}>
                 <div className="mix-line">
-                  <span className="mix-code">{code.replace('ICS-GDC-', '')}</span>
+                  <span className="mix-code">{code}</span>
                   <span className="mix-hours">{hours.toFixed(1)} h</span>
                 </div>
                 <div className="mix-bar">

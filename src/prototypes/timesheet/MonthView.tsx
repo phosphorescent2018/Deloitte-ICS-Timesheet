@@ -110,7 +110,7 @@ export default function MonthView({ year, month, editableFrom, days, stats, onSe
                           .slice(0, 2)
                           .map((line) => (
                             <span key={line.id} className="activity-tag" title={line.code}>
-                              {line.code.replace('ICS-GDC-', '')}
+                              {line.code}
                             </span>
                           ))}
                         {record.lines.filter((line) => line.code).length > 2 ? (

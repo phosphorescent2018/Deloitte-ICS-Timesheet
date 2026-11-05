@@ -1195,7 +1195,7 @@ input[type='number'] {
 
 .picker-option {
   display: grid;
-  grid-template-columns: 148px minmax(0, 1fr) auto;
+  grid-template-columns: 210px minmax(0, 1fr) auto;
   gap: 10px;
   align-items: center;
   width: 100%;

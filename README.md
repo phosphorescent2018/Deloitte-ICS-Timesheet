@@ -20,7 +20,7 @@
 
 - `Work Location` 下拉：重庆 / 北京 / 上海 / 广州 / 深圳 / 香港 / Remote。
 - `Target Hours` 固定为 8.0（与 `Total Actual Hours` 同样式展示，不可编辑），超过 8.0 即计 OT。
-- `Activity` 可搜索代码选择器，内置 14 个 `ICS-GDC-*` 代码（ESH / Tax / Consulting / Risk Advisory / Administration / Leave），选中后 `Client Name` 自动带出。
+- `Activity` 可搜索选择器：选项为「业务线-产品-业务阶段」组合，业务线 UG / CDI / GH，产品 OD / AirtimeLending / BL，阶段 运营 / 交付，共 18 个组合（如 `UG-OD-运营`、`CDI-AirtimeLending-交付`），按业务线分组、支持搜索；选中后 `Client Name` 自动带出业务线。
 - 多行 Activity：工时、Remark、单据详情弹窗（可写备注）、添加 / 删除行。
 - 校验：单行与合计 0–24h、填了工时必须选代码、Target 必须大于 0；错误统一列在表单下方。
 - `Save` 写入 `localStorage`，刷新不丢；保存后日历与周/月统计立即更新。

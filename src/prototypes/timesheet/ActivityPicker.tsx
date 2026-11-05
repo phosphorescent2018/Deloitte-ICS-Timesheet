@@ -9,14 +9,7 @@ interface Props {
   invalid?: boolean;
 }
 
-const CATEGORY_ORDER: ActivityCategory[] = [
-  'ESH',
-  'Tax',
-  'Consulting',
-  'Risk Advisory',
-  'Administration',
-  'Leave',
-];
+const CATEGORY_ORDER: ActivityCategory[] = ['UG', 'CDI', 'GH'];
 
 export default function ActivityPicker({ value, onChange, invalid }: Props) {
   const { t, lang } = useI18n();
@@ -70,10 +63,7 @@ export default function ActivityPicker({ value, onChange, invalid }: Props) {
       >
         <span className="picker-value">
           {selected ? (
-            <>
-              <span className="picker-code">{selected.code}</span>
-              <span className="picker-name">{lang === 'zh' ? selected.nameZh : selected.name}</span>
-            </>
+            <span className="picker-code">{selected.code}</span>
           ) : (
             <span className="picker-placeholder">{t('picker.placeholder')}</span>
           )}
