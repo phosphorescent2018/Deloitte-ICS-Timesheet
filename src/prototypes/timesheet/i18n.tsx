@@ -84,14 +84,14 @@ const DICT: Record<string, Entry> = {
   'cal.cellEmpty': { zh: '{{date}} · 无记录', en: '{{date}} · no entry' },
   'cal.cellLocked': { zh: '{{date}} · 已锁定，需 OA 审批', en: '{{date}} · locked, OA approval required' },
 
-  'legend.unfinished': { zh: '未完成', en: 'Unfinished' },
+  'legend.unfinished': { zh: '未填写', en: 'Not filled' },
   'legend.partial': { zh: '部分', en: 'Partial' },
   'legend.completed': { zh: '已完成', en: 'Completed' },
   'legend.today': { zh: '今天', en: 'Today' },
   'legend.selected': { zh: '选中', en: 'Selected' },
   'legend.locked': { zh: '已锁定', en: 'Locked' },
 
-  'status.empty': { zh: '未完成', en: 'Unfinished' },
+  'status.empty': { zh: '未填写', en: 'Not filled' },
   'status.partial': { zh: '部分填写', en: 'Partial' },
   'status.complete': { zh: '已完成', en: 'Completed' },
   'status.locked': { zh: '已锁定', en: 'Locked' },
