@@ -509,9 +509,26 @@ input[type='number'] {
 }
 
 .cal-day.is-today .cal-num {
-  border: 2px solid #e53935;
+  font-weight: 800;
+  color: #c62828;
+}
+
+.cal-day.is-today.is-done .cal-num,
+.cal-day.is-today.is-partial .cal-num {
+  color: inherit;
+}
+
+.cal-day.is-today::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 4px;
+  width: 5px;
+  height: 5px;
+  margin-left: -2.5px;
   border-radius: 50%;
-  font-weight: 700;
+  background: #e53935;
+  box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.95);
 }
 
 .cal-ot-dot {
@@ -576,9 +593,11 @@ input[type='number'] {
 }
 
 .swatch-today {
-  background: #fff;
-  border: 2px solid #e53935;
+  width: 9px;
+  height: 9px;
+  border: 0;
   border-radius: 50%;
+  background: #e53935;
 }
 
 .swatch-selected {
