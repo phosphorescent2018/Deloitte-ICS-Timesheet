@@ -467,9 +467,9 @@ export default function TimesheetApp() {
           </div>
 
           <div className="user-chip">
-            <span className="avatar">G</span>
+            <span className="avatar">吕</span>
             <div>
-              <strong>GDC-ESH</strong>
+              <strong>吕薇庆</strong>
               <span>{t('app.role')}</span>
             </div>
           </div>
