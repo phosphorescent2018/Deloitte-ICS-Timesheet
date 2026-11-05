@@ -33,6 +33,12 @@ Mindigital GDC 内部工时系统（Internal Client Service Timesheet）的完�
 | **Copy last day** | 向前回溯最多 90 天，复制最近一条有工时的记录到当前日期，标记为「未保存」，提示 review & save。 |
 | **Save** | 保存当天记录并刷新日历状态；`⌘/Ctrl + S` 同样生效。 |
 
+### 后台配置
+
+- 顶栏「后台配置」进入：维护 **业务线 / 产品 / 业务阶段** 三类基础数据，支持添加、删除，至少保留一项。
+- 组合数实时计算（业务线 × 产品 × 阶段），修改后填报页的活动下拉自动增加或移除对应组合，并持久化在 `localStorage`（key `deloitte-ics-config.v1`）。
+- **导出当月数据（Excel）**：按 18 列导出当月全部填报明细（CSV，UTF-8 BOM，Excel 可直接打开）——序号、员工姓名、员工工号、部门、业务线、产品、业务阶段、日期、星期、工作地点、目标工时、实际工时合计、状态、活动代码、本行工时、备注、单据备注、保存时间。
+
 ### 其他
 
 - **Day / Month 双视图**：月视图按天列出地点、Activity、工时、状态，点击任意行回到当日编辑。
@@ -66,6 +72,7 @@ npm run typecheck  # TypeScript 全量检查
 │   └── prototypes/timesheet/
 │       ├── index.tsx                # Axhub Make 原型入口（default export）
 │       ├── TimesheetApp.tsx         # 页面状态与业务流程
+│       ├── AdminPage.tsx            # 后台配置（基础数据维护 + 数据导出）
 │       ├── Calendar.tsx             # 月历
 │       ├── DayEditor.tsx            # 每日工时明细表
 │       ├── ActivityPicker.tsx       # Activity 代码搜索选择器
@@ -76,7 +83,8 @@ npm run typecheck  # TypeScript 全量检查
 │       ├── timesheet.css            # 全部样式
 │       └── lib/
 │           ├── date.ts              # 日期与周计算
-│           ├── catalog.ts           # Activity 代码与办公地点
+│           ├── config.ts            # 后台配置（业务线/产品/阶段）与组合生成
+│           ├── catalog.ts           # 办公地点
 │           ├── model.ts             # 数据模型、校验、统计
 │           └── storage.ts           # localStorage 持久化与演示数据
 ├── .axhub/make/                     # Axhub Make 项目身份与资源清单

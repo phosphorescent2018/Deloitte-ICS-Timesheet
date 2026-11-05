@@ -6,7 +6,8 @@ import WeekStrip from './WeekStrip';
 import ActivityMix from './ActivityMix';
 import { formatMonth, useI18n } from './i18n';
 import mindigitalMark from './assets/mindigital-mark.svg';
-import { findActivity } from './lib/catalog';
+import AdminPage from './AdminPage';
+import { buildActivities, findActivity, loadConfig, saveConfig, type AdminConfig } from './lib/config';
 import { addDays, editableFromKey, fromKey, isLockedKey, shortDate, toKey } from './lib/date';
 import {
   blankDay,
@@ -60,14 +61,22 @@ export default function TimesheetApp() {
   const [resetOpen, setResetOpen] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
   const [approvalKey, setApprovalKey] = useState<string | null>(null);
+  const [page, setPage] = useState<'timesheet' | 'admin'>('timesheet');
+  const [config, setConfig] = useState<AdminConfig>(() => loadConfig());
   const toastTimer = useRef<number | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
   const todayKey = toKey(new Date());
   const editableFrom = editableFromKey(todayKey);
+  const activities = useMemo(() => buildActivities(config), [config]);
   const stats = useMemo(() => monthStats(state.days, view.y, view.m), [state.days, view]);
   const detailLine = draft.lines.find((line) => line.id === detailId);
-  const detailActivity = detailLine ? findActivity(detailLine.code) : undefined;
+  const detailActivity = detailLine ? findActivity(activities, detailLine.code) : undefined;
+
+  const applyConfig = (next: AdminConfig) => {
+    setConfig(next);
+    saveConfig(next);
+  };
 
   const pushToast = (text: string, tone: ToastTone = 'ok') => {
     if (toastTimer.current) window.clearTimeout(toastTimer.current);
@@ -376,28 +385,38 @@ export default function TimesheetApp() {
         </div>
 
         <div className="topbar-right">
-          <div className="seg" role="tablist" aria-label={t('app.day')}>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={mode === 'day'}
-              className={mode === 'day' ? 'is-active' : undefined}
-              onClick={() => setMode('day')}
-            >
-              <Icon.List size={14} />
-              {t('app.day')}
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={mode === 'month'}
-              className={mode === 'month' ? 'is-active' : undefined}
-              onClick={() => setMode('month')}
-            >
-              <Icon.Grid size={14} />
-              {t('app.month')}
-            </button>
-          </div>
+          <button
+            type="button"
+            className="btn btn-ghost nav-btn"
+            onClick={() => setPage(page === 'admin' ? 'timesheet' : 'admin')}
+          >
+            {page === 'admin' ? t('nav.timesheet') : t('nav.admin')}
+          </button>
+
+          {page === 'timesheet' ? (
+            <div className="seg" role="tablist" aria-label={t('app.day')}>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={mode === 'day'}
+                className={mode === 'day' ? 'is-active' : undefined}
+                onClick={() => setMode('day')}
+              >
+                <Icon.List size={14} />
+                {t('app.day')}
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={mode === 'month'}
+                className={mode === 'month' ? 'is-active' : undefined}
+                onClick={() => setMode('month')}
+              >
+                <Icon.Grid size={14} />
+                {t('app.month')}
+              </button>
+            </div>
+          ) : null}
 
           <div className="seg seg-lang" role="group" aria-label={t('app.lang')}>
             <button
@@ -477,18 +496,34 @@ export default function TimesheetApp() {
         </div>
       </header>
 
-      <div className="banner">
-        <div className="banner-left">
-          <span className="banner-dot" aria-hidden="true" />
-          <strong>{t('banner.reminder')}</strong>
-          <span>{t('banner.text')}</span>
+      {page === 'timesheet' ? (
+        <div className="banner">
+          <div className="banner-left">
+            <span className="banner-dot" aria-hidden="true" />
+            <strong>{t('banner.reminder')}</strong>
+            <span>{t('banner.text')}</span>
+          </div>
+          <div className="banner-right">
+            {t('banner.period', { month: formatMonth(view.y, view.m, lang), hours: '8.0' })}
+          </div>
         </div>
-        <div className="banner-right">
-          {t('banner.period', { month: formatMonth(view.y, view.m, lang), hours: '8.0' })}
-        </div>
-      </div>
+      ) : null}
 
-      <main className="layout">
+      {page === 'admin' ? (
+        <main className="admin-main">
+          <AdminPage
+            config={config}
+            activities={activities}
+            days={state.days}
+            year={view.y}
+            month={view.m}
+            onChange={applyConfig}
+            onBack={() => setPage('timesheet')}
+          />
+        </main>
+      ) : null}
+
+      <main className="layout" style={{ display: page === 'admin' ? 'none' : undefined }}>
         <Calendar
           year={view.y}
           month={view.m}
@@ -507,6 +542,7 @@ export default function TimesheetApp() {
           <div className="workspace">
             <DayEditor
               draft={draft}
+              activities={activities}
               status={statusOf(draft)}
               dirty={dirty}
               issues={issues.map((issue) => t(issue.key, issue.vars))}
@@ -556,7 +592,7 @@ export default function TimesheetApp() {
         )}
       </main>
 
-      <footer className="page-foot">
+      <footer className="page-foot" style={{ display: page === 'admin' ? 'none' : undefined }}>
         <span>{t('foot.note')}</span>
         <span className="kbd-hints">
           <kbd>←</kbd>

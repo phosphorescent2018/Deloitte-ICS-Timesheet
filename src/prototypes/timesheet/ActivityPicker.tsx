@@ -1,17 +1,16 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useI18n } from './i18n';
-import { ACTIVITIES, findActivity, type ActivityCategory } from './lib/catalog';
+import type { ActivityCode } from './lib/config';
 import { Icon } from './ui';
 
 interface Props {
   value: string;
+  activities: ActivityCode[];
   onChange: (code: string) => void;
   invalid?: boolean;
 }
 
-const CATEGORY_ORDER: ActivityCategory[] = ['UG', 'CDI', 'GH'];
-
-export default function ActivityPicker({ value, onChange, invalid }: Props) {
+export default function ActivityPicker({ value, activities, onChange, invalid }: Props) {
   const { t, lang } = useI18n();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
@@ -35,22 +34,26 @@ export default function ActivityPicker({ value, onChange, invalid }: Props) {
     };
   }, [open]);
 
-  const selected = findActivity(value);
+  const selected = activities.find((item) => item.code === value);
 
   const groups = useMemo(() => {
     const needle = query.trim().toLowerCase();
     const filtered = needle
-      ? ACTIVITIES.filter((item) =>
-          `${item.code} ${item.name} ${item.nameZh} ${item.client} ${item.clientZh} ${item.category}`
+      ? activities.filter((item) =>
+          `${item.code} ${item.name} ${item.nameZh} ${item.client} ${item.category}`
             .toLowerCase()
             .includes(needle),
         )
-      : ACTIVITIES;
-    return CATEGORY_ORDER.map((category) => ({
+      : activities;
+    const order: string[] = [];
+    filtered.forEach((item) => {
+      if (!order.includes(item.category)) order.push(item.category);
+    });
+    return order.map((category) => ({
       category,
       items: filtered.filter((item) => item.category === category),
-    })).filter((group) => group.items.length > 0);
-  }, [query]);
+    }));
+  }, [activities, query]);
 
   return (
     <div className="picker" ref={rootRef}>
@@ -95,7 +98,7 @@ export default function ActivityPicker({ value, onChange, invalid }: Props) {
           <div className="picker-list">
             {groups.map((group) => (
               <div key={group.category} className="picker-group">
-                <div className="picker-group-title">{t(`cat.${group.category}`)}</div>
+                <div className="picker-group-title">{group.category}</div>
                 {group.items.map((item) => (
                   <button
                     key={item.code}

@@ -1,12 +1,14 @@
 import ActivityPicker from './ActivityPicker';
 import { useI18n, formatLongDate } from './i18n';
-import { findActivity, locationLabel, LOCATIONS } from './lib/catalog';
+import { locationLabel, LOCATIONS } from './lib/catalog';
+import type { ActivityCode } from './lib/config';
 import { fromKey, isoWeek, shortDate, timeLabel } from './lib/date';
 import { type ActivityLine, type DayRecord, type DayStatus } from './lib/model';
 import { Icon, StatusPill } from './ui';
 
 interface Props {
   draft: DayRecord;
+  activities: ActivityCode[];
   status: DayStatus;
   dirty: boolean;
   issues: string[];
@@ -33,6 +35,7 @@ const STANDARD_HOURS = 8;
 
 export default function DayEditor({
   draft,
+  activities,
   status,
   dirty,
   issues,
@@ -117,12 +120,13 @@ export default function DayEditor({
         <div className="sheet-divider" />
 
         {draft.lines.map((line, index) => {
-          const activity = findActivity(line.code);
+          const activity = activities.find((item) => item.code === line.code);
           return (
             <div className="sheet-row line-row" key={line.id}>
               <div className="cell-activity">
                 <ActivityPicker
                   value={line.code}
+                  activities={activities}
                   onChange={(code) => onLineChange(line.id, { code })}
                   invalid={line.hours > 0 && !line.code}
                 />
