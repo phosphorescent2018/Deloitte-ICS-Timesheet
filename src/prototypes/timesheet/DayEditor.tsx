@@ -17,7 +17,6 @@ interface Props {
   onLineChange: (id: string, patch: Partial<ActivityLine>) => void;
   onAddLine: () => void;
   onRemoveLine: (id: string) => void;
-  onOpenDetail: (id: string) => void;
   onSave: () => void;
   onPrefill: () => void;
   onCopyLast: () => void;
@@ -37,7 +36,6 @@ export default function DayEditor({
   onLineChange,
   onAddLine,
   onRemoveLine,
-  onOpenDetail,
   onSave,
   onPrefill,
   onCopyLast,
@@ -174,14 +172,6 @@ export default function DayEditor({
                 />
               </div>
               <div className="cell-ops">
-                <button
-                  type="button"
-                  className="icon-btn"
-                  title={t('detail.title')}
-                  onClick={() => onOpenDetail(line.id)}
-                >
-                  <Icon.FileText size={17} />
-                </button>
                 <button
                   type="button"
                   className="icon-btn icon-btn-danger"

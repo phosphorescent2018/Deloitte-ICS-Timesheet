@@ -7,7 +7,7 @@ import ActivityMix from './ActivityMix';
 import { formatMonth, useI18n } from './i18n';
 import mindigitalMark from './assets/mindigital-mark.svg';
 import AdminPage from './AdminPage';
-import { buildActivities, findActivity, loadConfig, saveConfig, type AdminConfig } from './lib/config';
+import { buildActivities, loadConfig, saveConfig, type AdminConfig } from './lib/config';
 import { addDays, editableFromKey, fromKey, isLockedKey, shortDate, toKey } from './lib/date';
 import {
   blankDay,
@@ -56,7 +56,6 @@ export default function TimesheetApp() {
   const [mode, setMode] = useState<ViewMode>('day');
   const [toast, setToast] = useState<ToastState | null>(null);
   const [pending, setPending] = useState<{ label: string; run: () => void } | null>(null);
-  const [detailId, setDetailId] = useState<string | null>(null);
   const [approvalKey, setApprovalKey] = useState<string | null>(null);
   const [page, setPage] = useState<'timesheet' | 'admin'>('timesheet');
   const [config, setConfig] = useState<AdminConfig>(() => loadConfig());
@@ -66,8 +65,6 @@ export default function TimesheetApp() {
   const editableFrom = editableFromKey(todayKey);
   const activities = useMemo(() => buildActivities(config), [config]);
   const stats = useMemo(() => monthStats(state.days, view.y, view.m), [state.days, view]);
-  const detailLine = draft.lines.find((line) => line.id === detailId);
-  const detailActivity = detailLine ? findActivity(activities, detailLine.code) : undefined;
 
   const applyConfig = (next: AdminConfig) => {
     setConfig(next);
@@ -334,8 +331,6 @@ export default function TimesheetApp() {
     return () => window.removeEventListener('keydown', handler);
   });
 
-  const openDetail = (id: string) => setDetailId(id);
-
   return (
     <div className="app">
       <header className="topbar">
@@ -466,7 +461,6 @@ export default function TimesheetApp() {
               onLineChange={patchLine}
               onAddLine={addLine}
               onRemoveLine={removeLine}
-              onOpenDetail={openDetail}
               onSave={saveDay}
               onPrefill={prefillWeek}
               onCopyLast={copyLastDay}
@@ -578,54 +572,6 @@ export default function TimesheetApp() {
         </Modal>
       ) : null}
 
-      {detailLine ? (
-        <Modal
-          title={t('detail.title')}
-          subtitle={t('detail.subtitle', { date: shortDate(draft.date), hours: detailLine.hours.toFixed(1) })}
-          width={620}
-          onClose={() => setDetailId(null)}
-          footer={
-            <button type="button" className="btn btn-blue" onClick={() => setDetailId(null)}>
-              {t('btn.done')}
-            </button>
-          }
-        >
-          <dl className="detail-list">
-            <div>
-              <dt>{t('detail.code')}</dt>
-              <dd className="mono">{detailLine.code || '—'}</dd>
-            </div>
-            <div>
-              <dt>{t('detail.name')}</dt>
-              <dd>{detailActivity ? (lang === 'zh' ? detailActivity.nameZh : detailActivity.name) : '—'}</dd>
-            </div>
-            <div>
-              <dt>{t('detail.client')}</dt>
-              <dd>{detailActivity ? (lang === 'zh' ? detailActivity.clientZh : detailActivity.client) : '—'}</dd>
-            </div>
-            <div>
-              <dt>{t('detail.category')}</dt>
-              <dd>{detailActivity ? t(`cat.${detailActivity.category}`) : '—'}</dd>
-            </div>
-          </dl>
-          <p className="detail-desc">
-            {detailActivity
-              ? lang === 'zh'
-                ? detailActivity.descriptionZh
-                : detailActivity.description
-              : t('detail.noDescription')}
-          </p>
-          <label className="field">
-            <span>{t('detail.note')}</span>
-            <textarea
-              rows={3}
-              value={detailLine.note}
-              placeholder={t('detail.notePlaceholder')}
-              onChange={(event) => patchLine(detailLine.id, { note: event.target.value })}
-            />
-          </label>
-        </Modal>
-      ) : null}
     </div>
   );
 }
