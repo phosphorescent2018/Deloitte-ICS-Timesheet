@@ -1,5 +1,4 @@
 import { useI18n } from './i18n';
-import { findActivity } from './lib/catalog';
 import { daysInMonth, toKey } from './lib/date';
 import { type DayRecord } from './lib/model';
 
@@ -10,7 +9,7 @@ interface Props {
 }
 
 export default function ActivityMix({ year, month, days }: Props) {
-  const { t, lang } = useI18n();
+  const { t } = useI18n();
   const totals = new Map<string, number>();
   const total = daysInMonth(year, month);
 
@@ -44,23 +43,17 @@ export default function ActivityMix({ year, month, days }: Props) {
         <p className="mix-empty">{t('mix.empty')}</p>
       ) : (
         <ul className="mix-list">
-          {rows.map(([code, hours]) => {
-            const activity = findActivity(code);
-            return (
-              <li key={code}>
-                <div className="mix-line">
-                  <span className="mix-code">{code}</span>
-                  <span className="mix-hours">{hours.toFixed(1)} h</span>
-                </div>
-                <div className="mix-bar">
-                  <i style={{ width: `${Math.max(6, (hours / max) * 100)}%` }} />
-                </div>
-                <span className="mix-name">
-                  {activity ? (lang === 'zh' ? activity.nameZh : activity.name) : code}
-                </span>
-              </li>
-            );
-          })}
+          {rows.map(([code, hours]) => (
+            <li key={code}>
+              <div className="mix-line">
+                <span className="mix-code">{code}</span>
+                <span className="mix-hours">{hours.toFixed(1)} h</span>
+              </div>
+              <div className="mix-bar">
+                <i style={{ width: `${Math.max(6, (hours / max) * 100)}%` }} />
+              </div>
+            </li>
+          ))}
         </ul>
       )}
     </section>

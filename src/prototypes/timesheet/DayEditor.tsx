@@ -2,7 +2,7 @@ import ActivityPicker from './ActivityPicker';
 import { useI18n, formatLongDate } from './i18n';
 import { findActivity, locationLabel, LOCATIONS } from './lib/catalog';
 import { fromKey, isoWeek, shortDate, timeLabel } from './lib/date';
-import { dayTotal, type ActivityLine, type DayRecord, type DayStatus } from './lib/model';
+import { type ActivityLine, type DayRecord, type DayStatus } from './lib/model';
 import { Icon, StatusPill } from './ui';
 
 interface Props {
@@ -28,6 +28,9 @@ function toHours(value: string): number {
   return Math.min(24, Math.max(-24, Math.round(parsed * 100) / 100));
 }
 
+/** 目标工时与实际工时合计都固定展示标准 8 小时。 */
+const STANDARD_HOURS = 8;
+
 export default function DayEditor({
   draft,
   status,
@@ -44,8 +47,6 @@ export default function DayEditor({
   onClear,
 }: Props) {
   const { t, lang } = useI18n();
-  const total = dayTotal(draft);
-
   return (
     <section className="card editor">
       <header className="editor-top">
@@ -98,7 +99,7 @@ export default function DayEditor({
         <div className="sheet-row">
           <div className="cell-label span2">{t('field.targetHours')}</div>
           <div className="cell-value">
-            <span className="total-value">{draft.target.toFixed(1)}</span>
+            <span className="total-value">{STANDARD_HOURS.toFixed(1)}</span>
           </div>
           <div className="cell-empty" />
           <div className="cell-empty" />
@@ -107,7 +108,7 @@ export default function DayEditor({
         <div className="sheet-row sheet-row-total">
           <div className="cell-label span2">{t('field.totalHours')}</div>
           <div className="cell-value">
-            <span className="total-value">{total.toFixed(1)}</span>
+            <span className="total-value">{STANDARD_HOURS.toFixed(1)}</span>
           </div>
           <div className="cell-empty" />
           <div className="cell-empty" />
@@ -206,8 +207,6 @@ export default function DayEditor({
           <Icon.Clock size={14} />
           <span>
             {draft.savedAt ? t('foot.lastSaved', { time: timeLabel(draft.savedAt) }) : t('foot.notSaved')}
-            {' · '}
-            {t('foot.summary', { total: total.toFixed(1), target: draft.target.toFixed(1) })}
           </span>
           {dirty ? <span className="dirty-flag">{t('foot.unsaved')}</span> : null}
         </div>
