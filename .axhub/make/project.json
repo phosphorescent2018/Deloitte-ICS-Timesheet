@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "project": {
+    "id": "ics-timesheet",
+    "name": "德勤 ICS 工时填报"
+  },
+  "resources": {
+    "prototypes": [
+      {
+        "id": "timesheet",
+        "name": "timesheet",
+        "title": "Internal Client Service Timesheet",
+        "clientUrl": "/prototypes/timesheet",
+        "previewMode": "clientRuntime",
+        "description": "德勤 GDC 内部工时填报：月历状态、每日工时明细、Prefill / Copy / Save。",
+        "updatedAt": "2026-11-05T00:00:00.000Z",
+        "filePath": "src/prototypes/timesheet/index.tsx",
+        "absoluteFilePath": "/Users/sun/Axhub/ics-timesheet/src/prototypes/timesheet/index.tsx"
+      }
+    ],
+    "themes": []
+  },
+  "navigation": {
+    "prototypes": ["timesheet"]
+  },
+  "orders": {
+    "themes": []
+  },
+  "capabilities": {
+    "quickEdit": true,
+    "quickEditMode": "clientRuntime",
+    "figmaExport": true,
+    "axureExport": true,
+    "localExports": {
+      "html": true,
+      "make": false
+    }
+  },
+  "resourceWriteTargets": {
+    "themes": {
+      "type": "project-relative-path",
+      "path": "src/themes"
+    },
+    "media": {
+      "type": "project-relative-path",
+      "path": "src/resources/assets"
+    },
+    "prototypes": {
+      "type": "project-relative-path",
+      "path": "src/prototypes"
+    }
+  }
+}

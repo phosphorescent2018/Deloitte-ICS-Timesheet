@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+.npm/
+.pnpm-store/
+
+# Build output
+dist/
+static-preview/
+*.tsbuildinfo
+.vite/
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Local / OS
+.DS_Store
+.env
+.env.*
+!.env.example
+
+# Axhub runtime cache（保留项目身份与配置）
+.axhub/make/sessions/
+.axhub/make/edit-history/
+.axhub/make/artifacts/
+.axhub/make/exports/
+.axhub/make/.dev-server-info.json
+.axhub/make/.admin-server-info.json
+.axhub/make/*.bak-*

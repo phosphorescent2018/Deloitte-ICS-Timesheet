@@ -1,0 +1,34 @@
+{
+  "server": {
+    "host": "localhost",
+    "enableCommandAPI": false
+  },
+  "projectDefaults": {
+    "defaultTheme": null
+  },
+  "projectInfo": {
+    "description": "德勤 ICS 工时填报高保真原型（独立 Axhub Make 项目）"
+  },
+  "cloudPublishing": {
+    "vercel": {
+      "token": "",
+      "projectName": "",
+      "teamId": ""
+    },
+    "cloudflarePages": {
+      "apiToken": "",
+      "accountId": "",
+      "projectName": "",
+      "productionBranch": "main"
+    },
+    "githubPages": {
+      "repository": "phosphorescent2018/Deloitte-ICS-Timesheet",
+      "branch": "gh-pages",
+      "sourceDirectory": "/"
+    },
+    "publishSettings": {
+      "includeSource": false,
+      "visibleTargets": ["axhub"]
+    }
+  }
+}

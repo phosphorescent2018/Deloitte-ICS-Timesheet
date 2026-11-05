@@ -1,0 +1,24 @@
+{
+  "name": "ics-timesheet",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Deloitte Internal Client Service Timesheet（ICS 工时填报）高保真原型 · 独立 Axhub Make 项目",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit -p tsconfig.json && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.31",
+    "@types/react-dom": "^18.3.7",
+    "@vitejs/plugin-react": "^5.2.0",
+    "typescript": "^5.9.3",
+    "vite": "^5.4.21"
+  }
+}

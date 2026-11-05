@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-05T09:40:00.000Z",
+  "items": {
+    "prototypes/timesheet": {
+      "group": "prototypes",
+      "name": "timesheet",
+      "js": "src/prototypes/timesheet/index.tsx",
+      "html": "src/prototypes/timesheet/index.html"
+    }
+  },
+  "js": {
+    "prototypes/timesheet": "src/prototypes/timesheet/index.tsx"
+  },
+  "html": {
+    "prototypes/timesheet": "src/prototypes/timesheet/index.html"
+  }
+}
