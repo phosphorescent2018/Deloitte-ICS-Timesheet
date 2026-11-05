@@ -2,7 +2,7 @@
   "name": "ics-timesheet",
   "version": "1.0.0",
   "private": true,
-  "description": "Deloitte Internal Client Service Timesheet（ICS 工时填报）高保真原型 · 独立 Axhub Make 项目",
+  "description": "Mindigital Service Timesheet（ICS 工时填报）高保真原型 · 独立 Axhub Make 项目",
   "type": "module",
   "scripts": {
     "dev": "node scripts/sync-project-metadata.mjs && vite",

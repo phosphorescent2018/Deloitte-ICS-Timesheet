@@ -7,7 +7,7 @@
     "defaultTheme": null
   },
   "projectInfo": {
-    "description": "德勤 ICS 工时填报高保真原型（独立 Axhub Make 项目）"
+    "description": "Mindigital 服务工时表高保真原型（独立 Axhub Make 项目）"
   },
   "cloudPublishing": {
     "vercel": {
@@ -28,7 +28,9 @@
     },
     "publishSettings": {
       "includeSource": false,
-      "visibleTargets": ["axhub"]
+      "visibleTargets": [
+        "axhub"
+      ]
     }
   }
 }
