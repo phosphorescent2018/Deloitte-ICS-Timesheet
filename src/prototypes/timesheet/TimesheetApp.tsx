@@ -24,7 +24,7 @@ import {
   type DayRecord,
   type ValidationIssue,
 } from './lib/model';
-import { exportState, loadState, persist, resetState } from './lib/storage';
+import { loadState, persist, resetState } from './lib/storage';
 import { Icon, Modal, Toast, type ToastState, type ToastTone } from './ui';
 import './timesheet.css';
 
@@ -57,14 +57,11 @@ export default function TimesheetApp() {
   const [toast, setToast] = useState<ToastState | null>(null);
   const [pending, setPending] = useState<{ label: string; run: () => void } | null>(null);
   const [detailId, setDetailId] = useState<string | null>(null);
-  const [menuOpen, setMenuOpen] = useState(false);
   const [resetOpen, setResetOpen] = useState(false);
-  const [aboutOpen, setAboutOpen] = useState(false);
   const [approvalKey, setApprovalKey] = useState<string | null>(null);
   const [page, setPage] = useState<'timesheet' | 'admin'>('timesheet');
   const [config, setConfig] = useState<AdminConfig>(() => loadConfig());
   const toastTimer = useRef<number | null>(null);
-  const menuRef = useRef<HTMLDivElement>(null);
 
   const todayKey = toKey(new Date());
   const editableFrom = editableFromKey(todayKey);
@@ -90,15 +87,6 @@ export default function TimesheetApp() {
     },
     [],
   );
-
-  useEffect(() => {
-    if (!menuOpen) return;
-    const onDown = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) setMenuOpen(false);
-    };
-    document.addEventListener('mousedown', onDown);
-    return () => document.removeEventListener('mousedown', onDown);
-  }, [menuOpen]);
 
   const guard = (label: string, run: () => void) => {
     if (!dirty) {
@@ -437,57 +425,6 @@ export default function TimesheetApp() {
             {page === 'admin' ? <Icon.ChevronLeft size={16} /> : <Icon.Settings size={16} />}
           </button>
 
-          <div className="menu-wrap" ref={menuRef}>
-            <button
-              type="button"
-              className="icon-btn menu-btn"
-              aria-label={t('menu.about')}
-              aria-expanded={menuOpen}
-              onClick={() => setMenuOpen((open) => !open)}
-            >
-              <span className="dots">•••</span>
-            </button>
-            {menuOpen ? (
-              <div className="menu">
-                <button
-                  type="button"
-                  className="menu-item"
-                  onClick={() => {
-                    exportState(state);
-                    setMenuOpen(false);
-                    pushToast(t('toast.exported'), 'ok');
-                  }}
-                >
-                  <Icon.Download size={15} />
-                  {t('menu.export')}
-                </button>
-                <button
-                  type="button"
-                  className="menu-item"
-                  onClick={() => {
-                    setMenuOpen(false);
-                    setAboutOpen(true);
-                  }}
-                >
-                  <Icon.FileText size={15} />
-                  {t('menu.about')}
-                </button>
-                <div className="menu-sep" />
-                <button
-                  type="button"
-                  className="menu-item is-danger"
-                  onClick={() => {
-                    setMenuOpen(false);
-                    setResetOpen(true);
-                  }}
-                >
-                  <Icon.Rotate size={15} />
-                  {t('menu.reset')}
-                </button>
-              </div>
-            ) : null}
-          </div>
-
           <div className="user-chip">
             <span className="avatar">吕</span>
             <div>
@@ -521,6 +458,7 @@ export default function TimesheetApp() {
             month={view.m}
             onChange={applyConfig}
             onBack={() => setPage('timesheet')}
+            onReset={() => setResetOpen(true)}
           />
         </main>
       ) : null}
@@ -682,22 +620,6 @@ export default function TimesheetApp() {
           }
         >
           <p className="modal-copy">{t('reset.body')}</p>
-        </Modal>
-      ) : null}
-
-      {aboutOpen ? (
-        <Modal
-          title={t('about.title')}
-          subtitle={t('about.subtitle')}
-          width={520}
-          onClose={() => setAboutOpen(false)}
-          footer={
-            <button type="button" className="btn btn-blue" onClick={() => setAboutOpen(false)}>
-              {t('btn.close')}
-            </button>
-          }
-        >
-          <p className="modal-copy">{t('about.body')}</p>
         </Modal>
       ) : null}
 

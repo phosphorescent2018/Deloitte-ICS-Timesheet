@@ -45,7 +45,7 @@ Mindigital GDC 内部服务工时系统（原 Internal Client Service Timesheet�
 - **Week at a glance**：本周 7 天卡片，含工时进度条，点击跳转。
 - **Activity mix**：本月工时按 Activity 代码汇总 Top 5。
 - 切换日期 / 月份时如有未保存改动，弹窗确认后再丢弃。
-- 顶栏菜单支持导出 JSON、重置演示数据、查看项目说明。
+- 「后台配置」页提供「Reset demo data」按钮，可重置演示数据；数据导出见该页「数据导出」。
 - 键盘：`←` `→` 切换日期，`⌘/Ctrl + S` 保存。
 - **中英文切换**：每次进入默认英文，右上角「中文 / EN」可切换（仅当次会话，刷新后回到英文）。
 

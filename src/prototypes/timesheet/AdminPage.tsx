@@ -14,6 +14,7 @@ interface Props {
   month: number;
   onChange: (next: AdminConfig) => void;
   onBack: () => void;
+  onReset: () => void;
 }
 
 interface ListEditorProps {
@@ -119,7 +120,7 @@ const COLUMN_KEYS = [
   'col.savedAt',
 ];
 
-export default function AdminPage({ config, activities, days, year, month, onChange, onBack }: Props) {
+export default function AdminPage({ config, activities, days, year, month, onChange, onBack, onReset }: Props) {
   const { t, lang } = useI18n();
 
   const updateList = (field: keyof AdminConfig, next: string[]) => {
@@ -194,10 +195,16 @@ export default function AdminPage({ config, activities, days, year, month, onCha
           <h1>{t('admin.title')}</h1>
           <p>{t('admin.subtitle')}</p>
         </div>
-        <button type="button" className="btn btn-ghost" onClick={onBack}>
-          <Icon.ChevronLeft size={15} />
-          {t('admin.back')}
-        </button>
+        <div className="admin-actions">
+          <button type="button" className="btn btn-ghost" onClick={onReset}>
+            <Icon.Rotate size={15} />
+            {t('menu.reset')}
+          </button>
+          <button type="button" className="btn btn-ghost" onClick={onBack}>
+            <Icon.ChevronLeft size={15} />
+            {t('admin.back')}
+          </button>
+        </div>
       </header>
 
       <div className="admin-grid">
