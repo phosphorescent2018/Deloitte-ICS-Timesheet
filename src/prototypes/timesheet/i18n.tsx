@@ -247,8 +247,6 @@ const DICT: Record<string, Entry> = {
   },
 };
 
-const LANG_STORAGE_KEY = 'deloitte-ics-timesheet.lang';
-
 interface I18nValue {
   lang: Lang;
   setLang: (lang: Lang) => void;
@@ -258,21 +256,11 @@ interface I18nValue {
 const I18nContext = createContext<I18nValue | null>(null);
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Lang>(() => {
-    try {
-      return window.localStorage.getItem(LANG_STORAGE_KEY) === 'zh' ? 'zh' : 'en';
-    } catch {
-      return 'en';
-    }
-  });
+  // 每次进入默认英文；右上角可切中文，但刷新后回到英文。
+  const [lang, setLangState] = useState<Lang>('en');
 
   const setLang = (next: Lang) => {
     setLangState(next);
-    try {
-      window.localStorage.setItem(LANG_STORAGE_KEY, next);
-    } catch {
-      // ignore
-    }
   };
 
   useEffect(() => {
