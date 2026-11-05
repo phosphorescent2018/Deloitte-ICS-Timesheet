@@ -18,7 +18,7 @@ Mindigital GDC 内部服务工时系统（原 Internal Client Service Timesheet�
 
 ### 每日填报
 
-- `Work Location` 下拉：重庆 / 北京 / 上海 / 广州 / 深圳 / 香港 / Remote。
+- `Work Location` 下拉：重庆 / 北京 / 新加坡 / 远程。
 - `Target Hours` 固定为 8.0（与 `Total Actual Hours` 同样式展示，不可编辑）。
 - `Activity` 可搜索选择器：选项为「业务线-产品-业务阶段」组合，业务线 UG / CDI / GH，产品 OD / AirtimeLending / BL，阶段 运营 / 交付，共 18 个组合（如 `UG-OD-运营`、`CDI-AirtimeLending-交付`），按业务线分组、支持搜索；选中后 `Client Name` 自动带出业务线。
 - 多行 Activity：工时、Remark、单据详情弹窗（可写备注）、添加 / 删除行。

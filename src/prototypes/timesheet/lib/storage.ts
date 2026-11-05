@@ -1,4 +1,4 @@
-import { DEFAULT_LOCATION } from './catalog';
+import { DEFAULT_LOCATION, LOCATIONS } from './catalog';
 import { addDays, startOfWeekMonday, toKey } from './date';
 import type { AppState, DayRecord } from './model';
 import { createLine } from './model';
@@ -61,7 +61,9 @@ function normalize(raw: unknown): AppState | null {
     if (!record || typeof record !== 'object') return;
     days[key] = {
       date: record.date ?? key,
-      location: record.location ?? DEFAULT_LOCATION,
+      location: LOCATIONS.some((option) => option.value === record.location)
+        ? record.location
+        : DEFAULT_LOCATION,
       target: Number.isFinite(record.target) ? record.target : 8,
       savedAt: record.savedAt ?? null,
       lines: Array.isArray(record.lines)
