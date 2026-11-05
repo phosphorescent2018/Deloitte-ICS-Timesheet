@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useI18n } from './i18n';
 import { ACTIVITIES, findActivity, type ActivityCategory } from './lib/catalog';
 import { Icon } from './ui';
 
@@ -18,6 +19,7 @@ const CATEGORY_ORDER: ActivityCategory[] = [
 ];
 
 export default function ActivityPicker({ value, onChange, invalid }: Props) {
+  const { t, lang } = useI18n();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const rootRef = useRef<HTMLDivElement>(null);
@@ -46,7 +48,9 @@ export default function ActivityPicker({ value, onChange, invalid }: Props) {
     const needle = query.trim().toLowerCase();
     const filtered = needle
       ? ACTIVITIES.filter((item) =>
-          `${item.code} ${item.name} ${item.client} ${item.category}`.toLowerCase().includes(needle),
+          `${item.code} ${item.name} ${item.nameZh} ${item.client} ${item.clientZh} ${item.category}`
+            .toLowerCase()
+            .includes(needle),
         )
       : ACTIVITIES;
     return CATEGORY_ORDER.map((category) => ({
@@ -68,10 +72,10 @@ export default function ActivityPicker({ value, onChange, invalid }: Props) {
           {selected ? (
             <>
               <span className="picker-code">{selected.code}</span>
-              <span className="picker-name">{selected.name}</span>
+              <span className="picker-name">{lang === 'zh' ? selected.nameZh : selected.name}</span>
             </>
           ) : (
-            <span className="picker-placeholder">Select activity code…</span>
+            <span className="picker-placeholder">{t('picker.placeholder')}</span>
           )}
         </span>
         <Icon.ChevronDown size={15} />
@@ -85,10 +89,15 @@ export default function ActivityPicker({ value, onChange, invalid }: Props) {
               autoFocus
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search code, client or activity…"
+              placeholder={t('picker.search')}
             />
             {query ? (
-              <button type="button" className="picker-clear" onClick={() => setQuery('')} aria-label="Clear">
+              <button
+                type="button"
+                className="picker-clear"
+                onClick={() => setQuery('')}
+                aria-label={t('picker.clear')}
+              >
                 <Icon.X size={13} />
               </button>
             ) : null}
@@ -96,7 +105,7 @@ export default function ActivityPicker({ value, onChange, invalid }: Props) {
           <div className="picker-list">
             {groups.map((group) => (
               <div key={group.category} className="picker-group">
-                <div className="picker-group-title">{group.category}</div>
+                <div className="picker-group-title">{t(`cat.${group.category}`)}</div>
                 {group.items.map((item) => (
                   <button
                     key={item.code}
@@ -111,14 +120,14 @@ export default function ActivityPicker({ value, onChange, invalid }: Props) {
                     }}
                   >
                     <span className="opt-code">{item.code}</span>
-                    <span className="opt-name">{item.name}</span>
-                    <span className="opt-client">{item.client}</span>
+                    <span className="opt-name">{lang === 'zh' ? item.nameZh : item.name}</span>
+                    <span className="opt-client">{lang === 'zh' ? item.clientZh : item.client}</span>
                   </button>
                 ))}
               </div>
             ))}
             {groups.length === 0 ? (
-              <div className="picker-empty">No activity code matches “{query}”.</div>
+              <div className="picker-empty">{t('picker.empty', { query })}</div>
             ) : null}
           </div>
         </div>

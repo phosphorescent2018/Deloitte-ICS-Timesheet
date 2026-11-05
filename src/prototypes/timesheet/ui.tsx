@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useI18n } from './i18n';
 
 export interface IconProps {
   size?: number;
@@ -152,18 +153,18 @@ export function Toast({ toast }: { toast: ToastState | null }) {
   );
 }
 
-const STATUS_COPY: Record<string, { label: string; className: string }> = {
-  empty: { label: 'Unfinished', className: 'pill-empty' },
-  partial: { label: 'Partial', className: 'pill-partial' },
-  complete: { label: 'Completed', className: 'pill-complete' },
+const STATUS_CLASS: Record<string, string> = {
+  empty: 'pill-empty',
+  partial: 'pill-partial',
+  complete: 'pill-complete',
 };
 
 export function StatusPill({ status }: { status: 'empty' | 'partial' | 'complete' }) {
-  const copy = STATUS_COPY[status];
+  const { t } = useI18n();
   return (
-    <span className={`pill ${copy.className}`}>
+    <span className={`pill ${STATUS_CLASS[status]}`}>
       <span className="pill-dot" />
-      {copy.label}
+      {t(`status.${status}`)}
     </span>
   );
 }
@@ -178,6 +179,7 @@ export interface ModalProps {
 }
 
 export function Modal({ title, subtitle, width = 620, onClose, children, footer }: ModalProps) {
+  const { t } = useI18n();
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape') onClose();
@@ -199,7 +201,7 @@ export function Modal({ title, subtitle, width = 620, onClose, children, footer 
             <h3>{title}</h3>
             {subtitle ? <p>{subtitle}</p> : null}
           </div>
-          <button type="button" className="icon-btn" onClick={onClose} aria-label="Close">
+          <button type="button" className="icon-btn" onClick={onClose} aria-label={t('btn.close')}>
             <Icon.X size={16} />
           </button>
         </header>

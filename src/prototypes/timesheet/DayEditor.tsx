@@ -1,6 +1,7 @@
 import ActivityPicker from './ActivityPicker';
-import { findActivity, LOCATIONS } from './lib/catalog';
-import { fromKey, isoWeek, longDate, shortDate, timeLabel } from './lib/date';
+import { useI18n, formatLongDate } from './i18n';
+import { findActivity, locationLabel, LOCATIONS } from './lib/catalog';
+import { fromKey, isoWeek, shortDate, timeLabel } from './lib/date';
 import { dayTotal, type ActivityLine, type DayRecord, type DayStatus } from './lib/model';
 import { Icon, StatusPill } from './ui';
 
@@ -41,47 +42,48 @@ export default function DayEditor({
   onCopyLast,
   onClear,
 }: Props) {
+  const { t, lang } = useI18n();
   const total = dayTotal(draft);
 
   return (
-    <section className="card editor" aria-label="Daily timesheet entry">
+    <section className="card editor">
       <header className="editor-top">
         <div className="editor-title">
-          <span className="editor-kicker">Daily entry</span>
-          <h2>{longDate(draft.date)}</h2>
+          <span className="editor-kicker">{t('editor.kicker')}</span>
+          <h2>{formatLongDate(draft.date, lang)}</h2>
           <span className="editor-sub">
-            {shortDate(draft.date)} · Week {isoWeek(fromKey(draft.date))}
+            {shortDate(draft.date)} · {t('cal.week', { week: isoWeek(fromKey(draft.date)) })}
           </span>
         </div>
         <div className="editor-top-right">
           <StatusPill status={status} />
           <button type="button" className="link-btn" onClick={onClear}>
-            Clear day
+            {t('editor.clear')}
           </button>
         </div>
       </header>
 
       <div className="sheet">
         <div className="sheet-head">
-          <div className="sh-activity">Activity</div>
-          <div className="sh-client">Client Name</div>
+          <div className="sh-activity">{t('th.activity')}</div>
+          <div className="sh-client">{t('th.client')}</div>
           <div className="sh-date">{shortDate(draft.date)}</div>
-          <div className="sh-remark">Remark</div>
-          <div className="sh-op">Operation</div>
+          <div className="sh-remark">{t('th.remark')}</div>
+          <div className="sh-op">{t('th.operation')}</div>
         </div>
 
         <div className="sheet-row">
-          <div className="cell-label span2">Work Location</div>
+          <div className="cell-label span2">{t('field.workLocation')}</div>
           <div className="cell-value">
             <div className="select-wrap">
               <select
                 value={draft.location}
                 onChange={(event) => onChange({ location: event.target.value })}
-                aria-label="Work location"
+                aria-label={t('field.workLocation')}
               >
                 {LOCATIONS.map((option) => (
                   <option key={option.value} value={option.value}>
-                    {option.label}
+                    {locationLabel(option.value, lang)}
                   </option>
                 ))}
               </select>
@@ -93,7 +95,7 @@ export default function DayEditor({
         </div>
 
         <div className="sheet-row">
-          <div className="cell-label span2">Target Hours</div>
+          <div className="cell-label span2">{t('field.targetHours')}</div>
           <div className="cell-value">
             <div className="hours-field">
               <input
@@ -104,7 +106,7 @@ export default function DayEditor({
                 step={0.5}
                 value={draft.target}
                 onChange={(event) => onChange({ target: toHours(event.target.value) })}
-                aria-label="Target hours"
+                aria-label={t('field.targetHours')}
               />
               <span className="unit">h</span>
             </div>
@@ -114,7 +116,7 @@ export default function DayEditor({
         </div>
 
         <div className="sheet-row sheet-row-total">
-          <div className="cell-label span2">Total Actual Hours</div>
+          <div className="cell-label span2">{t('field.totalHours')}</div>
           <div className="cell-value">
             <span className="total-value">{total.toFixed(1)}</span>
           </div>
@@ -136,7 +138,11 @@ export default function DayEditor({
                 />
               </div>
               <div className="cell-client">
-                {activity ? <span className="client-name">{activity.client}</span> : <span className="muted">—</span>}
+                {activity ? (
+                  <span className="client-name">{lang === 'zh' ? activity.clientZh : activity.client}</span>
+                ) : (
+                  <span className="muted">—</span>
+                )}
               </div>
               <div className="cell-value">
                 <div className="hours-field">
@@ -149,7 +155,7 @@ export default function DayEditor({
                     placeholder="0.0"
                     value={line.hours === 0 ? '' : line.hours}
                     onChange={(event) => onLineChange(line.id, { hours: toHours(event.target.value) })}
-                    aria-label={`Line ${index + 1} hours`}
+                    aria-label={t('field.hoursAria', { n: index + 1 })}
                   />
                   <span className="unit">h</span>
                 </div>
@@ -158,16 +164,16 @@ export default function DayEditor({
                 <input
                   className="input"
                   value={line.remark}
-                  placeholder="Optional remark"
+                  placeholder={t('field.remarkPlaceholder')}
                   onChange={(event) => onLineChange(line.id, { remark: event.target.value })}
-                  aria-label={`Line ${index + 1} remark`}
+                  aria-label={t('field.remarkAria', { n: index + 1 })}
                 />
               </div>
               <div className="cell-ops">
                 <button
                   type="button"
                   className="icon-btn"
-                  title="Activity details"
+                  title={t('detail.title')}
                   onClick={() => onOpenDetail(line.id)}
                 >
                   <Icon.FileText size={17} />
@@ -175,7 +181,7 @@ export default function DayEditor({
                 <button
                   type="button"
                   className="icon-btn icon-btn-danger"
-                  title="Remove line"
+                  title={t('btn.removeLine')}
                   onClick={() => onRemoveLine(line.id)}
                 >
                   <Icon.Minus size={16} />
@@ -185,15 +191,13 @@ export default function DayEditor({
           );
         })}
 
-        {draft.lines.length === 0 ? (
-          <div className="lines-empty">No activity lines yet — add one to start filling this day.</div>
-        ) : null}
+        {draft.lines.length === 0 ? <div className="lines-empty">{t('empty.lines')}</div> : null}
 
         <div className="sheet-add">
-          <button type="button" className="add-line" onClick={onAddLine} title="Add activity line">
+          <button type="button" className="add-line" onClick={onAddLine} title={t('btn.addLine')}>
             <Icon.Plus size={16} />
           </button>
-          <span>Add activity line</span>
+          <span>{t('btn.addLine')}</span>
         </div>
       </div>
 
@@ -212,23 +216,24 @@ export default function DayEditor({
         <div className="foot-meta">
           <Icon.Clock size={14} />
           <span>
-            {draft.savedAt ? `Last saved ${timeLabel(draft.savedAt)}` : 'Not saved yet'} ·{' '}
-            {total.toFixed(1)} / {draft.target.toFixed(1)} h
+            {draft.savedAt ? t('foot.lastSaved', { time: timeLabel(draft.savedAt) }) : t('foot.notSaved')}
+            {' · '}
+            {t('foot.summary', { total: total.toFixed(1), target: draft.target.toFixed(1) })}
           </span>
-          {dirty ? <span className="dirty-flag">Unsaved changes</span> : null}
+          {dirty ? <span className="dirty-flag">{t('foot.unsaved')}</span> : null}
         </div>
         <div className="foot-actions">
           <button type="button" className="btn btn-blue" onClick={onPrefill}>
             <Icon.CalendarPlus size={15} />
-            Prefill one week
+            {t('btn.prefill')}
           </button>
           <button type="button" className="btn btn-blue" onClick={onCopyLast}>
             <Icon.Copy size={15} />
-            Copy last day
+            {t('btn.copyLast')}
           </button>
           <button type="button" className="btn btn-blue btn-primary" onClick={onSave}>
             <Icon.Save size={15} />
-            Save
+            {t('btn.save')}
           </button>
         </div>
       </footer>

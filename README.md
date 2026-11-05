@@ -1,7 +1,7 @@
 # Internal Client Service Timesheet · 德勤 ICS 工时填报
 
 德勤 GDC 内部工时系统（Internal Client Service Timesheet）的完整可交互复刻：月历状态 + 每日工时明细 + Prefill / Copy / Save。
-独立 Axhub Make 项目，push `main` 自动构建并发布到 GitHub Pages。
+独立 Axhub Make 项目，push `main` 自动构建并发布到 GitHub Pages。界面默认中文，右上角可一键切换中英文。
 
 **演示站：** https://phosphorescent2018.github.io/Deloitte-ICS-Timesheet/
 
@@ -40,6 +40,7 @@
 - 切换日期 / 月份时如有未保存改动，弹窗确认后再丢弃。
 - 顶栏菜单支持导出 JSON、重置演示数据、查看项目说明。
 - 键盘：`←` `→` 切换日期，`⌘/Ctrl + S` 保存。
+- **中英文切换**：默认中文，右上角「中文 / EN」一键切换，选择会记住（localStorage），日期、星期、活动名称、状态文案、校验提示全部跟随切换。
 
 ## 技术栈
 
@@ -99,5 +100,5 @@ npm run typecheck  # TypeScript 全量检查
 
 ## 说明
 
-界面文案保持英文，与德勤内部系统一致；代码注释与文档为中文。
+界面默认中文（右上角可切英文），代码注释与文档为中文。
 本项目为原型演示，不含真实后端、审批流与权限体系，所有数据仅保存在浏览器本地。

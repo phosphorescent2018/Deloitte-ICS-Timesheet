@@ -154,6 +154,12 @@ input[type='number'] {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.14);
 }
 
+.seg-lang button {
+  padding: 6px 9px;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+}
+
 .menu-wrap {
   position: relative;
 }
@@ -498,7 +504,7 @@ input[type='number'] {
 .cal-legend {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px 10px;
+  gap: 5px 9px;
   margin-top: 14px;
   padding-top: 12px;
   border-top: 1px dashed var(--line);
@@ -507,9 +513,10 @@ input[type='number'] {
 .legend-item {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  font-size: 11px;
+  gap: 4px;
+  font-size: 10.5px;
   color: #5c666f;
+  white-space: nowrap;
 }
 
 .swatch {

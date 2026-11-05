@@ -1,3 +1,4 @@
+import { useI18n } from './i18n';
 import { findActivity } from './lib/catalog';
 import { daysInMonth, toKey } from './lib/date';
 import { type DayRecord } from './lib/model';
@@ -9,6 +10,7 @@ interface Props {
 }
 
 export default function ActivityMix({ year, month, days }: Props) {
+  const { t, lang } = useI18n();
   const totals = new Map<string, number>();
   const total = daysInMonth(year, month);
 
@@ -27,34 +29,39 @@ export default function ActivityMix({ year, month, days }: Props) {
   const sum = Array.from(totals.values()).reduce((acc, value) => acc + value, 0);
 
   return (
-    <section className="card mix-card" aria-label="Activity mix">
+    <section className="card mix-card">
       <header className="mix-head">
         <div>
-          <span className="editor-kicker">Activity mix</span>
-          <h3>Where the hours went</h3>
+          <span className="editor-kicker">{t('mix.kicker')}</span>
+          <h3>{t('mix.title')}</h3>
         </div>
         <div className="mix-total">
           <strong>{sum.toFixed(1)} h</strong>
-          <span>this month</span>
+          <span>{t('mix.month')}</span>
         </div>
       </header>
 
       {rows.length === 0 ? (
-        <p className="mix-empty">No entries yet — save a day to see the breakdown.</p>
+        <p className="mix-empty">{t('mix.empty')}</p>
       ) : (
         <ul className="mix-list">
-          {rows.map(([code, hours]) => (
-            <li key={code}>
-              <div className="mix-line">
-                <span className="mix-code">{code.replace('ICS-GDC-', '')}</span>
-                <span className="mix-hours">{hours.toFixed(1)} h</span>
-              </div>
-              <div className="mix-bar">
-                <i style={{ width: `${Math.max(6, (hours / max) * 100)}%` }} />
-              </div>
-              <span className="mix-name">{findActivity(code)?.name ?? code}</span>
-            </li>
-          ))}
+          {rows.map(([code, hours]) => {
+            const activity = findActivity(code);
+            return (
+              <li key={code}>
+                <div className="mix-line">
+                  <span className="mix-code">{code.replace('ICS-GDC-', '')}</span>
+                  <span className="mix-hours">{hours.toFixed(1)} h</span>
+                </div>
+                <div className="mix-bar">
+                  <i style={{ width: `${Math.max(6, (hours / max) * 100)}%` }} />
+                </div>
+                <span className="mix-name">
+                  {activity ? (lang === 'zh' ? activity.nameZh : activity.name) : code}
+                </span>
+              </li>
+            );
+          })}
         </ul>
       )}
     </section>

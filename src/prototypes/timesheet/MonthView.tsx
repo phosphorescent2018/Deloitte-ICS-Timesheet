@@ -1,5 +1,6 @@
-import { LOCATIONS } from './lib/catalog';
-import { daysInMonth, shortDate, toKey, weekdayShort } from './lib/date';
+import { useI18n, formatWeekdayShort } from './i18n';
+import { locationLabel } from './lib/catalog';
+import { daysInMonth, isWeekend, fromKey, shortDate, toKey } from './lib/date';
 import {
   dayTotal,
   isOtDay,
@@ -18,42 +19,37 @@ interface Props {
   onSelect: (key: string) => void;
 }
 
-function locationLabel(value: string): string {
-  return LOCATIONS.find((option) => option.value === value)?.label ?? value;
-}
-
 export default function MonthView({ year, month, days, stats, onSelect }: Props) {
+  const { t, lang } = useI18n();
   const total = daysInMonth(year, month);
   const rows = Array.from({ length: total }, (_, index) => {
     const day = index + 1;
     const date = new Date(year, month, day);
     const key = toKey(date);
-    return { key, day, weekday: weekdayShort(key), record: days[key] };
+    return { key, weekday: formatWeekdayShort(key, lang), weekend: isWeekend(fromKey(key)), record: days[key] };
   });
 
   const completion = stats.workdays > 0 ? Math.round((stats.completeDays / stats.workdays) * 100) : 0;
 
   return (
-    <section className="card month-view" aria-label="Month overview">
+    <section className="card month-view">
       <header className="mv-head">
         <div>
-          <span className="editor-kicker">Month overview</span>
-          <h2>
-            {stats.completeDays} of {stats.workdays} working days completed
-          </h2>
-          <p>Click any row to open that day in the daily editor.</p>
+          <span className="editor-kicker">{t('mv.kicker')}</span>
+          <h2>{t('mv.summary', { done: stats.completeDays, workdays: stats.workdays })}</h2>
+          <p>{t('mv.hint')}</p>
         </div>
         <div className="mv-stats">
           <div className="mv-stat">
-            <span>Hours</span>
+            <span>{t('mv.hours')}</span>
             <strong>{stats.hours.toFixed(1)}</strong>
           </div>
           <div className="mv-stat">
-            <span>OT</span>
+            <span>{t('mv.ot')}</span>
             <strong className={stats.overtime > 0 ? 'is-ot' : undefined}>{stats.overtime.toFixed(1)}</strong>
           </div>
           <div className="mv-stat">
-            <span>Completion</span>
+            <span>{t('mv.completion')}</span>
             <strong>{completion}%</strong>
           </div>
           <div className="mv-progress">
@@ -66,27 +62,25 @@ export default function MonthView({ year, month, days, stats, onSelect }: Props)
         <table className="mv-table">
           <thead>
             <tr>
-              <th>Date</th>
-              <th>Day</th>
-              <th>Location</th>
-              <th>Activity</th>
-              <th className="num">Hours</th>
-              <th className="num">OT</th>
-              <th>Status</th>
+              <th>{t('th.date')}</th>
+              <th>{t('th.weekday')}</th>
+              <th>{t('th.location')}</th>
+              <th>{t('th.activity')}</th>
+              <th className="num">{t('mv.hours')}</th>
+              <th className="num">{t('mv.ot')}</th>
+              <th>{t('th.status')}</th>
               <th />
             </tr>
           </thead>
           <tbody>
-            {rows.map(({ key, weekday, record }) => {
+            {rows.map(({ key, weekday, weekend, record }) => {
               const status = statusOf(record);
               const totalHours = dayTotal(record);
               const overtime = record ? overtimeHours(record) : 0;
               return (
                 <tr
                   key={key}
-                  className={`${record && totalHours > 0 ? 'has-entry' : 'no-entry'} ${
-                    weekday === 'Sa' || weekday === 'Su' ? 'is-weekend' : ''
-                  }`}
+                  className={`${record && totalHours > 0 ? 'has-entry' : 'no-entry'} ${weekend ? 'is-weekend' : ''}`}
                   onClick={() => onSelect(key)}
                   tabIndex={0}
                   onKeyDown={(event) => {
@@ -98,7 +92,7 @@ export default function MonthView({ year, month, days, stats, onSelect }: Props)
                 >
                   <td className="cell-date">{shortDate(key)}</td>
                   <td className="cell-weekday">{weekday}</td>
-                  <td>{record ? locationLabel(record.location) : '—'}</td>
+                  <td>{record ? locationLabel(record.location, lang) : '—'}</td>
                   <td className="cell-activities">
                     {record && record.lines.filter((line) => line.code).length > 0 ? (
                       <div className="activity-tags">
@@ -125,12 +119,10 @@ export default function MonthView({ year, month, days, stats, onSelect }: Props)
                     {isOtDay(record) ? <span className="ot-chip">{overtime.toFixed(1)}</span> : '—'}
                   </td>
                   <td>
-                    {status === 'empty' && (weekday === 'Sa' || weekday === 'Su') ? (
+                    {status === 'empty' && weekend ? (
                       <span className="muted">—</span>
                     ) : (
-                      <span className={`mini-status is-${status}`}>
-                        {status === 'complete' ? 'Completed' : status === 'partial' ? 'Partial' : 'Unfinished'}
-                      </span>
+                      <span className={`mini-status is-${status}`}>{t(`status.${status}`)}</span>
                     )}
                   </td>
                   <td className="cell-open">

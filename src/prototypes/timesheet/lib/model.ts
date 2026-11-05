@@ -80,29 +80,40 @@ export function isOtDay(day: DayRecord | undefined): boolean {
   return overtimeHours(day) > 0;
 }
 
-export function validateDay(day: DayRecord): string[] {
-  const issues: string[] = [];
+export interface ValidationIssue {
+  key: string;
+  vars?: Record<string, string | number>;
+}
+
+export function validateDay(day: DayRecord): ValidationIssue[] {
+  const issues: ValidationIssue[] = [];
   const total = dayTotal(day);
 
   if (!Number.isFinite(day.target) || day.target <= 0) {
-    issues.push('Target hours must be greater than 0.');
+    issues.push({ key: 'err.targetMin' });
   }
   if (day.target > 24) {
-    issues.push('Target hours cannot exceed 24 hours per day.');
+    issues.push({ key: 'err.targetMax' });
   }
 
   day.lines.forEach((line, index) => {
-    const label = `Line ${index + 1}`;
-    if (line.hours < 0) issues.push(`${label}: hours cannot be negative.`);
-    if (line.hours > 24) issues.push(`${label}: hours cannot exceed 24.`);
-    if (line.hours > 0 && !line.code) issues.push(`${label}: select an activity code.`);
-    if (line.code && line.hours <= 0) issues.push(`${label}: enter hours for the selected activity.`);
+    const vars = { n: index + 1 };
+    if (line.hours < 0) issues.push({ key: 'err.lineNegative', vars });
+    if (line.hours > 24) issues.push({ key: 'err.lineMax', vars });
+    if (line.hours > 0 && !line.code) issues.push({ key: 'err.lineCode', vars });
+    if (line.code && line.hours <= 0) issues.push({ key: 'err.lineHours', vars });
   });
 
-  if (total > 24) issues.push('Total actual hours cannot exceed 24 hours per day.');
-  if (total <= 0) issues.push('Enter at least 0.5 hour before saving.');
+  if (total > 24) issues.push({ key: 'err.totalMax' });
+  if (total <= 0) issues.push({ key: 'err.totalMin' });
 
-  return Array.from(new Set(issues));
+  const seen = new Set<string>();
+  return issues.filter((issue) => {
+    const id = `${issue.key}:${JSON.stringify(issue.vars ?? {})}`;
+    if (seen.has(id)) return false;
+    seen.add(id);
+    return true;
+  });
 }
 
 export interface MonthStats {

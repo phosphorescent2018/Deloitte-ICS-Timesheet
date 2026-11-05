@@ -1,14 +1,6 @@
+import { formatMonth, useI18n, weekdayLabels } from './i18n';
 import { dayTotal, isOtDay, statusOf, type DayRecord, type MonthStats } from './lib/model';
-import {
-  WEEKDAYS_SHORT,
-  fromKey,
-  isWeekend,
-  isoWeek,
-  monthLabel,
-  monthGrid,
-  shortDate,
-  toKey,
-} from './lib/date';
+import { fromKey, isWeekend, isoWeek, monthGrid, shortDate, toKey } from './lib/date';
 import { Icon } from './ui';
 
 interface Props {
@@ -36,30 +28,31 @@ export default function Calendar({
   onNext,
   onToday,
 }: Props) {
+  const { t, lang } = useI18n();
   const grid = monthGrid(year, month);
 
   return (
-    <section className="card calendar" aria-label="Month calendar">
+    <section className="card calendar">
       <header className="cal-head">
         <div>
-          <h2>{monthLabel(year, month)}</h2>
-          <p className="cal-sub">Week {isoWeek(fromKey(selectedKey))} · 5 working days</p>
+          <h2>{formatMonth(year, month, lang)}</h2>
+          <p className="cal-sub">{t('cal.week', { week: isoWeek(fromKey(selectedKey)) })}</p>
         </div>
         <div className="cal-nav">
-          <button type="button" className="icon-btn" onClick={onPrev} aria-label="Previous month">
+          <button type="button" className="icon-btn" onClick={onPrev} aria-label={t('cal.prev')}>
             <Icon.ChevronLeft size={16} />
           </button>
           <button type="button" className="btn btn-mini" onClick={onToday}>
-            Today
+            {t('cal.today')}
           </button>
-          <button type="button" className="icon-btn" onClick={onNext} aria-label="Next month">
+          <button type="button" className="icon-btn" onClick={onNext} aria-label={t('cal.next')}>
             <Icon.ChevronRight size={16} />
           </button>
         </div>
       </header>
 
       <div className="cal-weekdays">
-        {WEEKDAYS_SHORT.map((label) => (
+        {weekdayLabels(lang).map((label) => (
           <span key={label}>{label}</span>
         ))}
       </div>
@@ -81,9 +74,14 @@ export default function Calendar({
           if (key === todayKey) classes.push('is-today');
           if (key === selectedKey) classes.push('is-selected');
 
-          const title = `${shortDate(key)} · ${total > 0 ? `${total.toFixed(1)} h` : 'no entry'}${
-            overtime ? ' · OT' : ''
-          }`;
+          const title =
+            total > 0
+              ? t('cal.cell', {
+                  date: shortDate(key),
+                  hours: total.toFixed(1),
+                  ot: overtime ? t('cal.cellOt') : '',
+                })
+              : t('cal.cellEmpty', { date: shortDate(key) });
 
           return (
             <button
@@ -104,39 +102,39 @@ export default function Calendar({
 
       <div className="cal-legend">
         <span className="legend-item">
-          <i className="swatch swatch-empty" /> Unfinished
+          <i className="swatch swatch-empty" /> {t('legend.unfinished')}
         </span>
         <span className="legend-item">
-          <i className="swatch swatch-partial" /> Partial
+          <i className="swatch swatch-partial" /> {t('legend.partial')}
         </span>
         <span className="legend-item">
-          <i className="swatch swatch-done" /> Completed
+          <i className="swatch swatch-done" /> {t('legend.completed')}
         </span>
         <span className="legend-item">
-          <i className="swatch swatch-ot" /> OT
+          <i className="swatch swatch-ot" /> {t('legend.ot')}
         </span>
         <span className="legend-item">
-          <i className="swatch swatch-today" /> Today
+          <i className="swatch swatch-today" /> {t('legend.today')}
         </span>
         <span className="legend-item">
-          <i className="swatch swatch-selected" /> Selected
+          <i className="swatch swatch-selected" /> {t('legend.selected')}
         </span>
       </div>
 
       <div className="cal-stats">
         <div className="cal-stat">
-          <span>Filled</span>
+          <span>{t('cal.filled')}</span>
           <strong>
             {stats.filledDays}
             <em>/{stats.workdays}</em>
           </strong>
         </div>
         <div className="cal-stat">
-          <span>Hours</span>
+          <span>{t('cal.hours')}</span>
           <strong>{stats.hours.toFixed(1)}</strong>
         </div>
         <div className="cal-stat">
-          <span>OT</span>
+          <span>{t('cal.ot')}</span>
           <strong className={stats.overtime > 0 ? 'is-ot' : undefined}>{stats.overtime.toFixed(1)}</strong>
         </div>
       </div>

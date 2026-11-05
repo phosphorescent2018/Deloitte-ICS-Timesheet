@@ -4,8 +4,9 @@ import DayEditor from './DayEditor';
 import MonthView from './MonthView';
 import WeekStrip from './WeekStrip';
 import ActivityMix from './ActivityMix';
+import { formatMonth, useI18n } from './i18n';
 import { findActivity } from './lib/catalog';
-import { addDays, fromKey, monthLabel, shortDate, toKey } from './lib/date';
+import { addDays, fromKey, shortDate, toKey } from './lib/date';
 import {
   blankDay,
   cloneDay,
@@ -19,6 +20,7 @@ import {
   type ActivityLine,
   type AppState,
   type DayRecord,
+  type ValidationIssue,
 } from './lib/model';
 import { exportState, loadState, persist, resetState } from './lib/storage';
 import { Icon, Modal, Toast, type ToastState, type ToastTone } from './ui';
@@ -38,12 +40,13 @@ function draftFor(state: AppState, key: string): DayRecord {
 }
 
 export default function TimesheetApp() {
+  const { t, lang, setLang } = useI18n();
   const [bootState] = useState(boot);
   const [state, setState] = useState<AppState>(bootState.state);
   const [selectedKey, setSelectedKey] = useState(bootState.key);
   const [draft, setDraft] = useState<DayRecord>(() => draftFor(bootState.state, bootState.key));
   const [dirty, setDirty] = useState(false);
-  const [issues, setIssues] = useState<string[]>([]);
+  const [issues, setIssues] = useState<ValidationIssue[]>([]);
   const [view, setView] = useState(() => {
     const today = new Date();
     return { y: today.getFullYear(), m: today.getMonth() };
@@ -106,7 +109,7 @@ export default function TimesheetApp() {
 
   const selectDate = (key: string, syncView = true) => {
     if (key === selectedKey) return;
-    guard(`switch to ${shortDate(key)}`, () => openDay(key, syncView));
+    guard(t('action.switch', { date: shortDate(key) }), () => openDay(key, syncView));
   };
 
   const changeMonth = (delta: number) => {
@@ -116,7 +119,7 @@ export default function TimesheetApp() {
       new Date(next.getFullYear(), next.getMonth() + 1, 0).getDate(),
     );
     const key = toKey(new Date(next.getFullYear(), next.getMonth(), day));
-    guard('change month', () => {
+    guard(t('action.month'), () => {
       setView({ y: next.getFullYear(), m: next.getMonth() });
       openDay(key, false);
     });
@@ -124,7 +127,7 @@ export default function TimesheetApp() {
 
   const goToday = () => {
     const today = new Date();
-    guard('jump to today', () => {
+    guard(t('action.today'), () => {
       setView({ y: today.getFullYear(), m: today.getMonth() });
       setMode('day');
       openDay(toKey(today), false);
@@ -165,7 +168,7 @@ export default function TimesheetApp() {
     const found = validateDay(draft);
     setIssues(found);
     if (found.length > 0) {
-      pushToast('Please fix the issues below before saving.', 'error');
+      pushToast(t('toast.fixIssues'), 'error');
       return;
     }
     const record: DayRecord = { ...draft, savedAt: new Date().toISOString() };
@@ -178,7 +181,7 @@ export default function TimesheetApp() {
     persist(nextState);
     setDraft(record);
     setDirty(false);
-    pushToast(`${shortDate(record.date)} saved · ${dayTotal(record).toFixed(1)} h`, 'ok');
+    pushToast(t('toast.saved', { date: shortDate(record.date), hours: dayTotal(record).toFixed(1) }), 'ok');
   };
 
   const prefillWeek = () => {
@@ -200,7 +203,7 @@ export default function TimesheetApp() {
     }
 
     if (sourceLines.length === 0) {
-      pushToast('Select an activity code before prefilling the week.', 'error');
+      pushToast(t('toast.noCode'), 'error');
       return;
     }
 
@@ -256,7 +259,7 @@ export default function TimesheetApp() {
     });
 
     if (filled.length === 0) {
-      pushToast('This week is already filled — nothing to prefill.', 'warn');
+      pushToast(t('toast.weekFull'), 'warn');
       return;
     }
 
@@ -271,9 +274,11 @@ export default function TimesheetApp() {
     }
 
     pushToast(
-      `Prefilled ${filled.length} weekday${filled.length > 1 ? 's' : ''} (${filled.join(', ')})${
-        skipped.length > 0 ? ` · skipped ${skipped.length} existing` : ''
-      }`,
+      t('toast.prefillDone', {
+        count: filled.length,
+        dates: filled.join('、'),
+        skipped: skipped.length > 0 ? t('toast.prefillSkipped', { count: skipped.length }) : '',
+      }),
       'ok',
     );
   };
@@ -287,18 +292,21 @@ export default function TimesheetApp() {
         setDraft({ ...cloneDay(record), date: selectedKey, savedAt: null });
         setDirty(true);
         setIssues([]);
-        pushToast(`Copied ${shortDate(key)} · ${dayTotal(record).toFixed(1)} h — review and save.`, 'ok');
+        pushToast(
+          t('toast.copied', { date: shortDate(key), hours: dayTotal(record).toFixed(1) }),
+          'ok',
+        );
         return;
       }
     }
-    pushToast('No earlier entry found in the previous 90 days.', 'warn');
+    pushToast(t('toast.noPrevious'), 'warn');
   };
 
   const clearDay = () => {
     setDraft(blankDay(selectedKey, draft.location, draft.target > 0 ? draft.target : state.defaultTarget));
     setDirty(true);
     setIssues([]);
-    pushToast('Entry cleared — save to apply.', 'warn');
+    pushToast(t('toast.cleared'), 'warn');
   };
 
   const restoreDemo = () => {
@@ -312,7 +320,7 @@ export default function TimesheetApp() {
     setDirty(false);
     setIssues([]);
     setResetOpen(false);
-    pushToast('Demo data restored.', 'ok');
+    pushToast(t('toast.reset'), 'ok');
   };
 
   useEffect(() => {
@@ -351,13 +359,13 @@ export default function TimesheetApp() {
             ICS
           </div>
           <div className="brand-text">
-            <h1>Internal Client Service Timesheet</h1>
-            <p>Deloitte Global Delivery Center · Chongqing</p>
+            <h1>{t('app.title')}</h1>
+            <p>{t('app.subtitle')}</p>
           </div>
         </div>
 
         <div className="topbar-right">
-          <div className="seg" role="tablist" aria-label="View mode">
+          <div className="seg" role="tablist" aria-label={t('app.day')}>
             <button
               type="button"
               role="tab"
@@ -366,7 +374,7 @@ export default function TimesheetApp() {
               onClick={() => setMode('day')}
             >
               <Icon.List size={14} />
-              Day
+              {t('app.day')}
             </button>
             <button
               type="button"
@@ -376,7 +384,24 @@ export default function TimesheetApp() {
               onClick={() => setMode('month')}
             >
               <Icon.Grid size={14} />
-              Month
+              {t('app.month')}
+            </button>
+          </div>
+
+          <div className="seg seg-lang" role="group" aria-label={t('app.lang')}>
+            <button
+              type="button"
+              className={lang === 'zh' ? 'is-active' : undefined}
+              onClick={() => setLang('zh')}
+            >
+              中文
+            </button>
+            <button
+              type="button"
+              className={lang === 'en' ? 'is-active' : undefined}
+              onClick={() => setLang('en')}
+            >
+              EN
             </button>
           </div>
 
@@ -384,7 +409,7 @@ export default function TimesheetApp() {
             <button
               type="button"
               className="icon-btn menu-btn"
-              aria-label="More actions"
+              aria-label={t('menu.about')}
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen((open) => !open)}
             >
@@ -398,11 +423,11 @@ export default function TimesheetApp() {
                   onClick={() => {
                     exportState(state);
                     setMenuOpen(false);
-                    pushToast('Timesheet JSON exported.', 'ok');
+                    pushToast(t('toast.exported'), 'ok');
                   }}
                 >
                   <Icon.Download size={15} />
-                  Export JSON
+                  {t('menu.export')}
                 </button>
                 <button
                   type="button"
@@ -413,7 +438,7 @@ export default function TimesheetApp() {
                   }}
                 >
                   <Icon.FileText size={15} />
-                  About this prototype
+                  {t('menu.about')}
                 </button>
                 <div className="menu-sep" />
                 <button
@@ -425,7 +450,7 @@ export default function TimesheetApp() {
                   }}
                 >
                   <Icon.Rotate size={15} />
-                  Reset demo data
+                  {t('menu.reset')}
                 </button>
               </div>
             ) : null}
@@ -435,7 +460,7 @@ export default function TimesheetApp() {
             <span className="avatar">G</span>
             <div>
               <strong>GDC-ESH</strong>
-              <span>Timesheet user</span>
+              <span>{t('app.role')}</span>
             </div>
           </div>
         </div>
@@ -444,11 +469,11 @@ export default function TimesheetApp() {
       <div className="banner">
         <div className="banner-left">
           <span className="banner-dot" aria-hidden="true" />
-          <strong>Reminder</strong>
-          <span>– this is Internal Client Service Timesheet.</span>
+          <strong>{t('banner.reminder')}</strong>
+          <span>{t('banner.text')}</span>
         </div>
         <div className="banner-right">
-          {monthLabel(view.y, view.m)} · Target 8.0 h / day
+          {t('banner.period', { month: formatMonth(view.y, view.m, lang), hours: '8.0' })}
         </div>
       </div>
 
@@ -472,7 +497,7 @@ export default function TimesheetApp() {
               draft={draft}
               status={statusOf(draft)}
               dirty={dirty}
-              issues={issues}
+              issues={issues.map((issue) => t(issue.key, issue.vars))}
               onChange={patchDraft}
               onLineChange={patchLine}
               onAddLine={addLine}
@@ -509,13 +534,13 @@ export default function TimesheetApp() {
       </main>
 
       <footer className="page-foot">
-        <span>Prototype · All entries are stored locally in this browser.</span>
+        <span>{t('foot.note')}</span>
         <span className="kbd-hints">
           <kbd>←</kbd>
-          <kbd>→</kbd> change day
+          <kbd>→</kbd> {t('foot.changeDay')}
           <span className="dot">·</span>
           <kbd>⌘</kbd>
-          <kbd>S</kbd> save
+          <kbd>S</kbd> {t('foot.save')}
         </span>
       </footer>
 
@@ -523,14 +548,14 @@ export default function TimesheetApp() {
 
       {pending ? (
         <Modal
-          title="Discard unsaved changes?"
-          subtitle={`Your edits to ${shortDate(selectedKey)} have not been saved.`}
+          title={t('discard.title')}
+          subtitle={t('discard.subtitle', { date: shortDate(selectedKey) })}
           width={460}
           onClose={() => setPending(null)}
           footer={
             <>
               <button type="button" className="btn btn-ghost" onClick={() => setPending(null)}>
-                Keep editing
+                {t('btn.keepEditing')}
               </button>
               <button
                 type="button"
@@ -541,98 +566,95 @@ export default function TimesheetApp() {
                   action();
                 }}
               >
-                Discard changes
+                {t('btn.discard')}
               </button>
             </>
           }
         >
-          <p className="modal-copy">
-            You are about to {pending.label}. Unsaved time will be lost — save first if you want to keep it.
-          </p>
+          <p className="modal-copy">{t('discard.body', { action: pending.label })}</p>
         </Modal>
       ) : null}
 
       {resetOpen ? (
         <Modal
-          title="Reset demo data?"
-          subtitle="This clears every entry in this browser and restores the seeded week."
+          title={t('reset.title')}
+          subtitle={t('reset.subtitle')}
           width={460}
           onClose={() => setResetOpen(false)}
           footer={
             <>
               <button type="button" className="btn btn-ghost" onClick={() => setResetOpen(false)}>
-                Cancel
+                {t('btn.cancel')}
               </button>
               <button type="button" className="btn btn-danger" onClick={restoreDemo}>
-                Reset data
+                {t('btn.reset')}
               </button>
             </>
           }
         >
-          <p className="modal-copy">
-            The seeded week contains Monday to Friday entries with two activity lines and one overtime day,
-            so the calendar shows every state at a glance.
-          </p>
+          <p className="modal-copy">{t('reset.body')}</p>
         </Modal>
       ) : null}
 
       {aboutOpen ? (
         <Modal
-          title="Internal Client Service Timesheet"
-          subtitle="High-fidelity prototype · React + Vite · GitHub Pages"
+          title={t('about.title')}
+          subtitle={t('about.subtitle')}
           width={520}
           onClose={() => setAboutOpen(false)}
           footer={
             <button type="button" className="btn btn-blue" onClick={() => setAboutOpen(false)}>
-              Close
+              {t('btn.close')}
             </button>
           }
         >
-          <p className="modal-copy">
-            A working reproduction of the Deloitte GDC internal timesheet: month calendar with status
-            colours, daily entry sheet with activity codes, work location and target hours, plus prefill and
-            copy actions. Data is persisted in <code>localStorage</code>, so a reload keeps your entries.
-          </p>
+          <p className="modal-copy">{t('about.body')}</p>
         </Modal>
       ) : null}
 
       {detailLine ? (
         <Modal
-          title="Activity detail"
-          subtitle={`${shortDate(draft.date)} · ${detailLine.hours.toFixed(1)} h`}
+          title={t('detail.title')}
+          subtitle={t('detail.subtitle', { date: shortDate(draft.date), hours: detailLine.hours.toFixed(1) })}
           width={620}
           onClose={() => setDetailId(null)}
           footer={
             <button type="button" className="btn btn-blue" onClick={() => setDetailId(null)}>
-              Done
+              {t('btn.done')}
             </button>
           }
         >
           <dl className="detail-list">
             <div>
-              <dt>Activity code</dt>
+              <dt>{t('detail.code')}</dt>
               <dd className="mono">{detailLine.code || '—'}</dd>
             </div>
             <div>
-              <dt>Activity name</dt>
-              <dd>{detailActivity?.name ?? '—'}</dd>
+              <dt>{t('detail.name')}</dt>
+              <dd>{detailActivity ? (lang === 'zh' ? detailActivity.nameZh : detailActivity.name) : '—'}</dd>
             </div>
             <div>
-              <dt>Client</dt>
-              <dd>{detailActivity?.client ?? '—'}</dd>
+              <dt>{t('detail.client')}</dt>
+              <dd>{detailActivity ? (lang === 'zh' ? detailActivity.clientZh : detailActivity.client) : '—'}</dd>
             </div>
             <div>
-              <dt>Category</dt>
-              <dd>{detailActivity?.category ?? '—'}</dd>
+              <dt>{t('detail.category')}</dt>
+              <dd>{detailActivity ? t(`cat.${detailActivity.category}`) : '—'}</dd>
             </div>
           </dl>
-          <p className="detail-desc">{detailActivity?.description ?? 'No description available.'}</p>
+          <p className="detail-desc">
+            {detailActivity
+              ? lang === 'zh'
+                ? detailActivity.descriptionZh
+                : detailActivity.description
+              : t('detail.noDescription')}
+          </p>
           <label className="field">
-            <span>Note (saved with this line)</span>
+            <span>{t('detail.note')}</span>
             <textarea
               rows={3}
               value={detailLine.note}
-              placeholder="Add context for reviewers, e.g. billing batch number or evidence reference…"
+              placeholder={t('detail.notePlaceholder')}
               onChange={(event) => patchLine(detailLine.id, { note: event.target.value })}
             />
           </label>
