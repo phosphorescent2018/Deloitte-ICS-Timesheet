@@ -9,7 +9,7 @@ export interface AppUser {
   active: boolean;
 }
 
-const USERS_KEY = 'deloitte-ics-users.v1';
+const USERS_KEY = 'deloitte-ics-users.v2';
 
 export const DEFAULT_USERS: AppUser[] = [
   {
@@ -22,7 +22,7 @@ export const DEFAULT_USERS: AppUser[] = [
   },
   {
     id: 'user-2',
-    name: '周敏',
+    name: '胡雅洁',
     employeeId: 'MG-0002',
     department: 'Mindigital 全球交付中心',
     role: 'manager',
@@ -30,8 +30,16 @@ export const DEFAULT_USERS: AppUser[] = [
   },
   {
     id: 'user-3',
-    name: '陈立',
+    name: '曾悦婷',
     employeeId: 'MG-0003',
+    department: 'Mindigital 全球交付中心',
+    role: 'employee',
+    active: true,
+  },
+  {
+    id: 'user-4',
+    name: '王红玮',
+    employeeId: 'MG-0004',
     department: 'Mindigital 全球交付中心',
     role: 'employee',
     active: true,
