@@ -194,8 +194,8 @@ const DICT: Record<string, Entry> = {
   'err.lineCode': { zh: '第 {{n}} 行：请选择活动代码。', en: 'Line {{n}}: select an activity code.' },
   'err.lineHours': { zh: '第 {{n}} 行：已选活动需填写工时。', en: 'Line {{n}}: enter hours for the selected activity.' },
   'err.totalOver': {
-    zh: '当天工时合计 {{total}} 小时，不能超过 {{target}} 小时。',
-    en: 'Total hours ({{total}}) cannot exceed {{target}} hours per day.',
+    zh: '当天实际工时合计不能超过 8 小时。',
+    en: 'Total actual hours cannot exceed 8 hours per day.',
   },
   'err.totalMin': { zh: '至少填写 0.5 小时后再保存。', en: 'Enter at least 0.5 hour before saving.' },
 };
