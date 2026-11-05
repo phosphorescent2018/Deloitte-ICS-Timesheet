@@ -8,7 +8,7 @@ type Entry = { zh: string; en: string };
 
 const DICT: Record<string, Entry> = {
   'app.title': { zh: '内部客户服务工时表', en: 'Internal Client Service Timesheet' },
-  'app.subtitle': { zh: '德勤全球交付中心 · 重庆', en: 'Deloitte Global Delivery Center · Chongqing' },
+  'app.subtitle': { zh: 'Mindigital 全球交付中心 · 重庆', en: 'Mindigital Global Delivery Center · Chongqing' },
   'app.day': { zh: '按天', en: 'Day' },
   'app.month': { zh: '按月', en: 'Month' },
   'app.role': { zh: '工时填报用户', en: 'Timesheet user' },
@@ -148,8 +148,8 @@ const DICT: Record<string, Entry> = {
   'about.title': { zh: '内部客户服务工时表', en: 'Internal Client Service Timesheet' },
   'about.subtitle': { zh: '高保真原型 · React + Vite · GitHub Pages', en: 'High-fidelity prototype · React + Vite · GitHub Pages' },
   'about.body': {
-    zh: '德勤 GDC 内部工时填报的可交互复刻：月历状态、每日工时明细、活动代码、工作地点与目标工时，以及预填一周、复制上一天、保存等操作。数据保存在浏览器 localStorage，刷新不丢。',
-    en: 'A working reproduction of the Deloitte GDC internal timesheet: month calendar with status colours, daily entry sheet with activity codes, work location and target hours, plus prefill and copy actions. Data is persisted in localStorage, so a reload keeps your entries.',
+    zh: 'Mindigital GDC 内部工时填报的可交互复刻：月历状态、每日工时明细、活动代码、工作地点与目标工时，以及预填一周、复制上一天、保存等操作。数据保存在浏览器 localStorage，刷新不丢。',
+    en: 'A working reproduction of the Mindigital GDC internal timesheet: month calendar with status colours, daily entry sheet with activity codes, work location and target hours, plus prefill and copy actions. Data is persisted in localStorage, so a reload keeps your entries.',
   },
   'btn.close': { zh: '关闭', en: 'Close' },
 
