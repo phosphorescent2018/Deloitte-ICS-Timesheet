@@ -385,14 +385,6 @@ export default function TimesheetApp() {
         </div>
 
         <div className="topbar-right">
-          <button
-            type="button"
-            className="btn btn-ghost nav-btn"
-            onClick={() => setPage(page === 'admin' ? 'timesheet' : 'admin')}
-          >
-            {page === 'admin' ? t('nav.timesheet') : t('nav.admin')}
-          </button>
-
           {page === 'timesheet' ? (
             <div className="seg" role="tablist" aria-label={t('app.day')}>
               <button
@@ -434,6 +426,16 @@ export default function TimesheetApp() {
               EN
             </button>
           </div>
+
+          <button
+            type="button"
+            className="icon-btn nav-btn"
+            aria-label={page === 'admin' ? t('nav.timesheet') : t('nav.admin')}
+            title={page === 'admin' ? t('nav.timesheet') : t('nav.admin')}
+            onClick={() => setPage(page === 'admin' ? 'timesheet' : 'admin')}
+          >
+            {page === 'admin' ? <Icon.ChevronLeft size={16} /> : <Icon.Settings size={16} />}
+          </button>
 
           <div className="menu-wrap" ref={menuRef}>
             <button
