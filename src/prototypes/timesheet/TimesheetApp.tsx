@@ -5,6 +5,7 @@ import MonthView from './MonthView';
 import WeekStrip from './WeekStrip';
 import ActivityMix from './ActivityMix';
 import { formatMonth, useI18n } from './i18n';
+import mindigitalMark from './assets/mindigital-mark.svg';
 import { findActivity } from './lib/catalog';
 import { addDays, editableFromKey, fromKey, isLockedKey, shortDate, toKey } from './lib/date';
 import {
@@ -366,7 +367,7 @@ export default function TimesheetApp() {
       <header className="topbar">
         <div className="brand">
           <div className="brand-mark" aria-hidden="true">
-            ICS
+            <img src={mindigitalMark} alt="" />
           </div>
           <div className="brand-text">
             <h1>{t('app.title')}</h1>
