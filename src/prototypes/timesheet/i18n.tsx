@@ -190,12 +190,13 @@ const DICT: Record<string, Entry> = {
   'cat.GH': { zh: 'GH 业务线', en: 'GH' },
 
   'err.targetMin': { zh: '目标工时必须大于 0。', en: 'Target hours must be greater than 0.' },
-  'err.targetMax': { zh: '目标工时不能超过 24 小时。', en: 'Target hours cannot exceed 24 hours per day.' },
   'err.lineNegative': { zh: '第 {{n}} 行：工时不能为负数。', en: 'Line {{n}}: hours cannot be negative.' },
-  'err.lineMax': { zh: '第 {{n}} 行：工时不能超过 24 小时。', en: 'Line {{n}}: hours cannot exceed 24.' },
   'err.lineCode': { zh: '第 {{n}} 行：请选择活动代码。', en: 'Line {{n}}: select an activity code.' },
   'err.lineHours': { zh: '第 {{n}} 行：已选活动需填写工时。', en: 'Line {{n}}: enter hours for the selected activity.' },
-  'err.totalMax': { zh: '当天实际工时合计不能超过 24 小时。', en: 'Total actual hours cannot exceed 24 hours per day.' },
+  'err.totalOver': {
+    zh: '当天工时合计 {{total}} 小时，不能超过 {{target}} 小时。',
+    en: 'Total hours ({{total}}) cannot exceed {{target}} hours per day.',
+  },
   'err.totalMin': { zh: '至少填写 0.5 小时后再保存。', en: 'Enter at least 0.5 hour before saving.' },
 };
 

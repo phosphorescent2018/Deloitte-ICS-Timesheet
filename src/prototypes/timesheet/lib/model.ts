@@ -83,23 +83,22 @@ export interface ValidationIssue {
 export function validateDay(day: DayRecord): ValidationIssue[] {
   const issues: ValidationIssue[] = [];
   const total = dayTotal(day);
+  const target = day.target > 0 ? day.target : 8;
 
   if (!Number.isFinite(day.target) || day.target <= 0) {
     issues.push({ key: 'err.targetMin' });
-  }
-  if (day.target > 24) {
-    issues.push({ key: 'err.targetMax' });
   }
 
   day.lines.forEach((line, index) => {
     const vars = { n: index + 1 };
     if (line.hours < 0) issues.push({ key: 'err.lineNegative', vars });
-    if (line.hours > 24) issues.push({ key: 'err.lineMax', vars });
-    if (line.hours > 0 && !line.code) issues.push({ key: 'err.lineCode', vars });
     if (line.code && line.hours <= 0) issues.push({ key: 'err.lineHours', vars });
+    if (line.hours > 0 && !line.code) issues.push({ key: 'err.lineCode', vars });
   });
 
-  if (total > 24) issues.push({ key: 'err.totalMax' });
+  if (total > target + 1e-9) {
+    issues.push({ key: 'err.totalOver', vars: { target: target.toFixed(1), total: total.toFixed(1) } });
+  }
   if (total <= 0) issues.push({ key: 'err.totalMin' });
 
   const seen = new Set<string>();

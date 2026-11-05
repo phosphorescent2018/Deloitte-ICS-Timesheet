@@ -22,7 +22,7 @@
 - `Target Hours` 固定为 8.0（与 `Total Actual Hours` 同样式展示，不可编辑）。
 - `Activity` 可搜索选择器：选项为「业务线-产品-业务阶段」组合，业务线 UG / CDI / GH，产品 OD / AirtimeLending / BL，阶段 运营 / 交付，共 18 个组合（如 `UG-OD-运营`、`CDI-AirtimeLending-交付`），按业务线分组、支持搜索；选中后 `Client Name` 自动带出业务线。
 - 多行 Activity：工时、Remark、单据详情弹窗（可写备注）、添加 / 删除行。
-- 校验：单行与合计 0–24h、填了工时必须选代码、Target 必须大于 0；错误统一列在表单下方。
+- 校验：当天工时合计不得超过 8.0 小时、不允许负数；填了工时必须选活动代码，选了代码必须填工时。
 - `Save` 写入 `localStorage`，刷新不丢；保存后日历与周/月统计立即更新。
 
 ### 三个核心动作

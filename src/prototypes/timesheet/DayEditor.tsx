@@ -24,7 +24,8 @@ interface Props {
 function toHours(value: string): number {
   const parsed = Number.parseFloat(value);
   if (!Number.isFinite(parsed)) return 0;
-  return Math.min(24, Math.max(0, Math.round(parsed * 100) / 100));
+  // 允许输入负数进入校验（保存时提示「不能为负数」），上限仍限制在 24 以内便于修正。
+  return Math.min(24, Math.max(-24, Math.round(parsed * 100) / 100));
 }
 
 export default function DayEditor({
