@@ -1,6 +1,6 @@
 import { formatWeekRange, useI18n, weekdayLabels } from './i18n';
 import { addDays, fromKey, isoWeek, shortDate, startOfWeekMonday, toKey } from './lib/date';
-import { dayTotal, isOtDay, overtimeHours, statusOf, type DayRecord } from './lib/model';
+import { dayTotal, statusOf, type DayRecord } from './lib/model';
 import { Icon } from './ui';
 
 interface Props {
@@ -16,10 +16,6 @@ export default function WeekStrip({ selectedKey, editableFrom, days, onSelect }:
   const week = Array.from({ length: 7 }, (_, index) => addDays(monday, index));
   const total = week.reduce((sum, date) => sum + dayTotal(days[toKey(date)]), 0);
   const filled = week.slice(0, 5).filter((date) => dayTotal(days[toKey(date)]) > 0).length;
-  const overtime = week.reduce((sum, date) => {
-    const record = days[toKey(date)];
-    return sum + (record ? overtimeHours(record) : 0);
-  }, 0);
 
   return (
     <section className="card week-strip">
@@ -63,8 +59,6 @@ export default function WeekStrip({ selectedKey, editableFrom, days, onSelect }:
                 <span className="ws-lock" aria-hidden="true">
                   <Icon.Lock size={10} />
                 </span>
-              ) : isOtDay(record) ? (
-                <span className="ws-ot">{t('legend.ot')}</span>
               ) : null}
             </button>
           );
@@ -73,7 +67,6 @@ export default function WeekStrip({ selectedKey, editableFrom, days, onSelect }:
 
       <div className="ws-foot">
         <span>{t('ws.filled', { filled })}</span>
-        <span>{t('ws.ot', { hours: overtime.toFixed(1) })}</span>
         <span>{t('ws.remaining', { hours: Math.max(0, 40 - total).toFixed(1) })}</span>
       </div>
     </section>

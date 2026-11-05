@@ -3,8 +3,6 @@ import { locationLabel } from './lib/catalog';
 import { daysInMonth, isWeekend, fromKey, shortDate, toKey } from './lib/date';
 import {
   dayTotal,
-  isOtDay,
-  overtimeHours,
   statusOf,
   type DayRecord,
   type MonthStats,
@@ -52,10 +50,6 @@ export default function MonthView({ year, month, editableFrom, days, stats, onSe
             <strong>{stats.hours.toFixed(1)}</strong>
           </div>
           <div className="mv-stat">
-            <span>{t('mv.ot')}</span>
-            <strong className={stats.overtime > 0 ? 'is-ot' : undefined}>{stats.overtime.toFixed(1)}</strong>
-          </div>
-          <div className="mv-stat">
             <span>{t('mv.completion')}</span>
             <strong>{completion}%</strong>
           </div>
@@ -74,7 +68,6 @@ export default function MonthView({ year, month, editableFrom, days, stats, onSe
               <th>{t('th.location')}</th>
               <th>{t('th.activity')}</th>
               <th className="num">{t('mv.hours')}</th>
-              <th className="num">{t('mv.ot')}</th>
               <th>{t('th.status')}</th>
               <th />
             </tr>
@@ -83,7 +76,6 @@ export default function MonthView({ year, month, editableFrom, days, stats, onSe
             {rows.map(({ key, weekday, weekend, locked, record }) => {
               const status = statusOf(record);
               const totalHours = dayTotal(record);
-              const overtime = record ? overtimeHours(record) : 0;
               return (
                 <tr
                   key={key}
@@ -124,9 +116,6 @@ export default function MonthView({ year, month, editableFrom, days, stats, onSe
                     )}
                   </td>
                   <td className="num">{totalHours > 0 ? totalHours.toFixed(1) : '—'}</td>
-                  <td className="num">
-                    {isOtDay(record) ? <span className="ot-chip">{overtime.toFixed(1)}</span> : '—'}
-                  </td>
                   <td>
                     {locked ? (
                       <span className="mini-status is-locked">{t('status.locked')}</span>

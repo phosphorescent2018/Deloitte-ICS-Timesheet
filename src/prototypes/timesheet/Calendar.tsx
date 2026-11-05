@@ -1,5 +1,5 @@
 import { formatMonth, useI18n, weekdayLabels } from './i18n';
-import { dayTotal, isOtDay, statusOf, type DayRecord, type MonthStats } from './lib/model';
+import { dayTotal, statusOf, type DayRecord, type MonthStats } from './lib/model';
 import { fromKey, isWeekend, isoWeek, monthGrid, shortDate, toKey } from './lib/date';
 import { Icon } from './ui';
 
@@ -65,7 +65,6 @@ export default function Calendar({
           const record = days[key];
           const total = dayTotal(record);
           const status = statusOf(record);
-          const overtime = isOtDay(record);
           const locked = key < editableFrom;
           const classes = ['cal-day'];
 
@@ -84,7 +83,6 @@ export default function Calendar({
               ? t('cal.cell', {
                   date: shortDate(key),
                   hours: total.toFixed(1),
-                  ot: overtime ? t('cal.cellOt') : '',
                 })
               : t('cal.cellEmpty', { date: shortDate(key) });
 
@@ -103,8 +101,6 @@ export default function Calendar({
                 <span className="cal-lock" aria-hidden="true">
                   <Icon.Lock size={9} />
                 </span>
-              ) : overtime ? (
-                <span className="cal-ot-dot" aria-hidden="true" />
               ) : null}
             </button>
           );
@@ -120,9 +116,6 @@ export default function Calendar({
         </span>
         <span className="legend-item">
           <i className="swatch swatch-done" /> {t('legend.completed')}
-        </span>
-        <span className="legend-item">
-          <i className="swatch swatch-ot" /> {t('legend.ot')}
         </span>
         <span className="legend-item">
           <i className="swatch swatch-today" /> {t('legend.today')}
@@ -146,10 +139,6 @@ export default function Calendar({
         <div className="cal-stat">
           <span>{t('cal.hours')}</span>
           <strong>{stats.hours.toFixed(1)}</strong>
-        </div>
-        <div className="cal-stat">
-          <span>{t('cal.ot')}</span>
-          <strong className={stats.overtime > 0 ? 'is-ot' : undefined}>{stats.overtime.toFixed(1)}</strong>
         </div>
       </div>
     </section>

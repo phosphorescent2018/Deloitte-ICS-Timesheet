@@ -593,7 +593,7 @@ input[type='number'] {
 
 .cal-stats {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 8px;
   margin-top: 12px;
 }
@@ -1266,7 +1266,7 @@ input[type='number'] {
 
 .mv-stats {
   display: grid;
-  grid-template-columns: repeat(3, auto);
+  grid-template-columns: repeat(2, auto);
   gap: 4px 22px;
   align-items: end;
   min-width: 260px;

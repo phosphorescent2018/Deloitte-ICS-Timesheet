@@ -17,10 +17,7 @@ export function seedState(): AppState {
   const plan: SeedLine[][] = [
     [{ code: 'UG-OD-运营', hours: 4 }, { code: 'UG-OD-交付', hours: 4 }],
     [{ code: 'CDI-OD-运营', hours: 8, remark: 'Billing batch #2410-03' }],
-    [
-      { code: 'GH-OD-运营', hours: 8 },
-      { code: 'GH-OD-交付', hours: 1.5, remark: 'Month-end closing support' },
-    ],
+    [{ code: 'GH-OD-运营', hours: 8 }],
     [{ code: 'UG-AirtimeLending-运营', hours: 8 }],
     [{ code: 'CDI-BL-交付', hours: 8, remark: 'Evidence index hand-off' }],
   ];
