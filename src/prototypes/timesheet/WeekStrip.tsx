@@ -1,14 +1,16 @@
 import { formatWeekRange, useI18n, weekdayLabels } from './i18n';
 import { addDays, fromKey, isoWeek, shortDate, startOfWeekMonday, toKey } from './lib/date';
 import { dayTotal, isOtDay, overtimeHours, statusOf, type DayRecord } from './lib/model';
+import { Icon } from './ui';
 
 interface Props {
   selectedKey: string;
+  editableFrom: string;
   days: Record<string, DayRecord>;
   onSelect: (key: string) => void;
 }
 
-export default function WeekStrip({ selectedKey, days, onSelect }: Props) {
+export default function WeekStrip({ selectedKey, editableFrom, days, onSelect }: Props) {
   const { t, lang } = useI18n();
   const monday = startOfWeekMonday(fromKey(selectedKey));
   const week = Array.from({ length: 7 }, (_, index) => addDays(monday, index));
@@ -43,11 +45,12 @@ export default function WeekStrip({ selectedKey, days, onSelect }: Props) {
           const record = days[key];
           const hours = dayTotal(record);
           const status = statusOf(record);
+          const locked = key < editableFrom;
           return (
             <button
               key={key}
               type="button"
-              className={`ws-day is-${status}${key === selectedKey ? ' is-selected' : ''}`}
+              className={`ws-day is-${status}${locked ? ' is-locked' : ''}${key === selectedKey ? ' is-selected' : ''}`}
               onClick={() => onSelect(key)}
             >
               <span className="ws-label">{weekdayLabels(lang)[date.getDay()]}</span>
@@ -56,7 +59,13 @@ export default function WeekStrip({ selectedKey, days, onSelect }: Props) {
               <span className="ws-bar" aria-hidden="true">
                 <i style={{ width: `${Math.min(100, (hours / 10) * 100)}%` }} />
               </span>
-              {isOtDay(record) ? <span className="ws-ot">{t('legend.ot')}</span> : null}
+              {locked ? (
+                <span className="ws-lock" aria-hidden="true">
+                  <Icon.Lock size={10} />
+                </span>
+              ) : isOtDay(record) ? (
+                <span className="ws-ot">{t('legend.ot')}</span>
+              ) : null}
             </button>
           );
         })}

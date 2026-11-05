@@ -131,6 +131,12 @@ export const Icon = {
       <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
     </Svg>
   ),
+  Lock: (props: IconProps) => (
+    <Svg {...props}>
+      <rect x="4" y="10" width="16" height="10" rx="2" />
+      <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+    </Svg>
+  ),
 };
 
 export type ToastTone = 'ok' | 'warn' | 'error';

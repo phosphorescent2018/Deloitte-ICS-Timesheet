@@ -455,6 +455,34 @@ input[type='number'] {
   background: #fffdfd;
 }
 
+.cal-day.is-locked,
+.cal-day.is-locked.is-done,
+.cal-day.is-locked.is-partial,
+.cal-day.is-locked.is-past-empty {
+  background: #eef1f4;
+  border-color: #dde2e7;
+  color: #a2acb5;
+  cursor: pointer;
+}
+
+.cal-day.is-locked:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.cal-day.is-locked .cal-num {
+  font-weight: 600;
+}
+
+.cal-lock {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  display: grid;
+  place-items: center;
+  color: #a2acb5;
+}
+
 .cal-day.is-done {
   background: var(--done);
   border-color: #3d9442;
@@ -556,6 +584,11 @@ input[type='number'] {
 .swatch-selected {
   background: #fff;
   border: 2px solid #1565c0;
+}
+
+.swatch-locked {
+  background: #eef1f4;
+  border-color: #dde2e7;
 }
 
 .cal-stats {
@@ -1329,6 +1362,15 @@ input[type='number'] {
   background: #fbfcfd;
 }
 
+.mv-table tr.is-locked td {
+  background: #f2f4f6;
+  color: #a2acb5;
+}
+
+.mv-table tr.is-locked:hover td {
+  background: #eef1f4;
+}
+
 .mv-table tr:focus-visible {
   outline: 2px solid var(--blue);
   outline-offset: -2px;
@@ -1394,6 +1436,10 @@ input[type='number'] {
 }
 
 .mini-status.is-empty {
+  color: #98a2ab;
+}
+
+.mini-status.is-locked {
   color: #98a2ab;
 }
 
@@ -1476,6 +1522,31 @@ input[type='number'] {
 .ws-day.is-selected {
   border-color: #1565c0;
   box-shadow: 0 0 0 2px #1565c0;
+}
+
+.ws-day.is-locked {
+  background: #eef1f4;
+  border-color: #dde2e7;
+  color: #a2acb5;
+}
+
+.ws-day.is-locked .ws-date,
+.ws-day.is-locked .ws-hours {
+  color: #a2acb5;
+}
+
+.ws-day.is-locked:hover {
+  border-color: #dde2e7;
+  box-shadow: none;
+}
+
+.ws-lock {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: grid;
+  place-items: center;
+  color: #a2acb5;
 }
 
 .ws-label {

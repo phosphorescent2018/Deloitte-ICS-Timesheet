@@ -105,3 +105,13 @@ export function timeLabel(iso: string | null): string {
 export function round1(value: number): number {
   return Math.round(value * 10) / 10;
 }
+
+/** 可编辑窗口起始日：默认 3 天（含当天）→ 今天、昨天、前天。 */
+export function editableFromKey(todayKey: string, windowDays = 3): string {
+  return toKey(addDays(fromKey(todayKey), -(windowDays - 1)));
+}
+
+/** 早于可编辑窗口的日期视为历史锁定，需走 OA 审批。 */
+export function isLockedKey(key: string, todayKey: string, windowDays = 3): boolean {
+  return key < editableFromKey(todayKey, windowDays);
+}

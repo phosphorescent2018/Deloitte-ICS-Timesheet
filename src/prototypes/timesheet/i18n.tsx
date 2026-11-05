@@ -18,8 +18,11 @@ const DICT: Record<string, Entry> = {
   'menu.about': { zh: '关于此原型', en: 'About this prototype' },
   'menu.reset': { zh: '重置演示数据', en: 'Reset demo data' },
 
-  'banner.reminder': { zh: '提醒', en: 'Reminder' },
-  'banner.text': { zh: '– 这是内部客户服务工时表。', en: '– this is Internal Client Service Timesheet.' },
+  'banner.reminder': { zh: '提醒：', en: 'Reminder:' },
+  'banner.text': {
+    zh: '历史工时仅允许填写和修改最近 3 天（含当天）的数据，更早日期需发起企业微信 OA 审批流。',
+    en: 'timesheets can only be created or edited within the last 3 days (including today); earlier dates require a WeCom OA approval.',
+  },
   'banner.period': { zh: '{{month}} · 目标 {{hours}} 小时/天', en: '{{month}} · Target {{hours}} h / day' },
 
   'cal.week': { zh: '第 {{week}} 周 · 5 个工作日', en: 'Week {{week}} · 5 working days' },
@@ -32,6 +35,7 @@ const DICT: Record<string, Entry> = {
   'cal.cell': { zh: '{{date}} · {{hours}} 小时{{ot}}', en: '{{date}} · {{hours}} h{{ot}}' },
   'cal.cellEmpty': { zh: '{{date}} · 无记录', en: '{{date}} · no entry' },
   'cal.cellOt': { zh: ' · 加班', en: ' · OT' },
+  'cal.cellLocked': { zh: '{{date}} · 已锁定，需 OA 审批', en: '{{date}} · locked, OA approval required' },
 
   'legend.unfinished': { zh: '未完成', en: 'Unfinished' },
   'legend.partial': { zh: '部分', en: 'Partial' },
@@ -39,10 +43,12 @@ const DICT: Record<string, Entry> = {
   'legend.ot': { zh: '加班', en: 'OT' },
   'legend.today': { zh: '今天', en: 'Today' },
   'legend.selected': { zh: '选中', en: 'Selected' },
+  'legend.locked': { zh: '已锁定', en: 'Locked' },
 
   'status.empty': { zh: '未完成', en: 'Unfinished' },
   'status.partial': { zh: '部分填写', en: 'Partial' },
   'status.complete': { zh: '已完成', en: 'Completed' },
+  'status.locked': { zh: '已锁定', en: 'Locked' },
 
   'editor.kicker': { zh: '每日填报', en: 'Daily entry' },
   'editor.clear': { zh: '清空当天', en: 'Clear day' },
@@ -122,6 +128,15 @@ const DICT: Record<string, Entry> = {
   'action.today': { zh: '回到今天', en: 'jump to today' },
   'btn.keepEditing': { zh: '继续编辑', en: 'Keep editing' },
   'btn.discard': { zh: '放弃修改', en: 'Discard changes' },
+
+  'approval.title': { zh: '企业微信 OA 审批流', en: 'WeCom OA approval' },
+  'approval.subtitle': { zh: '{{date}} 已超出可编辑范围', en: '{{date}} is outside the editable window' },
+  'approval.body': {
+    zh: '历史工时仅允许填写和修改最近 3 天（含当天）的数据。继续将发起企业微信 OA 审批流，审批通过后才能修改 {{date}} 的工时。',
+    en: 'Timesheets can only be created or edited within the last 3 days (including today). Continuing will start a WeCom OA approval; once approved you can edit the hours for {{date}}.',
+  },
+  'approval.confirm': { zh: '发起审批', en: 'Start approval' },
+  'toast.approval': { zh: '已发起企业微信 OA 审批流（演示）。', en: 'WeCom OA approval started (demo).' },
 
   'reset.title': { zh: '重置演示数据？', en: 'Reset demo data?' },
   'reset.subtitle': {

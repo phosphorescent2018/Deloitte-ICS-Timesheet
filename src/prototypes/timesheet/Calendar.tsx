@@ -8,6 +8,7 @@ interface Props {
   month: number;
   selectedKey: string;
   todayKey: string;
+  editableFrom: string;
   days: Record<string, DayRecord>;
   stats: MonthStats;
   onSelect: (key: string) => void;
@@ -21,6 +22,7 @@ export default function Calendar({
   month,
   selectedKey,
   todayKey,
+  editableFrom,
   days,
   stats,
   onSelect,
@@ -64,6 +66,7 @@ export default function Calendar({
           const total = dayTotal(record);
           const status = statusOf(record);
           const overtime = isOtDay(record);
+          const locked = key < editableFrom;
           const classes = ['cal-day'];
 
           if (date.getMonth() !== month) classes.push('is-out');
@@ -71,11 +74,13 @@ export default function Calendar({
           if (status === 'complete') classes.push('is-done');
           if (status === 'partial') classes.push('is-partial');
           if (status === 'empty' && key < todayKey && !isWeekend(date)) classes.push('is-past-empty');
+          if (locked) classes.push('is-locked');
           if (key === todayKey) classes.push('is-today');
           if (key === selectedKey) classes.push('is-selected');
 
-          const title =
-            total > 0
+          const title = locked
+            ? t('cal.cellLocked', { date: shortDate(key) })
+            : total > 0
               ? t('cal.cell', {
                   date: shortDate(key),
                   hours: total.toFixed(1),
@@ -94,7 +99,13 @@ export default function Calendar({
               aria-pressed={key === selectedKey}
             >
               <span className="cal-num">{date.getDate()}</span>
-              {overtime ? <span className="cal-ot-dot" aria-hidden="true" /> : null}
+              {locked ? (
+                <span className="cal-lock" aria-hidden="true">
+                  <Icon.Lock size={9} />
+                </span>
+              ) : overtime ? (
+                <span className="cal-ot-dot" aria-hidden="true" />
+              ) : null}
             </button>
           );
         })}
@@ -118,6 +129,9 @@ export default function Calendar({
         </span>
         <span className="legend-item">
           <i className="swatch swatch-selected" /> {t('legend.selected')}
+        </span>
+        <span className="legend-item">
+          <i className="swatch swatch-locked" /> {t('legend.locked')}
         </span>
       </div>
 

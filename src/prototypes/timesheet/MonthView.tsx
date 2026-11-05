@@ -14,19 +14,26 @@ import { Icon } from './ui';
 interface Props {
   year: number;
   month: number;
+  editableFrom: string;
   days: Record<string, DayRecord>;
   stats: MonthStats;
   onSelect: (key: string) => void;
 }
 
-export default function MonthView({ year, month, days, stats, onSelect }: Props) {
+export default function MonthView({ year, month, editableFrom, days, stats, onSelect }: Props) {
   const { t, lang } = useI18n();
   const total = daysInMonth(year, month);
   const rows = Array.from({ length: total }, (_, index) => {
     const day = index + 1;
     const date = new Date(year, month, day);
     const key = toKey(date);
-    return { key, weekday: formatWeekdayShort(key, lang), weekend: isWeekend(fromKey(key)), record: days[key] };
+    return {
+      key,
+      weekday: formatWeekdayShort(key, lang),
+      weekend: isWeekend(fromKey(key)),
+      locked: key < editableFrom,
+      record: days[key],
+    };
   });
 
   const completion = stats.workdays > 0 ? Math.round((stats.completeDays / stats.workdays) * 100) : 0;
@@ -73,14 +80,16 @@ export default function MonthView({ year, month, days, stats, onSelect }: Props)
             </tr>
           </thead>
           <tbody>
-            {rows.map(({ key, weekday, weekend, record }) => {
+            {rows.map(({ key, weekday, weekend, locked, record }) => {
               const status = statusOf(record);
               const totalHours = dayTotal(record);
               const overtime = record ? overtimeHours(record) : 0;
               return (
                 <tr
                   key={key}
-                  className={`${record && totalHours > 0 ? 'has-entry' : 'no-entry'} ${weekend ? 'is-weekend' : ''}`}
+                  className={`${record && totalHours > 0 ? 'has-entry' : 'no-entry'} ${weekend ? 'is-weekend' : ''}${
+                    locked ? ' is-locked' : ''
+                  }`}
                   onClick={() => onSelect(key)}
                   tabIndex={0}
                   onKeyDown={(event) => {
@@ -119,7 +128,9 @@ export default function MonthView({ year, month, days, stats, onSelect }: Props)
                     {isOtDay(record) ? <span className="ot-chip">{overtime.toFixed(1)}</span> : '—'}
                   </td>
                   <td>
-                    {status === 'empty' && weekend ? (
+                    {locked ? (
+                      <span className="mini-status is-locked">{t('status.locked')}</span>
+                    ) : status === 'empty' && weekend ? (
                       <span className="muted">—</span>
                     ) : (
                       <span className={`mini-status is-${status}`}>{t(`status.${status}`)}</span>

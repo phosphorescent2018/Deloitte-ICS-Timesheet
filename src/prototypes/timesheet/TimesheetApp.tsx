@@ -6,7 +6,7 @@ import WeekStrip from './WeekStrip';
 import ActivityMix from './ActivityMix';
 import { formatMonth, useI18n } from './i18n';
 import { findActivity } from './lib/catalog';
-import { addDays, fromKey, shortDate, toKey } from './lib/date';
+import { addDays, editableFromKey, fromKey, isLockedKey, shortDate, toKey } from './lib/date';
 import {
   blankDay,
   cloneDay,
@@ -58,10 +58,12 @@ export default function TimesheetApp() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [resetOpen, setResetOpen] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
+  const [approvalKey, setApprovalKey] = useState<string | null>(null);
   const toastTimer = useRef<number | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
   const todayKey = toKey(new Date());
+  const editableFrom = editableFromKey(todayKey);
   const stats = useMemo(() => monthStats(state.days, view.y, view.m), [state.days, view]);
   const detailLine = draft.lines.find((line) => line.id === detailId);
   const detailActivity = detailLine ? findActivity(detailLine.code) : undefined;
@@ -108,6 +110,10 @@ export default function TimesheetApp() {
   };
 
   const selectDate = (key: string, syncView = true) => {
+    if (isLockedKey(key, todayKey)) {
+      setApprovalKey(key);
+      return;
+    }
     if (key === selectedKey) return;
     guard(t('action.switch', { date: shortDate(key) }), () => openDay(key, syncView));
   };
@@ -165,6 +171,10 @@ export default function TimesheetApp() {
   };
 
   const saveDay = () => {
+    if (isLockedKey(draft.date, todayKey)) {
+      setApprovalKey(draft.date);
+      return;
+    }
     const found = validateDay(draft);
     setIssues(found);
     if (found.length > 0) {
@@ -483,6 +493,7 @@ export default function TimesheetApp() {
           month={view.m}
           selectedKey={selectedKey}
           todayKey={todayKey}
+          editableFrom={editableFrom}
           days={state.days}
           stats={stats}
           onSelect={(key) => selectDate(key)}
@@ -509,7 +520,12 @@ export default function TimesheetApp() {
               onClear={clearDay}
             />
             <div className="insights">
-              <WeekStrip selectedKey={selectedKey} days={state.days} onSelect={selectDate} />
+              <WeekStrip
+                selectedKey={selectedKey}
+                editableFrom={editableFrom}
+                days={state.days}
+                onSelect={selectDate}
+              />
               <ActivityMix year={view.y} month={view.m} days={state.days} />
             </div>
           </div>
@@ -518,6 +534,7 @@ export default function TimesheetApp() {
             <MonthView
               year={view.y}
               month={view.m}
+              editableFrom={editableFrom}
               days={state.days}
               stats={stats}
               onSelect={(key) => {
@@ -526,7 +543,12 @@ export default function TimesheetApp() {
               }}
             />
             <div className="insights">
-              <WeekStrip selectedKey={selectedKey} days={state.days} onSelect={selectDate} />
+              <WeekStrip
+                selectedKey={selectedKey}
+                editableFrom={editableFrom}
+                days={state.days}
+                onSelect={selectDate}
+              />
               <ActivityMix year={view.y} month={view.m} days={state.days} />
             </div>
           </div>
@@ -572,6 +594,34 @@ export default function TimesheetApp() {
           }
         >
           <p className="modal-copy">{t('discard.body', { action: pending.label })}</p>
+        </Modal>
+      ) : null}
+
+      {approvalKey ? (
+        <Modal
+          title={t('approval.title')}
+          subtitle={t('approval.subtitle', { date: shortDate(approvalKey) })}
+          width={480}
+          onClose={() => setApprovalKey(null)}
+          footer={
+            <>
+              <button type="button" className="btn btn-ghost" onClick={() => setApprovalKey(null)}>
+                {t('btn.cancel')}
+              </button>
+              <button
+                type="button"
+                className="btn btn-blue"
+                onClick={() => {
+                  setApprovalKey(null);
+                  pushToast(t('toast.approval'), 'ok');
+                }}
+              >
+                {t('approval.confirm')}
+              </button>
+            </>
+          }
+        >
+          <p className="modal-copy">{t('approval.body', { date: shortDate(approvalKey) })}</p>
         </Modal>
       ) : null}
 
