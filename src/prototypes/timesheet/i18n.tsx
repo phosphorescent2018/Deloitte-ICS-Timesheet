@@ -47,7 +47,7 @@ const DICT: Record<string, Entry> = {
   'admin.back': { zh: '返回填报', en: 'Back to timesheet' },
   'admin.employeeName': { zh: '吕薇庆', en: 'Lü Weiqing' },
   'admin.employeeId': { zh: 'MG-0001', en: 'MG-0001' },
-  'admin.department': { zh: '全球交付中心 · 重庆', en: 'Global Delivery Center · Chongqing' },
+  'admin.department': { zh: 'Mindigital 全球交付中心', en: 'Mindigital Global Delivery Center' },
   'col.index': { zh: '序号', en: 'No.' },
   'col.employee': { zh: '员工姓名', en: 'Employee' },
   'col.employeeId': { zh: '员工工号', en: 'Employee ID' },
