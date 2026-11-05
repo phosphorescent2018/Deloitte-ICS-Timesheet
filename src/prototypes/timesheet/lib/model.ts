@@ -96,11 +96,9 @@ export function validateDay(day: DayRecord): ValidationIssue[] {
     if (line.hours > 0 && !line.code) issues.push({ key: 'err.lineCode', vars });
   });
 
-  const hasNegative = day.lines.some((line) => line.hours < 0);
   if (total > target + 1e-9) {
     issues.push({ key: 'err.totalOver', vars: { target: target.toFixed(1), total: total.toFixed(1) } });
   }
-  if (total <= 0 && !hasNegative) issues.push({ key: 'err.totalMin' });
 
   const seen = new Set<string>();
   return issues.filter((issue) => {

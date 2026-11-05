@@ -72,6 +72,8 @@ export default function Calendar({
           if (isWeekend(date)) classes.push('is-weekend');
           if (status === 'complete') classes.push('is-done');
           if (status === 'partial') classes.push('is-partial');
+          const inEditableWindow = key >= editableFrom && key <= todayKey;
+          if (status === 'empty' && inEditableWindow && !isWeekend(date)) classes.push('is-unfilled');
           if (status === 'empty' && key < todayKey && !isWeekend(date)) classes.push('is-past-empty');
           if (locked) classes.push('is-locked');
           if (key === todayKey) classes.push('is-today');

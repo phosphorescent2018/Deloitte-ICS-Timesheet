@@ -245,7 +245,6 @@ const DICT: Record<string, Entry> = {
     zh: '当天实际工时合计不能超过 8 小时。',
     en: 'Total actual hours cannot exceed 8 hours per day.',
   },
-  'err.totalMin': { zh: '至少填写 0.5 小时后再保存。', en: 'Enter at least 0.5 hour before saving.' },
 };
 
 const LANG_STORAGE_KEY = 'deloitte-ics-timesheet.lang';

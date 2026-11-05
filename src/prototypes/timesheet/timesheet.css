@@ -452,6 +452,16 @@ input[type='number'] {
   background: #fffdfd;
 }
 
+.cal-day.is-unfilled {
+  background: #fdecea;
+  border-color: #e57373;
+  color: #b3261e;
+}
+
+.cal-day.is-unfilled:hover {
+  background: #fbdcd8;
+}
+
 .cal-day.is-locked,
 .cal-day.is-locked.is-done,
 .cal-day.is-locked.is-partial,
@@ -570,7 +580,7 @@ input[type='number'] {
 }
 
 .swatch-empty {
-  background: #fff;
+  background: #fdecea;
   border-color: #e57373;
 }
 
@@ -1475,7 +1485,7 @@ input[type='number'] {
 }
 
 .mini-status.is-empty {
-  color: #98a2ab;
+  color: #b3261e;
 }
 
 .mini-status.is-locked {
@@ -1577,6 +1587,15 @@ input[type='number'] {
 .ws-day.is-locked:hover {
   border-color: #dde2e7;
   box-shadow: none;
+}
+
+.ws-day.is-unfilled {
+  background: #fdecea;
+  border-color: #f3c3c0;
+}
+
+.ws-day.is-unfilled:hover {
+  border-color: #e57373;
 }
 
 .ws-lock {

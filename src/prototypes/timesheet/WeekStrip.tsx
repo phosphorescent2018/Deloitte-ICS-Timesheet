@@ -1,5 +1,5 @@
 import { formatWeekRange, useI18n, weekdayLabels } from './i18n';
-import { addDays, fromKey, isoWeek, shortDate, startOfWeekMonday, toKey } from './lib/date';
+import { addDays, fromKey, isWeekend, isoWeek, shortDate, startOfWeekMonday, toKey } from './lib/date';
 import { dayTotal, statusOf, type DayRecord } from './lib/model';
 import { Icon } from './ui';
 
@@ -43,13 +43,15 @@ export default function WeekStrip({ selectedKey, editableFrom, days, onSelect }:
           const hours = dayTotal(record);
           const status = statusOf(record);
           const locked = key < editableFrom;
+          const unfilled =
+            !locked && key >= editableFrom && key <= todayKey && status === 'empty' && !isWeekend(date);
           return (
             <button
               key={key}
               type="button"
-              className={`ws-day is-${status}${locked ? ' is-locked' : ''}${key === selectedKey ? ' is-selected' : ''}${
-                key === todayKey ? ' is-today' : ''
-              }`}
+              className={`ws-day is-${status}${locked ? ' is-locked' : ''}${unfilled ? ' is-unfilled' : ''}${
+                key === selectedKey ? ' is-selected' : ''
+              }${key === todayKey ? ' is-today' : ''}`}
               onClick={() => onSelect(key)}
             >
               <span className="ws-label">{weekdayLabels(lang)[date.getDay()]}</span>
