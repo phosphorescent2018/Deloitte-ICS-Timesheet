@@ -37,6 +37,7 @@ Mindigital GDC 内部服务工时系统（原 Internal Client Service Timesheet�
 
 - 顶栏右上角齿轮图标进入（悬停提示「后台配置」）：维护 **业务线 / 产品 / 业务阶段** 三类基础数据，支持添加、删除，至少保留一项。
 - 组合数实时计算（业务线 × 产品 × 阶段），修改后填报页的活动下拉自动增加或移除对应组合，并持久化在 `localStorage`（key `deloitte-ics-config.v1`）。
+- **用户管理**：新增 / 编辑 / 删除用户，字段含姓名、工号、部门、角色（员工 / 主管 / 管理员）与启用状态；保存在 `localStorage`（key `deloitte-ics-users.v1`），并保证至少保留一名管理员。本原型暂不做登录页。
 - **导出当月数据（Excel）**：按 18 列导出当月全部填报明细（CSV，UTF-8 BOM，Excel 可直接打开）——序号、员工姓名、员工工号、部门、业务线、产品、业务阶段、日期、星期、工作地点、目标工时、实际工时合计、状态、活动代码、本行工时、备注、单据备注、保存时间。
 
 ### 其他
@@ -84,6 +85,7 @@ npm run typecheck  # TypeScript 全量检查
 │       └── lib/
 │           ├── date.ts              # 日期与周计算
 │           ├── config.ts            # 后台配置（业务线/产品/阶段）与组合生成
+│           ├── users.ts             # 用户与角色（本地存储）
 │           ├── catalog.ts           # 办公地点
 │           ├── model.ts             # 数据模型、校验、统计
 │           └── storage.ts           # localStorage 持久化与演示数据
