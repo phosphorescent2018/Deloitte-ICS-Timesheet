@@ -98,7 +98,6 @@ const DICT: Record<string, Entry> = {
   'ws.remaining': { zh: '剩余 {{hours}} 小时', en: 'Remaining {{hours}} h' },
 
   'mix.kicker': { zh: '工时构成', en: 'Activity mix' },
-  'mix.title': { zh: '工时都花在哪', en: 'Where the hours went' },
   'mix.month': { zh: '本月', en: 'this month' },
   'mix.empty': {
     zh: '本月还没有记录，保存一天后就能看到构成。',

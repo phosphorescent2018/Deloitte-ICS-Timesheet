@@ -33,7 +33,6 @@ export default function ActivityMix({ year, month, days }: Props) {
       <header className="mix-head">
         <div>
           <span className="editor-kicker">{t('mix.kicker')}</span>
-          <h3>{t('mix.title')}</h3>
         </div>
         <div className="mix-total">
           <strong>{sum.toFixed(1)} h</strong>

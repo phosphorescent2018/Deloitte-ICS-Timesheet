@@ -313,6 +313,7 @@ input[type='number'] {
   display: grid;
   grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.9fr);
   gap: 18px;
+  align-items: start;
 }
 
 .card {
