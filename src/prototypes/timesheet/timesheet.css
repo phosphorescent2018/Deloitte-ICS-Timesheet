@@ -1400,6 +1400,16 @@ input[type='number'] {
   font-variant-numeric: tabular-nums;
 }
 
+.mv-today-dot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin-left: 5px;
+  border-radius: 50%;
+  background: #e53935;
+  vertical-align: middle;
+}
+
 .cell-weekday {
   color: #7c868f;
 }
@@ -1566,6 +1576,16 @@ input[type='number'] {
   display: grid;
   place-items: center;
   color: #a2acb5;
+}
+
+.ws-today-dot {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #e53935;
 }
 
 .ws-label {

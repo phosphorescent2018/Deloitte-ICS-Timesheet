@@ -12,6 +12,7 @@ interface Props {
 
 export default function WeekStrip({ selectedKey, editableFrom, days, onSelect }: Props) {
   const { t, lang } = useI18n();
+  const todayKey = toKey(new Date());
   const monday = startOfWeekMonday(fromKey(selectedKey));
   const week = Array.from({ length: 7 }, (_, index) => addDays(monday, index));
   const total = week.reduce((sum, date) => sum + dayTotal(days[toKey(date)]), 0);
@@ -46,7 +47,9 @@ export default function WeekStrip({ selectedKey, editableFrom, days, onSelect }:
             <button
               key={key}
               type="button"
-              className={`ws-day is-${status}${locked ? ' is-locked' : ''}${key === selectedKey ? ' is-selected' : ''}`}
+              className={`ws-day is-${status}${locked ? ' is-locked' : ''}${key === selectedKey ? ' is-selected' : ''}${
+                key === todayKey ? ' is-today' : ''
+              }`}
               onClick={() => onSelect(key)}
             >
               <span className="ws-label">{weekdayLabels(lang)[date.getDay()]}</span>
@@ -59,6 +62,8 @@ export default function WeekStrip({ selectedKey, editableFrom, days, onSelect }:
                 <span className="ws-lock" aria-hidden="true">
                   <Icon.Lock size={10} />
                 </span>
+              ) : key === todayKey ? (
+                <span className="ws-today-dot" aria-hidden="true" />
               ) : null}
             </button>
           );

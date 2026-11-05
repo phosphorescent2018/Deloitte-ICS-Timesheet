@@ -20,6 +20,7 @@ interface Props {
 
 export default function MonthView({ year, month, editableFrom, days, stats, onSelect }: Props) {
   const { t, lang } = useI18n();
+  const todayKey = toKey(new Date());
   const total = daysInMonth(year, month);
   const rows = Array.from({ length: total }, (_, index) => {
     const day = index + 1;
@@ -91,7 +92,10 @@ export default function MonthView({ year, month, editableFrom, days, stats, onSe
                     }
                   }}
                 >
-                  <td className="cell-date">{shortDate(key)}</td>
+                  <td className="cell-date">
+                    {shortDate(key)}
+                    {key === todayKey ? <span className="mv-today-dot" aria-hidden="true" /> : null}
+                  </td>
                   <td className="cell-weekday">{weekday}</td>
                   <td>{record ? locationLabel(record.location, lang) : '—'}</td>
                   <td className="cell-activities">
