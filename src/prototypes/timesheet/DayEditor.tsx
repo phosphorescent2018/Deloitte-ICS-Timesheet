@@ -97,19 +97,7 @@ export default function DayEditor({
         <div className="sheet-row">
           <div className="cell-label span2">{t('field.targetHours')}</div>
           <div className="cell-value">
-            <div className="hours-field">
-              <input
-                className="input input-num"
-                type="number"
-                min={0}
-                max={24}
-                step={0.5}
-                value={draft.target}
-                onChange={(event) => onChange({ target: toHours(event.target.value) })}
-                aria-label={t('field.targetHours')}
-              />
-              <span className="unit">h</span>
-            </div>
+            <span className="total-value">{draft.target.toFixed(1)}</span>
           </div>
           <div className="cell-empty" />
           <div className="cell-empty" />

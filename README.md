@@ -18,7 +18,7 @@
 ### 每日填报
 
 - `Work Location` 下拉：重庆 / 北京 / 上海 / 广州 / 深圳 / 香港 / Remote。
-- `Target Hours` 与 `Total Actual Hours` 自动汇总，超过目标即计 OT。
+- `Target Hours` 固定为 8.0（与 `Total Actual Hours` 同样式展示，不可编辑），超过 8.0 即计 OT。
 - `Activity` 可搜索代码选择器，内置 14 个 `ICS-GDC-*` 代码（ESH / Tax / Consulting / Risk Advisory / Administration / Leave），选中后 `Client Name` 自动带出。
 - 多行 Activity：工时、Remark、单据详情弹窗（可写备注）、添加 / 删除行。
 - 校验：单行与合计 0–24h、填了工时必须选代码、Target 必须大于 0；错误统一列在表单下方。
