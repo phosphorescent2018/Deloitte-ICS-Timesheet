@@ -117,15 +117,7 @@ export default function TimesheetApp() {
 
   const changeMonth = (delta: number) => {
     const next = new Date(view.y, view.m + delta, 1);
-    const day = Math.min(
-      fromKey(selectedKey).getDate(),
-      new Date(next.getFullYear(), next.getMonth() + 1, 0).getDate(),
-    );
-    const key = toKey(new Date(next.getFullYear(), next.getMonth(), day));
-    guard(t('action.month'), () => {
-      setView({ y: next.getFullYear(), m: next.getMonth() });
-      openDay(key, false);
-    });
+    setView({ y: next.getFullYear(), m: next.getMonth() });
   };
 
   const goToday = () => {

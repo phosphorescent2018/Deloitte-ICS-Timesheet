@@ -1,4 +1,5 @@
 import { daysInMonth, fromKey, isWeekend, round1, toKey } from './date';
+import { isWorkday } from './holidays';
 
 export interface ActivityLine {
   id: string;
@@ -129,8 +130,11 @@ export function monthStats(days: Record<string, DayRecord>, year: number, month:
   for (let day = 1; day <= total; day += 1) {
     const date = new Date(year, month, day);
     const record = days[toKey(date)];
-    if (!isWeekend(date)) workdays += 1;
-    if (!record) continue;
+    if (!isWorkday(date)) {
+      if (!record) continue;
+    } else {
+      workdays += 1;
+    }
     const dayHours = dayTotal(record);
     if (dayHours > 0) {
       filledDays += 1;
@@ -161,5 +165,5 @@ export function weekdaysOf(dateKey: string): string[] {
   return Array.from({ length: 5 }, (_, index) => {
     const next = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + index);
     return toKey(next);
-  });
+  }).filter((key) => isWorkday(fromKey(key)));
 }

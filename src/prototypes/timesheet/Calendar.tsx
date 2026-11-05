@@ -1,6 +1,7 @@
 import { formatMonth, useI18n, weekdayLabels } from './i18n';
 import { dayTotal, statusOf, type DayRecord, type MonthStats } from './lib/model';
-import { fromKey, isWeekend, isoWeek, monthGrid, shortDate, toKey } from './lib/date';
+import { addDays, fromKey, isWeekend, isoWeek, monthGrid, shortDate, startOfWeekMonday, toKey } from './lib/date';
+import { holidayInfo, isWorkday, makeupWorkdayInfo } from './lib/holidays';
 import { Icon } from './ui';
 
 interface Props {
@@ -32,13 +33,17 @@ export default function Calendar({
 }: Props) {
   const { t, lang } = useI18n();
   const grid = monthGrid(year, month);
+  const weekStart = startOfWeekMonday(fromKey(selectedKey));
+  const workdaysInWeek = Array.from({ length: 7 }, (_, index) => addDays(weekStart, index)).filter((date) =>
+    isWorkday(date),
+  ).length;
 
   return (
     <section className="card calendar">
       <header className="cal-head">
         <div>
           <h2>{formatMonth(year, month, lang)}</h2>
-          <p className="cal-sub">{t('cal.week', { week: isoWeek(fromKey(selectedKey)) })}</p>
+          <p className="cal-sub">{t('cal.week', { week: isoWeek(fromKey(selectedKey)), days: workdaysInWeek })}</p>
         </div>
         <div className="cal-nav">
           <button type="button" className="icon-btn" onClick={onPrev} aria-label={t('cal.prev')}>
@@ -66,15 +71,20 @@ export default function Calendar({
           const total = dayTotal(record);
           const status = statusOf(record);
           const locked = key < editableFrom;
+          const holiday = holidayInfo(key);
+          const makeup = makeupWorkdayInfo(key);
+          const weekend = isWeekend(date) && !makeup;
           const classes = ['cal-day'];
 
           if (date.getMonth() !== month) classes.push('is-out');
-          if (isWeekend(date)) classes.push('is-weekend');
+          if (weekend) classes.push('is-weekend');
+          if (holiday) classes.push('is-holiday');
+          if (makeup) classes.push('is-makeup');
           if (status === 'complete') classes.push('is-done');
           if (status === 'partial') classes.push('is-partial');
           const inEditableWindow = key >= editableFrom && key <= todayKey;
-          if (status === 'empty' && inEditableWindow && !isWeekend(date)) classes.push('is-unfilled');
-          if (status === 'empty' && key < todayKey && !isWeekend(date)) classes.push('is-past-empty');
+          if (status === 'empty' && inEditableWindow && isWorkday(date)) classes.push('is-unfilled');
+          if (status === 'empty' && key < todayKey && isWorkday(date)) classes.push('is-past-empty');
           if (locked) classes.push('is-locked');
           if (key === todayKey) classes.push('is-today');
           if (key === selectedKey) classes.push('is-selected');
@@ -99,6 +109,15 @@ export default function Calendar({
               aria-pressed={key === selectedKey}
             >
               <span className="cal-num">{date.getDate()}</span>
+              {holiday ? (
+                <span className="cal-day-tag is-holiday" title={lang === 'zh' ? holiday.nameZh : holiday.nameEn}>
+                  休
+                </span>
+              ) : makeup ? (
+                <span className="cal-day-tag is-makeup" title={lang === 'zh' ? makeup.nameZh : makeup.nameEn}>
+                  班
+                </span>
+              ) : null}
               {locked ? (
                 <span className="cal-lock" aria-hidden="true">
                   <Icon.Lock size={9} />
@@ -127,6 +146,12 @@ export default function Calendar({
         </span>
         <span className="legend-item">
           <i className="swatch swatch-locked" /> {t('legend.locked')}
+        </span>
+        <span className="legend-item">
+          <i className="swatch swatch-holiday" /> {t('legend.holiday')}
+        </span>
+        <span className="legend-item">
+          <i className="swatch swatch-makeup" /> {t('legend.makeup')}
         </span>
       </div>
 

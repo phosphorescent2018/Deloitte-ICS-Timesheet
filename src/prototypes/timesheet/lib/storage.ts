@@ -1,5 +1,6 @@
 import { DEFAULT_LOCATION } from './catalog';
 import { addDays, startOfWeekMonday, toKey } from './date';
+import { isWorkday } from './holidays';
 import type { AppState, DayRecord } from './model';
 import { createLine } from './model';
 
@@ -23,8 +24,13 @@ export function seedState(): AppState {
   ];
 
   const days: Record<string, DayRecord> = {};
-  plan.forEach((lines, index) => {
-    const date = addDays(monday, index);
+  let planIndex = 0;
+
+  for (let offset = 0; offset < 7; offset += 1) {
+    const date = addDays(monday, offset);
+    if (!isWorkday(date)) continue;
+    const lines = plan[planIndex % plan.length];
+    planIndex += 1;
     const key = toKey(date);
     const savedAt = new Date(
       date.getFullYear(),
@@ -44,7 +50,7 @@ export function seedState(): AppState {
         remark: line.remark ?? '',
       })),
     };
-  });
+  }
 
   return { version: 1, days, defaultLocation: DEFAULT_LOCATION, defaultTarget: 8 };
 }

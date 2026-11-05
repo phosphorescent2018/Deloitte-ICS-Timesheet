@@ -1,5 +1,6 @@
 import { formatWeekRange, useI18n, weekdayLabels } from './i18n';
-import { addDays, fromKey, isWeekend, isoWeek, shortDate, startOfWeekMonday, toKey } from './lib/date';
+import { addDays, fromKey, isoWeek, shortDate, startOfWeekMonday, toKey } from './lib/date';
+import { isWorkday } from './lib/holidays';
 import { dayTotal, statusOf, type DayRecord } from './lib/model';
 import { Icon } from './ui';
 
@@ -16,7 +17,8 @@ export default function WeekStrip({ selectedKey, editableFrom, days, onSelect }:
   const monday = startOfWeekMonday(fromKey(selectedKey));
   const week = Array.from({ length: 7 }, (_, index) => addDays(monday, index));
   const total = week.reduce((sum, date) => sum + dayTotal(days[toKey(date)]), 0);
-  const filled = week.slice(0, 5).filter((date) => dayTotal(days[toKey(date)]) > 0).length;
+  const workdays = week.filter((date) => isWorkday(date)).length;
+  const filled = week.filter((date) => isWorkday(date) && dayTotal(days[toKey(date)]) > 0).length;
 
   return (
     <section className="card week-strip">
@@ -44,7 +46,7 @@ export default function WeekStrip({ selectedKey, editableFrom, days, onSelect }:
           const status = statusOf(record);
           const locked = key < editableFrom;
           const unfilled =
-            !locked && key >= editableFrom && key <= todayKey && status === 'empty' && !isWeekend(date);
+            !locked && key >= editableFrom && key <= todayKey && status === 'empty' && isWorkday(date);
           return (
             <button
               key={key}
@@ -73,7 +75,7 @@ export default function WeekStrip({ selectedKey, editableFrom, days, onSelect }:
       </div>
 
       <div className="ws-foot">
-        <span>{t('ws.filled', { filled })}</span>
+        <span>{t('ws.filled', { filled, workdays })}</span>
         <span>{t('ws.remaining', { hours: Math.max(0, 40 - total).toFixed(1) })}</span>
       </div>
     </section>

@@ -462,6 +462,38 @@ input[type='number'] {
   background: #fbdcd8;
 }
 
+.cal-day.is-holiday {
+  background: #fff8f4;
+  border-color: #f0d2c4;
+  color: #b3261e;
+}
+
+.cal-day.is-makeup {
+  background: #f2f9fd;
+  border-color: #cfe3f0;
+}
+
+.cal-day-tag {
+  position: absolute;
+  top: 2px;
+  left: 3px;
+  padding: 1px 3px;
+  border-radius: 3px;
+  font-size: 8.5px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.cal-day-tag.is-holiday {
+  background: #fdecea;
+  color: #b3261e;
+}
+
+.cal-day-tag.is-makeup {
+  background: #e8f2fb;
+  color: #1d5f8f;
+}
+
 .cal-day.is-locked,
 .cal-day.is-locked.is-done,
 .cal-day.is-locked.is-partial,
@@ -615,6 +647,16 @@ input[type='number'] {
 .swatch-locked {
   background: #eef1f4;
   border-color: #dde2e7;
+}
+
+.swatch-holiday {
+  background: #fdecea;
+  border-color: #e57373;
+}
+
+.swatch-makeup {
+  background: #e8f2fb;
+  border-color: #9ec7e3;
 }
 
 .cal-stats {

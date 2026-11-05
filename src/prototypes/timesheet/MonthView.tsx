@@ -1,6 +1,7 @@
 import { useI18n, formatWeekdayShort } from './i18n';
 import { locationLabel } from './lib/catalog';
-import { daysInMonth, isWeekend, fromKey, shortDate, toKey } from './lib/date';
+import { daysInMonth, fromKey, shortDate, toKey } from './lib/date';
+import { isWorkday } from './lib/holidays';
 import {
   dayTotal,
   statusOf,
@@ -29,7 +30,7 @@ export default function MonthView({ year, month, editableFrom, days, stats, onSe
     return {
       key,
       weekday: formatWeekdayShort(key, lang),
-      weekend: isWeekend(fromKey(key)),
+      weekend: !isWorkday(fromKey(key)),
       locked: key < editableFrom,
       record: days[key],
     };

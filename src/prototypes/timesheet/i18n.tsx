@@ -100,7 +100,7 @@ const DICT: Record<string, Entry> = {
   },
   'banner.period': { zh: '{{month}} · 目标 {{hours}} 小时/天', en: '{{month}} · Target {{hours}} h / day' },
 
-  'cal.week': { zh: '第 {{week}} 周 · 5 个工作日', en: 'Week {{week}} · 5 working days' },
+  'cal.week': { zh: '第 {{week}} 周 · {{days}} 个工作日', en: 'Week {{week}} · {{days}} working days' },
   'cal.today': { zh: '今天', en: 'Today' },
   'cal.prev': { zh: '上个月', en: 'Previous month' },
   'cal.next': { zh: '下个月', en: 'Next month' },
@@ -116,6 +116,8 @@ const DICT: Record<string, Entry> = {
   'legend.today': { zh: '今天', en: 'Today' },
   'legend.selected': { zh: '选中', en: 'Selected' },
   'legend.locked': { zh: '已锁定', en: 'Locked' },
+  'legend.holiday': { zh: '节假日', en: 'Holiday' },
+  'legend.makeup': { zh: '调休', en: 'Make-up day' },
 
   'status.empty': { zh: '未填写', en: 'Not filled' },
   'status.partial': { zh: '部分填写', en: 'Partial' },
@@ -169,7 +171,7 @@ const DICT: Record<string, Entry> = {
   'ws.kicker': { zh: '本周一览', en: 'Week at a glance' },
   'ws.title': { zh: '第 {{week}} 周 · {{range}}', en: 'Week {{week}} · {{range}}' },
   'ws.target': { zh: '/ 40 小时目标', en: '/ 40 h target' },
-  'ws.filled': { zh: '5 个工作日中已填 {{filled}} 天', en: '{{filled}} of 5 weekdays filled' },
+  'ws.filled': { zh: '{{workdays}} 个工作日中已填 {{filled}} 天', en: '{{filled}} of {{workdays}} weekdays filled' },
   'ws.remaining': { zh: '剩余 {{hours}} 小时', en: 'Remaining {{hours}} h' },
 
   'mix.kicker': { zh: '工时构成', en: 'Activity mix' },
