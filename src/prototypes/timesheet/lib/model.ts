@@ -92,14 +92,15 @@ export function validateDay(day: DayRecord): ValidationIssue[] {
   day.lines.forEach((line, index) => {
     const vars = { n: index + 1 };
     if (line.hours < 0) issues.push({ key: 'err.lineNegative', vars });
-    if (line.code && line.hours <= 0) issues.push({ key: 'err.lineHours', vars });
+    if (line.code && line.hours === 0) issues.push({ key: 'err.lineHours', vars });
     if (line.hours > 0 && !line.code) issues.push({ key: 'err.lineCode', vars });
   });
 
+  const hasNegative = day.lines.some((line) => line.hours < 0);
   if (total > target + 1e-9) {
     issues.push({ key: 'err.totalOver', vars: { target: target.toFixed(1), total: total.toFixed(1) } });
   }
-  if (total <= 0) issues.push({ key: 'err.totalMin' });
+  if (total <= 0 && !hasNegative) issues.push({ key: 'err.totalMin' });
 
   const seen = new Set<string>();
   return issues.filter((issue) => {

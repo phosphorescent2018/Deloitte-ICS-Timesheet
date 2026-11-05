@@ -7,7 +7,7 @@ type Vars = Record<string, string | number>;
 type Entry = { zh: string; en: string };
 
 const DICT: Record<string, Entry> = {
-  'app.title': { zh: '内部客户服务工时表', en: 'Internal Client Service Timesheet' },
+  'app.title': { zh: 'Mindigital 服务工时表', en: 'Mindigital Service Timesheet' },
   'app.subtitle': { zh: 'Mindigital 全球交付中心 · 重庆', en: 'Mindigital Global Delivery Center · Chongqing' },
   'app.day': { zh: '按天', en: 'Day' },
   'app.month': { zh: '按月', en: 'Month' },
@@ -193,7 +193,7 @@ const DICT: Record<string, Entry> = {
   'btn.cancel': { zh: '取消', en: 'Cancel' },
   'btn.reset': { zh: '重置数据', en: 'Reset data' },
 
-  'about.title': { zh: '内部客户服务工时表', en: 'Internal Client Service Timesheet' },
+  'about.title': { zh: 'Mindigital 服务工时表', en: 'Mindigital Service Timesheet' },
   'about.subtitle': { zh: '高保真原型 · React + Vite · GitHub Pages', en: 'High-fidelity prototype · React + Vite · GitHub Pages' },
   'about.body': {
     zh: 'Mindigital GDC 内部工时填报的可交互复刻：月历状态、每日工时明细、活动代码、工作地点与目标工时，以及预填一周、复制上一天、保存等操作。数据保存在浏览器 localStorage，刷新不丢。',
@@ -278,7 +278,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
-    document.title = lang === 'zh' ? '内部客户服务工时表 · ICS' : 'Internal Client Service Timesheet · ICS';
+    document.title = lang === 'zh' ? 'Mindigital 服务工时表 · ICS' : 'Mindigital Service Timesheet · ICS';
   }, [lang]);
 
   const t = (key: string, vars?: Vars) => {

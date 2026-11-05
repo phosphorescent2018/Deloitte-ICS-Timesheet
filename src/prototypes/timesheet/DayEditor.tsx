@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import ActivityPicker from './ActivityPicker';
 import { useI18n, formatLongDate } from './i18n';
 import { locationLabel, LOCATIONS } from './lib/catalog';
@@ -23,13 +24,6 @@ interface Props {
   onClear: () => void;
 }
 
-function toHours(value: string): number {
-  const parsed = Number.parseFloat(value);
-  if (!Number.isFinite(parsed)) return 0;
-  // 允许输入负数进入校验（保存时提示「不能为负数」），上限仍限制在 24 以内便于修正。
-  return Math.min(24, Math.max(-24, Math.round(parsed * 100) / 100));
-}
-
 /** 目标工时与实际工时合计都固定展示标准 8 小时。 */
 const STANDARD_HOURS = 8;
 
@@ -50,6 +44,24 @@ export default function DayEditor({
   onClear,
 }: Props) {
   const { t, lang } = useI18n();
+  const [hourText, setHourText] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    setHourText({});
+  }, [draft.date]);
+
+  const commitHours = (id: string, raw: string) => {
+    setHourText((prev) => ({ ...prev, [id]: raw }));
+    if (raw.trim() === '') {
+      onLineChange(id, { hours: 0 });
+      return;
+    }
+    const parsed = Number.parseFloat(raw);
+    if (Number.isFinite(parsed)) {
+      onLineChange(id, { hours: Math.min(24, Math.max(-24, Math.round(parsed * 100) / 100)) });
+    }
+  };
+
   return (
     <section className="card editor">
       <header className="editor-top">
@@ -142,13 +154,11 @@ export default function DayEditor({
                 <div className="hours-field">
                   <input
                     className="input input-num"
-                    type="number"
-                    min={0}
-                    max={24}
-                    step={0.5}
+                    type="text"
+                    inputMode="decimal"
                     placeholder="0.0"
-                    value={line.hours === 0 ? '' : line.hours}
-                    onChange={(event) => onLineChange(line.id, { hours: toHours(event.target.value) })}
+                    value={hourText[line.id] ?? (line.hours === 0 ? '' : String(line.hours))}
+                    onChange={(event) => commitHours(line.id, event.target.value)}
                     aria-label={t('field.hoursAria', { n: index + 1 })}
                   />
                   <span className="unit">h</span>

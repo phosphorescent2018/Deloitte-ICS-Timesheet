@@ -1,6 +1,6 @@
-# Internal Client Service Timesheet · Mindigital ICS 工时填报
+# Mindigital 服务工时表 · ICS 工时填报
 
-Mindigital GDC 内部工时系统（Internal Client Service Timesheet）的完整可交互复刻：月历状态 + 每日工时明细 + Prefill / Copy / Save。
+Mindigital GDC 内部服务工时系统（原 Internal Client Service Timesheet）的完整可交互复刻：月历状态 + 每日工时明细 + Prefill / Copy / Save。
 独立 Axhub Make 项目，push `main` 自动构建并发布到 GitHub Pages。界面默认中文，右上角可一键切换中英文。
 
 **演示站：** https://phosphorescent2018.github.io/Deloitte-ICS-Timesheet/
