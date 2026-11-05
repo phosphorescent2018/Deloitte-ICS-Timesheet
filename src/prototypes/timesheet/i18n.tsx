@@ -8,7 +8,7 @@ type Entry = { zh: string; en: string };
 
 const DICT: Record<string, Entry> = {
   'app.title': { zh: 'Mindigital 服务工时表', en: 'Mindigital Service Timesheet' },
-  'app.subtitle': { zh: 'Mindigital 全球交付中心 · 重庆', en: 'Mindigital Global Delivery Center · Chongqing' },
+  'app.subtitle': { zh: 'Mindigital 全球交付中心', en: 'Mindigital Global Delivery Center' },
   'app.day': { zh: '按天', en: 'Day' },
   'app.month': { zh: '按月', en: 'Month' },
   'app.role': { zh: '工时填报用户', en: 'Timesheet user' },
