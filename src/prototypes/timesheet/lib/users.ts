@@ -47,27 +47,8 @@ export const DEFAULT_USERS: AppUser[] = [
 ];
 
 export function loadUsers(): AppUser[] {
-  try {
-    const raw = window.localStorage.getItem(USERS_KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw) as AppUser[];
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        return parsed.map((user) => ({
-          id: user.id,
-          name: user.name,
-          employeeId: user.employeeId,
-          department: user.department,
-          role: user.role,
-          active: Boolean(user.active),
-        }));
-      }
-    }
-  } catch {
-    // 读取失败时使用默认用户
-  }
-  const seeded = DEFAULT_USERS.map((user) => ({ ...user }));
-  saveUsers(seeded);
-  return seeded;
+  // 刷新即重置：每次进入都使用默认用户，不读取本地历史。
+  return DEFAULT_USERS.map((user) => ({ ...user }));
 }
 
 export function saveUsers(users: AppUser[]): void {

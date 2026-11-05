@@ -24,7 +24,7 @@ import {
   type DayRecord,
   type ValidationIssue,
 } from './lib/model';
-import { loadState, persist, resetState } from './lib/storage';
+import { loadState, persist } from './lib/storage';
 import { Icon, Modal, Toast, type ToastState, type ToastTone } from './ui';
 import './timesheet.css';
 
@@ -57,7 +57,6 @@ export default function TimesheetApp() {
   const [toast, setToast] = useState<ToastState | null>(null);
   const [pending, setPending] = useState<{ label: string; run: () => void } | null>(null);
   const [detailId, setDetailId] = useState<string | null>(null);
-  const [resetOpen, setResetOpen] = useState(false);
   const [approvalKey, setApprovalKey] = useState<string | null>(null);
   const [page, setPage] = useState<'timesheet' | 'admin'>('timesheet');
   const [config, setConfig] = useState<AdminConfig>(() => loadConfig());
@@ -317,20 +316,6 @@ export default function TimesheetApp() {
     pushToast(t('toast.cleared'), 'warn');
   };
 
-  const restoreDemo = () => {
-    const fresh = resetState();
-    const today = new Date();
-    setState(fresh);
-    setView({ y: today.getFullYear(), m: today.getMonth() });
-    setMode('day');
-    setSelectedKey(toKey(today));
-    setDraft(draftFor(fresh, toKey(today)));
-    setDirty(false);
-    setIssues([]);
-    setResetOpen(false);
-    pushToast(t('toast.reset'), 'ok');
-  };
-
   useEffect(() => {
     const handler = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement | null;
@@ -458,7 +443,6 @@ export default function TimesheetApp() {
             month={view.m}
             onChange={applyConfig}
             onBack={() => setPage('timesheet')}
-            onReset={() => setResetOpen(true)}
           />
         </main>
       ) : null}
@@ -599,27 +583,6 @@ export default function TimesheetApp() {
           }
         >
           <p className="modal-copy">{t('approval.body', { date: shortDate(approvalKey) })}</p>
-        </Modal>
-      ) : null}
-
-      {resetOpen ? (
-        <Modal
-          title={t('reset.title')}
-          subtitle={t('reset.subtitle')}
-          width={460}
-          onClose={() => setResetOpen(false)}
-          footer={
-            <>
-              <button type="button" className="btn btn-ghost" onClick={() => setResetOpen(false)}>
-                {t('btn.cancel')}
-              </button>
-              <button type="button" className="btn btn-danger" onClick={restoreDemo}>
-                {t('btn.reset')}
-              </button>
-            </>
-          }
-        >
-          <p className="modal-copy">{t('reset.body')}</p>
         </Modal>
       ) : null}
 

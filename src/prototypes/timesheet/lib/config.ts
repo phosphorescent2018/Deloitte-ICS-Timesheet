@@ -36,29 +36,8 @@ const STAGE_EN: Record<string, string> = {
   交付: 'Delivery',
 };
 
-function sanitizeList(value: unknown, fallback: string[]): string[] {
-  if (!Array.isArray(value)) return [...fallback];
-  const list = value
-    .map((item) => (typeof item === 'string' ? item.trim() : ''))
-    .filter((item) => item.length > 0);
-  const unique = Array.from(new Set(list));
-  return unique.length > 0 ? unique : [...fallback];
-}
-
 export function loadConfig(): AdminConfig {
-  try {
-    const raw = window.localStorage.getItem(CONFIG_KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw) as Partial<AdminConfig>;
-      return {
-        businessLines: sanitizeList(parsed.businessLines, DEFAULT_CONFIG.businessLines),
-        products: sanitizeList(parsed.products, DEFAULT_CONFIG.products),
-        stages: sanitizeList(parsed.stages, DEFAULT_CONFIG.stages),
-      };
-    }
-  } catch {
-    // 读取失败时回退默认配置
-  }
+  // 刷新即重置：每次进入都使用默认配置，不读取本地历史。
   return {
     businessLines: [...DEFAULT_CONFIG.businessLines],
     products: [...DEFAULT_CONFIG.products],

@@ -15,7 +15,6 @@ interface Props {
   month: number;
   onChange: (next: AdminConfig) => void;
   onBack: () => void;
-  onReset: () => void;
 }
 
 interface ListEditorProps {
@@ -121,7 +120,7 @@ const COLUMN_KEYS = [
   'col.savedAt',
 ];
 
-export default function AdminPage({ config, activities, days, year, month, onChange, onBack, onReset }: Props) {
+export default function AdminPage({ config, activities, days, year, month, onChange, onBack }: Props) {
   const { t, lang } = useI18n();
   const [users, setUsers] = useState<AppUser[]>(() => loadUsers());
   const [userForm, setUserForm] = useState<AppUser | null>(null);
@@ -258,10 +257,6 @@ export default function AdminPage({ config, activities, days, year, month, onCha
           <p>{t('admin.subtitle')}</p>
         </div>
         <div className="admin-actions">
-          <button type="button" className="btn btn-ghost" onClick={onReset}>
-            <Icon.Rotate size={15} />
-            {t('menu.reset')}
-          </button>
           <button type="button" className="btn btn-ghost" onClick={onBack}>
             <Icon.ChevronLeft size={15} />
             {t('admin.back')}

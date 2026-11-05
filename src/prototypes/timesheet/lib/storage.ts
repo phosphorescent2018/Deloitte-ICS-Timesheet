@@ -1,4 +1,4 @@
-import { DEFAULT_LOCATION, LOCATIONS } from './catalog';
+import { DEFAULT_LOCATION } from './catalog';
 import { addDays, startOfWeekMonday, toKey } from './date';
 import type { AppState, DayRecord } from './model';
 import { createLine } from './model';
@@ -49,56 +49,9 @@ export function seedState(): AppState {
   return { version: 1, days, defaultLocation: DEFAULT_LOCATION, defaultTarget: 8 };
 }
 
-function normalize(raw: unknown): AppState | null {
-  if (!raw || typeof raw !== 'object') return null;
-  const candidate = raw as Partial<AppState>;
-  if (candidate.version !== 1 || !candidate.days || typeof candidate.days !== 'object') {
-    return null;
-  }
-  const days: Record<string, DayRecord> = {};
-  Object.entries(candidate.days).forEach(([key, value]) => {
-    const record = value as DayRecord;
-    if (!record || typeof record !== 'object') return;
-    days[key] = {
-      date: record.date ?? key,
-      location: LOCATIONS.some((option) => option.value === record.location)
-        ? record.location
-        : DEFAULT_LOCATION,
-      target: Number.isFinite(record.target) ? record.target : 8,
-      savedAt: record.savedAt ?? null,
-      lines: Array.isArray(record.lines)
-        ? record.lines.map((line) => ({
-            id: line.id ?? createLine().id,
-            code: line.code ?? '',
-            hours: Number.isFinite(line.hours) ? line.hours : 0,
-            remark: line.remark ?? '',
-            note: line.note ?? '',
-          }))
-        : [],
-    };
-  });
-
-  return {
-    version: 1,
-    days,
-    defaultLocation: candidate.defaultLocation ?? DEFAULT_LOCATION,
-    defaultTarget: Number.isFinite(candidate.defaultTarget) ? Number(candidate.defaultTarget) : 8,
-  };
-}
-
+/** 刷新即重置：每次加载都使用全新的演示数据，不读取本地历史。 */
 export function loadState(): AppState {
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      const parsed = normalize(JSON.parse(raw) as unknown);
-      if (parsed) return parsed;
-    }
-  } catch {
-    // 读取失败时回退到演示数据
-  }
-  const seeded = seedState();
-  persist(seeded);
-  return seeded;
+  return seedState();
 }
 
 export function persist(state: AppState): void {
@@ -107,27 +60,4 @@ export function persist(state: AppState): void {
   } catch {
     // 隐私模式 / 配额不足时静默失败，原型仍可继续使用
   }
-}
-
-export function resetState(): AppState {
-  try {
-    window.localStorage.removeItem(STORAGE_KEY);
-  } catch {
-    // ignore
-  }
-  const seeded = seedState();
-  persist(seeded);
-  return seeded;
-}
-
-export function exportState(state: AppState): void {
-  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const anchor = document.createElement('a');
-  anchor.href = url;
-  anchor.download = `ics-timesheet-${toKey(new Date())}.json`;
-  document.body.appendChild(anchor);
-  anchor.click();
-  anchor.remove();
-  URL.revokeObjectURL(url);
 }
