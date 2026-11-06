@@ -181,8 +181,8 @@ const DICT: Record<string, Entry> = {
   },
 
   'foot.note': {
-    zh: '原型演示 · 所有记录只保存在本机浏览器。',
-    en: 'Prototype · All entries are stored locally in this browser.',
+    zh: '原型演示 · 刷新页面会重置为默认演示数据。',
+    en: 'Prototype · Demo data resets when the page reloads.',
   },
   'foot.changeDay': { zh: '切换日期', en: 'change day' },
   'foot.save': { zh: '保存', en: 'save' },
