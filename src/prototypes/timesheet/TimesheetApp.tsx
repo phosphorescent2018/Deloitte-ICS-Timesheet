@@ -8,7 +8,7 @@ import { formatMonth, useI18n } from './i18n';
 import mindigitalMark from './assets/mindigital-mark.svg';
 import AdminPage from './AdminPage';
 import { buildActivities, loadConfig, saveConfig, type AdminConfig } from './lib/config';
-import { addDays, editableFromKey, fromKey, isLockedKey, shortDate, toKey } from './lib/date';
+import { addDays, editableFromKey, fromKey, isFutureMonthKey, isLockedKey, shortDate, toKey } from './lib/date';
 import {
   blankDay,
   cloneDay,
@@ -57,6 +57,7 @@ export default function TimesheetApp() {
   const [toast, setToast] = useState<ToastState | null>(null);
   const [pending, setPending] = useState<{ label: string; run: () => void } | null>(null);
   const [approvalKey, setApprovalKey] = useState<string | null>(null);
+  const [futureKey, setFutureKey] = useState<string | null>(null);
   const [page, setPage] = useState<'timesheet' | 'admin'>('timesheet');
   const [config, setConfig] = useState<AdminConfig>(() => loadConfig());
   const toastTimer = useRef<number | null>(null);
@@ -104,6 +105,10 @@ export default function TimesheetApp() {
   };
 
   const selectDate = (key: string, syncView = true) => {
+    if (isFutureMonthKey(key, todayKey)) {
+      setFutureKey(key);
+      return;
+    }
     if (isLockedKey(key, todayKey)) {
       setApprovalKey(key);
       return;
@@ -237,7 +242,7 @@ export default function TimesheetApp() {
     const filled: string[] = [];
     const skipped: string[] = [];
 
-    weekdaysOf(selectedKey).forEach((key) => {
+    weekdaysOf(selectedKey).filter((key) => !isLockedKey(key, todayKey)).forEach((key) => {
       const existing = nextDays[key];
       if (existing && dayTotal(existing) > 0) {
         skipped.push(shortDate(key));
@@ -481,7 +486,6 @@ export default function TimesheetApp() {
             <MonthView
               year={view.y}
               month={view.m}
-              editableFrom={editableFrom}
               days={state.days}
               stats={stats}
               onSelect={(key) => {
@@ -541,6 +545,22 @@ export default function TimesheetApp() {
           }
         >
           <p className="modal-copy">{t('discard.body', { action: pending.label })}</p>
+        </Modal>
+      ) : null}
+
+      {futureKey ? (
+        <Modal
+          title={t('future.title')}
+          subtitle={shortDate(futureKey)}
+          width={460}
+          onClose={() => setFutureKey(null)}
+          footer={
+            <button type="button" className="btn btn-blue" onClick={() => setFutureKey(null)}>
+              {t('future.confirm')}
+            </button>
+          }
+        >
+          <p className="modal-copy">{t('future.body', { date: shortDate(futureKey) })}</p>
         </Modal>
       ) : null}
 

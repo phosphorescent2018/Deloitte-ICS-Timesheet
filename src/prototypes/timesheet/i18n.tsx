@@ -208,6 +208,12 @@ const DICT: Record<string, Entry> = {
   },
   'approval.confirm': { zh: '发起审批', en: 'Start approval' },
   'toast.approval': { zh: '已发起企业微信 OA 审批流（演示）。', en: 'WeCom OA approval started (demo).' },
+  'future.title': { zh: '不能填写下月工时', en: 'Next month is not editable' },
+  'future.body': {
+    zh: '{{date}} 属于下个月。当前只能填写本月及本月内的未来日期，下月工时请在下月再填报。',
+    en: '{{date}} belongs to next month. Only the current month (including future dates within it) can be filled; please log next month\'s hours once that month starts.',
+  },
+  'future.confirm': { zh: '知道了', en: 'Got it' },
 
   'reset.title': { zh: '重置演示数据？', en: 'Reset demo data?' },
   'reset.subtitle': {

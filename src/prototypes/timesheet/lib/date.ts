@@ -111,7 +111,15 @@ export function editableFromKey(todayKey: string, windowDays = 3): string {
   return toKey(addDays(fromKey(todayKey), -(windowDays - 1)));
 }
 
-/** 早于可编辑窗口的日期视为历史锁定，需走 OA 审批。 */
+/** 是否属于「下个月及以后」的日期。 */
+export function isFutureMonthKey(key: string, todayKey: string): boolean {
+  const today = fromKey(todayKey);
+  const monthEnd = toKey(new Date(today.getFullYear(), today.getMonth() + 1, 0));
+  return key > monthEnd;
+}
+
+/** 历史窗口之外、或晚于当月最后一天的日期视为锁定。 */
 export function isLockedKey(key: string, todayKey: string, windowDays = 3): boolean {
-  return key < editableFromKey(todayKey, windowDays);
+  const from = editableFromKey(todayKey, windowDays);
+  return key < from || isFutureMonthKey(key, todayKey);
 }

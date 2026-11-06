@@ -1,6 +1,6 @@
 import { useI18n, formatWeekdayShort } from './i18n';
 import { locationLabel } from './lib/catalog';
-import { daysInMonth, fromKey, shortDate, toKey } from './lib/date';
+import { daysInMonth, fromKey, isLockedKey, shortDate, toKey } from './lib/date';
 import { isWorkday } from './lib/holidays';
 import {
   dayTotal,
@@ -13,13 +13,12 @@ import { Icon } from './ui';
 interface Props {
   year: number;
   month: number;
-  editableFrom: string;
   days: Record<string, DayRecord>;
   stats: MonthStats;
   onSelect: (key: string) => void;
 }
 
-export default function MonthView({ year, month, editableFrom, days, stats, onSelect }: Props) {
+export default function MonthView({ year, month, days, stats, onSelect }: Props) {
   const { t, lang } = useI18n();
   const todayKey = toKey(new Date());
   const total = daysInMonth(year, month);
@@ -31,7 +30,7 @@ export default function MonthView({ year, month, editableFrom, days, stats, onSe
       key,
       weekday: formatWeekdayShort(key, lang),
       weekend: !isWorkday(fromKey(key)),
-      locked: key < editableFrom,
+      locked: isLockedKey(key, todayKey),
       record: days[key],
     };
   });

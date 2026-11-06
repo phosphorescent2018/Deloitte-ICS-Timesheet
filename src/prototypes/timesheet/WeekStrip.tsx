@@ -1,5 +1,5 @@
 import { formatWeekRange, useI18n, weekdayLabels } from './i18n';
-import { addDays, fromKey, isoWeek, shortDate, startOfWeekMonday, toKey } from './lib/date';
+import { addDays, fromKey, isLockedKey, isoWeek, shortDate, startOfWeekMonday, toKey } from './lib/date';
 import { isWorkday } from './lib/holidays';
 import { dayTotal, statusOf, type DayRecord } from './lib/model';
 import { Icon } from './ui';
@@ -44,7 +44,7 @@ export default function WeekStrip({ selectedKey, editableFrom, days, onSelect }:
           const record = days[key];
           const hours = dayTotal(record);
           const status = statusOf(record);
-          const locked = key < editableFrom;
+          const locked = isLockedKey(key, todayKey);
           const unfilled =
             !locked && key >= editableFrom && key <= todayKey && status === 'empty' && isWorkday(date);
           return (

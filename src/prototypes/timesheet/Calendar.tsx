@@ -1,6 +1,6 @@
 import { formatMonth, useI18n, weekdayLabels } from './i18n';
 import { dayTotal, statusOf, type DayRecord, type MonthStats } from './lib/model';
-import { addDays, fromKey, isWeekend, isoWeek, monthGrid, shortDate, startOfWeekMonday, toKey } from './lib/date';
+import { addDays, fromKey, isLockedKey, isWeekend, isoWeek, monthGrid, shortDate, startOfWeekMonday, toKey } from './lib/date';
 import { holidayInfo, isWorkday, makeupWorkdayInfo } from './lib/holidays';
 import { Icon } from './ui';
 
@@ -70,7 +70,7 @@ export default function Calendar({
           const record = days[key];
           const total = dayTotal(record);
           const status = statusOf(record);
-          const locked = key < editableFrom;
+          const locked = isLockedKey(key, todayKey);
           const holiday = holidayInfo(key);
           const makeup = makeupWorkdayInfo(key);
           const weekend = isWeekend(date) && !makeup;
