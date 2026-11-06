@@ -22,7 +22,7 @@ Mindigital GDC 内部服务工时系统（原 Internal Client Service Timesheet�
 - `Work Location` 下拉：重庆 / 北京 / 新加坡 / 远程。
 - `Target Hours` 固定为 8.0（与 `Total Actual Hours` 同样式展示，不可编辑）。
 - `Activity` 可搜索选择器：选项为「业务线-产品-业务阶段」组合，业务线 UG / CDI / GH，产品 OD / AirtimeLending / BL，阶段 运营 / 交付，共 18 个组合（如 `UG-OD-运营`、`CDI-AirtimeLending-交付`），按业务线分组、支持搜索；选中后 `Client Name` 自动带出业务线。
-- 多行 Activity：工时、Remark、单据详情弹窗（可写备注）、添加 / 删除行。
+- 多行 Activity：工时、Remark、添加 / 删除行；Operation 列只保留删除按钮。
 - 校验：当天工时合计不得超过 8.0 小时、不允许负数；填了工时必须选活动代码。允许保存空内容（保存后当日会以红色提醒未填写）。
 - `Save` 保存到当前会话（刷新后回到默认演示数据）；保存后日历与周/月统计立即更新。
 
@@ -86,14 +86,15 @@ npm run typecheck  # TypeScript 全量检查
 │       └── lib/
 │           ├── date.ts              # 日期与周计算
 │           ├── config.ts            # 后台配置（业务线/产品/阶段）与组合生成
-│           ├── users.ts             # 用户与角色（本地存储）
+│           ├── users.ts             # 用户与角色（默认数据，会话内）
 │           ├── holidays.ts          # 2026 年法定节假日与调休上班日
 │           ├── catalog.ts           # 办公地点
 │           ├── model.ts             # 数据模型、校验、统计
 │           └── storage.ts           # 演示数据生成（刷新即重置）
 ├── .axhub/make/                     # Axhub Make 项目身份与资源清单
 ├── .github/workflows/deploy-pages.yml
-└── docs/preview.png
+├── docs/preview.png
+├── docs/TECHNICAL.md                 # 技术文档（架构 / 数据模型 / 规则 / 部署）
 ```
 
 ## 数据与演示数据
@@ -111,7 +112,11 @@ npm run typecheck  # TypeScript 全量检查
 
 推送到 `main` 后，GitHub Actions（`.github/workflows/deploy-pages.yml`）执行 `npm ci` + `npm run build`，将 `dist/` 发布到 GitHub Pages。
 
+## 技术文档
+
+架构、数据模型、业务规则、Axhub Make 集成与部署细节见 [`docs/TECHNICAL.md`](docs/TECHNICAL.md)。
+
 ## 说明
 
-界面默认中文（右上角可切英文），代码注释与文档为中文。
-本项目为原型演示，不含真实后端、审批流与权限体系，所有数据仅保存在浏览器本地。
+界面默认英文（右上角可切中文），代码注释与文档为中文。
+本项目为原型演示，不含真实后端、审批流与权限体系，所有数据仅存在当前页面内存，刷新即重置。

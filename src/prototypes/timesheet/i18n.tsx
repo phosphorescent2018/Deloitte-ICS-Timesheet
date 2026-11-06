@@ -230,8 +230,8 @@ const DICT: Record<string, Entry> = {
   'about.title': { zh: 'Mindigital 服务工时表', en: 'Mindigital Service Timesheet' },
   'about.subtitle': { zh: '高保真原型 · React + Vite · GitHub Pages', en: 'High-fidelity prototype · React + Vite · GitHub Pages' },
   'about.body': {
-    zh: 'Mindigital GDC 内部工时填报的可交互复刻：月历状态、每日工时明细、活动代码、工作地点与目标工时，以及预填一周、复制上一天、保存等操作。数据保存在浏览器 localStorage，刷新不丢。',
-    en: 'A working reproduction of the Mindigital GDC internal timesheet: month calendar with status colours, daily entry sheet with activity codes, work location and target hours, plus prefill and copy actions. Data is persisted in localStorage, so a reload keeps your entries.',
+    zh: 'Mindigital GDC 内部工时填报的可交互复刻：月历状态、每日工时明细、活动代码、工作地点与目标工时，以及预填一周、复制上一天、保存等操作。数据仅存在当前页面内存，刷新即重置。',
+    en: 'A working reproduction of the Mindigital GDC internal timesheet: month calendar with status colours, daily entry sheet with activity codes, work location and target hours, plus prefill and copy actions. Data lives in page memory only and resets on reload.',
   },
   'btn.close': { zh: '关闭', en: 'Close' },
 
