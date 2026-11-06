@@ -148,9 +148,6 @@ export default function Calendar({
           <i className="swatch swatch-locked" /> {t('legend.locked')}
         </span>
         <span className="legend-item">
-          <i className="swatch swatch-holiday" /> {t('legend.holiday')}
-        </span>
-        <span className="legend-item">
           <i className="swatch swatch-makeup" /> {t('legend.makeup')}
         </span>
       </div>
