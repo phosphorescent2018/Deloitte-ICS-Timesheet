@@ -1,6 +1,6 @@
 import { useI18n } from './i18n';
 import mindigitalMark from './assets/mindigital-mark.svg';
-import wecomMark from './assets/wecom.svg';
+import wecomMark from './assets/wecom.png';
 import { Icon } from './ui';
 
 interface Props {
