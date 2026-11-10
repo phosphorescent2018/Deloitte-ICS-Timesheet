@@ -24,8 +24,8 @@ const DICT: Record<string, Entry> = {
   'admin.kicker': { zh: '后台配置', en: 'Administration' },
   'admin.title': { zh: '基础数据配置', en: 'Master data' },
   'admin.subtitle': {
-    zh: '在这里维护业务线、产品、业务阶段和工作地点；保存后填报页会自动增加对应选项。',
-    en: 'Maintain business lines, products, stages and work locations here; the timesheet options update automatically.',
+    zh: '维护业务线、产品、业务阶段和工作地点。',
+    en: 'Maintain business lines, products, stages and work locations.',
   },
   'admin.businessLines': { zh: '业务线', en: 'Business lines' },
   'admin.products': { zh: '产品', en: 'Products' },
@@ -41,8 +41,8 @@ const DICT: Record<string, Entry> = {
   'admin.combinations': { zh: '当前共 {{count}} 个可选组合', en: '{{count}} combinations' },
   'admin.exportTitle': { zh: '数据导出', en: 'Data export' },
   'admin.exportDesc': {
-    zh: '导出当月全部员工填报明细，Excel 可直接打开（CSV，UTF-8 BOM）。',
-    en: 'Export all entries of the month as CSV (UTF-8 BOM), ready for Excel.',
+    zh: '导出当月全部员工明细（CSV，Excel 可直接打开）。',
+    en: 'Export all entries for the month as CSV (opens in Excel).',
   },
   'admin.exportBtn': { zh: '导出当月数据（Excel）', en: 'Export month (Excel)' },
   'admin.preview': { zh: '导出预览', en: 'Preview' },
@@ -53,8 +53,8 @@ const DICT: Record<string, Entry> = {
   'admin.department': { zh: 'Mindigital 全球交付中心', en: 'Mindigital Global Delivery Center' },
   'admin.usersTitle': { zh: '用户管理', en: 'User management' },
   'admin.usersDesc': {
-    zh: '只有超级管理员与填报用户两种角色（本原型不做登录页）。超级管理员可进入后台配置、管理用户并导出数据；填报用户只能填报自己的工时，看不到后台入口。',
-    en: 'Only two roles: super admin and timesheet user (no login in this prototype). Super admins can open administration, manage users and export data; timesheet users can only fill their own hours and never see the admin entry.',
+    zh: '仅两种角色；超级管理员可进后台，填报用户只能填报自己的工时。',
+    en: 'Two roles only: super admins can open administration; timesheet users fill their own hours.',
   },
   'admin.addUser': { zh: '新建用户', en: 'New user' },
   'admin.editUser': { zh: '编辑用户', en: 'Edit user' },
@@ -97,8 +97,8 @@ const DICT: Record<string, Entry> = {
 
   'banner.reminder': { zh: '提醒：', en: 'Reminder:' },
   'banner.text': {
-    zh: '历史工时仅允许填写和修改最近 3 天（含当天）的数据，更早日期需发起企业微信 OA 审批流。',
-    en: 'timesheets can only be created or edited within the last 3 days (including today); earlier dates require a WeCom OA approval.',
+    zh: '仅可填写最近 3 天；更早日期需 OA 审批。',
+    en: 'Only the last 3 days are editable; earlier dates need OA approval.',
   },
   'banner.period': { zh: '{{month}} · 目标 {{hours}} 小时/天', en: '{{month}} · Target {{hours}} h / day' },
 
@@ -141,8 +141,8 @@ const DICT: Record<string, Entry> = {
   'btn.copyActivity': { zh: '复制活动名称', en: 'Copy activity' },
   'btn.copied': { zh: '已复制', en: 'Copied' },
   'empty.lines': {
-    zh: '还没有活动行，点左下角的绿色加号添加一行。',
-    en: 'No activity lines yet — add one to start filling this day.',
+    zh: '还没有活动行，点左下角 + 添加。',
+    en: 'No activity lines yet — use + to add one.',
   },
   'foot.lastSaved': { zh: '上次保存 {{time}}', en: 'Last saved {{time}}' },
   'foot.notSaved': { zh: '尚未保存', en: 'Not saved yet' },
@@ -186,11 +186,11 @@ const DICT: Record<string, Entry> = {
   'foot.changeDay': { zh: '切换日期', en: 'change day' },
   'foot.save': { zh: '保存', en: 'save' },
 
-  'discard.title': { zh: '当前修改尚未保存', en: 'Unsaved changes' },
-  'discard.subtitle': { zh: '{{date}} 的修改尚未保存。', en: 'Your edits to {{date}} have not been saved.' },
+  'discard.title': { zh: '保存修改？', en: 'Save changes?' },
+  'discard.subtitle': { zh: '{{date}}', en: '{{date}}' },
   'discard.body': {
-    zh: '即将{{action}}。你可以先保存当前工时，或放弃本次修改。',
-    en: 'You are about to {{action}}. Save your edits first, or discard them.',
+    zh: '即将{{action}}。',
+    en: 'You are about to {{action}}.',
   },
   'action.switch': { zh: '切换到 {{date}}', en: 'switch to {{date}}' },
   'action.month': { zh: '切换月份', en: 'change month' },
@@ -201,15 +201,15 @@ const DICT: Record<string, Entry> = {
   'approval.title': { zh: '企业微信 OA 审批流', en: 'WeCom OA approval' },
   'approval.subtitle': { zh: '{{date}} 已超出可编辑范围', en: '{{date}} is outside the editable window' },
   'approval.body': {
-    zh: '历史工时仅允许填写和修改最近 3 天（含当天）的数据。继续将发起企业微信 OA 审批流，审批通过后才能修改 {{date}} 的工时。',
-    en: 'Timesheets can only be created or edited within the last 3 days (including today). Continuing will start a WeCom OA approval; once approved you can edit the hours for {{date}}.',
+    zh: '通过后即可修改该日工时。',
+    en: 'Once approved, you can edit that day.',
   },
   'approval.confirm': { zh: '发起审批', en: 'Start approval' },
-  'toast.approval': { zh: '已发起企业微信 OA 审批流（演示）。', en: 'WeCom OA approval started (demo).' },
+  'toast.approval': { zh: '已发起企业微信 OA 审批流。', en: 'WeCom OA approval started.' },
   'future.title': { zh: '不能填写下月工时', en: 'Next month is not editable' },
   'future.body': {
-    zh: '{{date}} 属于下个月。当前只能填写本月及本月内的未来日期，下月工时请在下月再填报。',
-    en: '{{date}} belongs to next month. Only the current month (including future dates within it) can be filled; please log next month\'s hours once that month starts.',
+    zh: '{{date}} 属于下个月，请下月再填报。',
+    en: '{{date}} is next month — please fill it then.',
   },
   'future.confirm': { zh: '知道了', en: 'Got it' },
 
@@ -228,8 +228,8 @@ const DICT: Record<string, Entry> = {
   'about.title': { zh: 'Mindigital 服务工时表', en: 'Mindigital Service Timesheet' },
   'about.subtitle': { zh: '高保真原型 · React + Vite · GitHub Pages', en: 'High-fidelity prototype · React + Vite · GitHub Pages' },
   'about.body': {
-    zh: 'Mindigital GDC 内部工时填报的可交互复刻：月历状态、每日工时明细、活动代码、工作地点与目标工时，以及预填一周、复制上一天、保存等操作。数据仅存在当前页面内存，刷新即重置。',
-    en: 'A working reproduction of the Mindigital GDC internal timesheet: month calendar with status colours, daily entry sheet with activity codes, work location and target hours, plus prefill and copy actions. Data lives in page memory only and resets on reload.',
+    zh: 'Mindigital GDC 工时填报的可交互复刻。数据仅存当前页面，刷新即重置。',
+    en: 'A working reproduction of the Mindigital GDC timesheet. Data lives in page memory only and resets on reload.',
   },
   'btn.close': { zh: '关闭', en: 'Close' },
 
