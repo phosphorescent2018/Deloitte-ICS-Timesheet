@@ -752,7 +752,7 @@ input[type='number'] {
 
 .sheet-head {
   display: grid;
-  grid-template-columns: minmax(200px, 1fr) 168px 168px 190px 84px;
+  grid-template-columns: minmax(200px, 1fr) 168px 190px 84px;
   background: #0f1419;
   border-radius: 3px 3px 0 0;
   color: #fff;
@@ -773,7 +773,7 @@ input[type='number'] {
 
 .sheet-row {
   display: grid;
-  grid-template-columns: minmax(200px, 1fr) 168px 168px 190px 84px;
+  grid-template-columns: minmax(200px, 1fr) 168px 190px 84px;
   align-items: center;
   min-height: 38px;
   border-bottom: 1px solid var(--line-soft);
@@ -812,27 +812,6 @@ input[type='number'] {
 .cell-activity {
   padding: 5px 8px;
   min-width: 0;
-}
-
-.cell-client {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  justify-content: center;
-  align-self: stretch;
-  padding: 4px 10px;
-  border-left: 1px solid var(--line-soft);
-}
-
-.client-name {
-  font-size: 12px;
-  font-weight: 600;
-  color: #2f3a42;
-}
-
-.client-cat {
-  font-size: 10.5px;
-  color: #8a949d;
 }
 
 .cell-ops {
@@ -2326,7 +2305,7 @@ kbd {
 
   .sheet-head,
   .sheet-row {
-    min-width: 900px;
+    min-width: 780px;
   }
 }
 

@@ -323,7 +323,7 @@ statusOf(day):
 | `AdminPage` | 基础数据 / 用户 / 导出 | `config`、`activities`、`days`、`year/month`、`onChange`、`onBack` |
 | `ui.tsx` | `Icon`、`Modal`、`Toast`、`StatusPill` | 纯展示组件 |
 
-`DayEditor` 的列结构：Activity / Client Name / 日期列（`MM/DD`）/ Remark / Operation。Operation 列只保留红色删除按钮；活动详情弹窗已在迭代中移除。
+`DayEditor` 的列结构：Activity / 日期列（`MM/DD`）/ Remark / Operation。Operation 列只保留红色删除按钮；客户名称列与活动详情弹窗已在迭代中移除。
 
 ---
 

@@ -82,14 +82,13 @@ export default function DayEditor({
       <div className="sheet">
         <div className="sheet-head">
           <div className="sh-activity">{t('th.activity')}</div>
-          <div className="sh-client">{t('th.client')}</div>
           <div className="sh-date">{shortDate(draft.date)}</div>
           <div className="sh-remark">{t('th.remark')}</div>
           <div className="sh-op">{t('th.operation')}</div>
         </div>
 
         <div className="sheet-row">
-          <div className="cell-label span2">{t('field.workLocation')}</div>
+          <div className="cell-label">{t('field.workLocation')}</div>
           <div className="cell-value">
             <div className="select-wrap">
               <select
@@ -118,7 +117,6 @@ export default function DayEditor({
         <div className="sheet-divider" />
 
         {draft.lines.map((line, index) => {
-          const activity = activities.find((item) => item.code === line.code);
           return (
             <div className="sheet-row line-row" key={line.id}>
               <div className="cell-activity">
@@ -128,13 +126,6 @@ export default function DayEditor({
                   onChange={(code) => onLineChange(line.id, { code })}
                   invalid={line.hours > 0 && !line.code}
                 />
-              </div>
-              <div className="cell-client">
-                {activity ? (
-                  <span className="client-name">{lang === 'zh' ? activity.clientZh : activity.client}</span>
-                ) : (
-                  <span className="muted">—</span>
-                )}
               </div>
               <div className="cell-value">
                 <div className="hours-field">
