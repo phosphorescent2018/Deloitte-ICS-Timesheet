@@ -20,10 +20,10 @@ Mindigital GDC 内部服务工时系统（原 Internal Client Service Timesheet�
 ### 每日填报
 
 - `Work Location` 下拉：重庆 / 北京 / 新加坡 / 远程。
-- `Target Hours` 固定为 8.0（与 `Total Actual Hours` 同样式展示，不可编辑）。
+- `Target Hours` 固定为 8.0，仅用于状态判定（达到 8 小时为「已完成」），不再单独展示；当天实际工时合计上限为 24 小时。
 - `Activity` 可搜索选择器：选项为「业务线-产品-业务阶段」组合，业务线 UG / CDI / GH，产品 OD / AirtimeLending / BL，阶段 运营 / 交付，共 18 个组合（如 `UG-OD-运营`、`CDI-AirtimeLending-交付`），按业务线分组、支持搜索；选中后 `Client Name` 自动带出业务线。
 - 多行 Activity：工时、Remark、添加 / 删除行；Operation 列只保留删除按钮。
-- 校验：当天工时合计不得超过 8.0 小时、不允许负数；填了工时必须选活动代码。允许保存空内容（保存后当日会以红色提醒未填写）。
+- 校验：当天工时合计不得超过 24 小时、不允许负数；填了工时必须选活动代码。允许保存空内容（保存后当日会以红色提醒未填写）。
 - `Save` 保存到当前会话（刷新后回到默认演示数据）；保存后日历与周/月统计立即更新。
 
 ### 三个核心动作

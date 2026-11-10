@@ -29,6 +29,9 @@ export interface AppState {
 
 export type DayStatus = 'empty' | 'partial' | 'complete';
 
+/** 单日实际工时合计上限（校验用）。 */
+export const DAILY_MAX_HOURS = 24;
+
 let sequence = 0;
 
 export function uid(prefix = 'line'): string {
@@ -84,7 +87,6 @@ export interface ValidationIssue {
 export function validateDay(day: DayRecord): ValidationIssue[] {
   const issues: ValidationIssue[] = [];
   const total = dayTotal(day);
-  const target = day.target > 0 ? day.target : 8;
 
   if (!Number.isFinite(day.target) || day.target <= 0) {
     issues.push({ key: 'err.targetMin' });
@@ -97,8 +99,11 @@ export function validateDay(day: DayRecord): ValidationIssue[] {
     if (line.hours > 0 && !line.code) issues.push({ key: 'err.lineCode', vars });
   });
 
-  if (total > target + 1e-9) {
-    issues.push({ key: 'err.totalOver', vars: { target: target.toFixed(1), total: total.toFixed(1) } });
+  if (total > DAILY_MAX_HOURS + 1e-9) {
+    issues.push({
+      key: 'err.totalOver',
+      vars: { max: DAILY_MAX_HOURS.toFixed(0), total: total.toFixed(1) },
+    });
   }
 
   const seen = new Set<string>();
