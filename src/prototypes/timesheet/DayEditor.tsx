@@ -107,7 +107,7 @@ export default function DayEditor({
       <div className="sheet">
         <div className="sheet-head">
           <div className="sh-activity">{t('th.activity')}</div>
-          <div className="sh-date">{shortDate(draft.date)}</div>
+          <div className="sh-date">{t('th.pending')}</div>
           <div className="sh-remark">{t('th.remark')}</div>
           <div className="sh-op">{t('th.operation')}</div>
         </div>

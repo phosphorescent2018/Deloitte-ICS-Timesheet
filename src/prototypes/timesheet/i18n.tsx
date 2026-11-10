@@ -133,6 +133,7 @@ const DICT: Record<string, Entry> = {
   'editor.kicker': { zh: '每日填报', en: 'Daily entry' },
   'editor.clear': { zh: '清空当天', en: 'Clear day' },
   'th.activity': { zh: '活动', en: 'Activity' },
+  'th.pending': { zh: '待填报项', en: 'Pending entry' },
   'th.remark': { zh: '备注', en: 'Remark' },
   'th.operation': { zh: '操作', en: 'Operation' },
   'field.workLocation': { zh: '工作地点', en: 'Work Location' },
