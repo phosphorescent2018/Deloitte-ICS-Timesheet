@@ -114,11 +114,8 @@ const DICT: Record<string, Entry> = {
   'role.employee': { zh: '填报用户', en: 'Timesheet user' },
   'role.super_admin': { zh: '超级管理员', en: 'Super admin' },
   'user.logout': { zh: '退出登录', en: 'Sign out' },
-  'user.logoutTitle': { zh: '退出登录？', en: 'Sign out?' },
-  'user.logoutBody': {
-    zh: '当前有未保存的修改，退出后会丢失。',
-    en: 'You have unsaved changes. Signing out will discard them.',
-  },
+  'user.logoutArm': { zh: '再次点击退出账户', en: 'Click again to sign out' },
+  'user.logoutArmDirty': { zh: '未保存修改将丢失，再次点击退出', en: 'Unsaved changes will be lost. Click again to sign out' },
   'col.index': { zh: '序号', en: 'No.' },
   'col.employee': { zh: '员工姓名', en: 'Employee' },
   'col.employeeId': { zh: '员工工号', en: 'Employee ID' },

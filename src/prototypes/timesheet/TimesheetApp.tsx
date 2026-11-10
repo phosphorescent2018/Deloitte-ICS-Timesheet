@@ -61,12 +61,13 @@ export default function TimesheetApp() {
   const [futureKey, setFutureKey] = useState<string | null>(null);
   const [page, setPage] = useState<'timesheet' | 'admin'>('timesheet');
   const [authed, setAuthed] = useState(false);
-  const [logoutConfirm, setLogoutConfirm] = useState(false);
+  const [logoutArmed, setLogoutArmed] = useState(false);
   const [config, setConfig] = useState<AdminConfig>(() => loadConfig());
   const [users, setUsers] = useState<AppUser[]>(() => loadUsers());
   const [feedback, setFeedback] = useState<FeedbackItem[]>([]);
   const [currentUserId] = useState<string>(() => users[0]?.id ?? '');
   const toastTimer = useRef<number | null>(null);
+  const logoutTimer = useRef<number | null>(null);
 
   const todayKey = toKey(new Date());
   const editableFrom = editableFromKey(todayKey);
@@ -90,7 +91,11 @@ export default function TimesheetApp() {
   };
 
   const doLogout = () => {
-    setLogoutConfirm(false);
+    if (logoutTimer.current) {
+      window.clearTimeout(logoutTimer.current);
+      logoutTimer.current = null;
+    }
+    setLogoutArmed(false);
     setPending(null);
     setApprovalKey(null);
     setFutureKey(null);
@@ -101,12 +106,25 @@ export default function TimesheetApp() {
     setAuthed(false);
   };
 
+  const cancelLogout = () => {
+    if (logoutTimer.current) {
+      window.clearTimeout(logoutTimer.current);
+      logoutTimer.current = null;
+    }
+    setLogoutArmed(false);
+  };
+
   const requestLogout = () => {
-    if (dirty) {
-      setLogoutConfirm(true);
+    if (logoutArmed) {
+      doLogout();
       return;
     }
-    doLogout();
+    setLogoutArmed(true);
+    if (logoutTimer.current) window.clearTimeout(logoutTimer.current);
+    logoutTimer.current = window.setTimeout(() => {
+      setLogoutArmed(false);
+      logoutTimer.current = null;
+    }, 3200);
   };
 
   useEffect(() => {
@@ -466,15 +484,25 @@ export default function TimesheetApp() {
 
           <button
             type="button"
-            className="user-chip"
+            className={`user-chip${logoutArmed ? ' is-armed' : ''}`}
             onClick={requestLogout}
-            title={t('user.logout')}
-            aria-label={t('user.logout')}
+            onBlur={cancelLogout}
+            onKeyDown={(event) => {
+              if (event.key === 'Escape') cancelLogout();
+            }}
+            title={logoutArmed ? t('user.logoutArm') : t('user.logout')}
+            aria-label={logoutArmed ? t('user.logoutArm') : t('user.logout')}
           >
             <span className="avatar">{currentUser?.name.slice(0, 1) ?? '—'}</span>
             <div>
               <strong>{currentUser?.name ?? '—'}</strong>
-              <span>{currentUser ? t(`role.${currentUser.role}`) : ''}</span>
+              <span>
+                {logoutArmed
+                  ? t(dirty ? 'user.logoutArmDirty' : 'user.logoutArm')
+                  : currentUser
+                    ? t(`role.${currentUser.role}`)
+                    : ''}
+              </span>
             </div>
             <Icon.LogOut size={13} className="logout-hint" />
           </button>
@@ -571,26 +599,6 @@ export default function TimesheetApp() {
           <kbd>S</kbd> {t('foot.save')}
         </span>
       </footer>
-
-      {logoutConfirm ? (
-        <Modal
-          title={t('user.logoutTitle')}
-          width={420}
-          onClose={() => setLogoutConfirm(false)}
-          footer={
-            <>
-              <button type="button" className="btn btn-ghost" onClick={() => setLogoutConfirm(false)}>
-                {t('btn.cancel')}
-              </button>
-              <button type="button" className="btn btn-danger" onClick={doLogout}>
-                {t('user.logout')}
-              </button>
-            </>
-          }
-        >
-          <p className="modal-copy">{t('user.logoutBody')}</p>
-        </Modal>
-      ) : null}
 
       <Toast toast={toast} />
 

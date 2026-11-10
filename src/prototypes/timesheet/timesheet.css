@@ -253,6 +253,41 @@ input[type='number'] {
   opacity: 1;
 }
 
+.user-chip.is-armed {
+  border-color: var(--danger);
+  background: #fff6f5;
+  animation: logout-pulse 1.4s ease-in-out infinite;
+}
+
+.user-chip.is-armed .avatar {
+  background: #f3c9c9;
+  color: #6b1d1d;
+}
+
+.user-chip.is-armed strong,
+.user-chip.is-armed div > span {
+  color: var(--danger);
+}
+
+.user-chip.is-armed div > span {
+  font-weight: 600;
+}
+
+.user-chip.is-armed .logout-hint {
+  opacity: 1;
+  color: var(--danger);
+}
+
+@keyframes logout-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(198, 40, 40, 0.18);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(198, 40, 40, 0.08);
+  }
+}
+
 .user-chip .avatar {
   width: 28px;
   height: 28px;

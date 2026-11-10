@@ -331,7 +331,7 @@ statusOf(day):
 
 | 组件 | 职责 | 关键 props / 行为 |
 | --- | --- | --- |
-| `TimesheetApp` | 全局状态、业务流程、弹窗编排 | `state`、`draft`、`config`、`page`、`mode`、`view`、`authed` |
+| `TimesheetApp` | 全局状态、业务流程、弹窗编排 | `state`、`draft`、`config`、`page`、`mode`、`view`、`authed`；用户胶囊采用 3.2 秒原地二次确认退出 |
 | `LoginPage` | 登录页（演示） | 企业微信登录 / 邮箱密码登录，点击均直接调用 `onLogin`，无校验；底部「匿名反馈」打开弹窗，提交调用 `onFeedback` |
 | `Calendar` | 6×7 月历 | `year/month`、`selectedKey`、`todayKey`、`editableFrom`、`days`、`onSelect/onPrev/onNext/onToday` |
 | `DayEditor` | 当日明细表 | `draft`、`activities`、`issues`、`onLineChange`、`onAddLine`、`onRemoveLine`、`onSave`、`onPrefill`、`onCopyLast` |
