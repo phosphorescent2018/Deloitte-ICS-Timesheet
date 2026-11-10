@@ -1970,7 +1970,14 @@ input[type='number'] {
 
 .admin-export-head h2 {
   margin: 4px 0;
-  font-size: 18px;
+  font-size: 15px;
+}
+
+.admin-export-head .admin-export-period {
+  margin: 4px 0 0;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #5a646d;
 }
 
 .admin-export-head p {
@@ -2121,6 +2128,12 @@ input[type='number'] {
   color: var(--muted);
   font-size: 12px;
   line-height: 1.6;
+}
+
+.admin-rule-copy h2,
+.admin-users-head h2 {
+  margin: 0;
+  font-size: 15px;
 }
 
 .admin-users-wrap {

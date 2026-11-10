@@ -475,7 +475,7 @@ export default function AdminPage({
 
         <section className="card admin-rule">
           <div className="admin-rule-copy">
-            <span className="editor-kicker">{t('admin.ruleTitle')}</span>
+            <h2>{t('admin.ruleTitle')}</h2>
             <p>{t('admin.ruleDesc')}</p>
           </div>
           <div className="admin-rule-control">
@@ -506,7 +506,7 @@ export default function AdminPage({
       <section className="card admin-users">
         <header className="admin-users-head">
           <div>
-            <span className="editor-kicker">{t('admin.usersTitle')}</span>
+            <h2>{t('admin.usersTitle')}</h2>
             <p>{t('admin.usersDesc')}</p>
           </div>
           <button type="button" className="btn btn-blue" onClick={openNewUser}>
@@ -569,7 +569,7 @@ export default function AdminPage({
       <section className="card admin-feedback">
         <header className="admin-users-head">
           <div>
-            <span className="editor-kicker">{t('admin.feedbackTitle')}</span>
+            <h2>{t('admin.feedbackTitle')}</h2>
             <p>{t('admin.feedbackDesc')}</p>
           </div>
           <span className="admin-feedback-count">{feedback.length}</span>
@@ -641,10 +641,10 @@ export default function AdminPage({
       <section className="card admin-export">
         <header className="admin-export-head">
           <div>
-            <span className="editor-kicker">{t('admin.exportTitle')}</span>
-            <h2>
+            <h2>{t('admin.exportTitle')}</h2>
+            <p className="admin-export-period">
               {formatMonth(year, month, lang)} · {t('admin.preview')}
-            </h2>
+            </p>
             <p>{t('admin.exportDesc')}</p>
           </div>
           <button type="button" className="btn btn-blue" onClick={handleExport} disabled={rows.length === 0}>
