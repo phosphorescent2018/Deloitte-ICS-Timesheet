@@ -7,13 +7,13 @@ type Vars = Record<string, string | number>;
 type Entry = { zh: string; en: string };
 
 const DICT: Record<string, Entry> = {
-  'app.title': { zh: 'Mindigital 服务工时填报系统', en: 'Mindigital Service Timesheet Entry System' },
+  'app.title': { zh: 'Mindigital 服务工时填报系统', en: 'Mindigital Service Timesheet System' },
   'app.subtitle': { zh: 'Mindigital 全球交付中心', en: 'Mindigital Global Delivery Center' },
   'app.day': { zh: '按天', en: 'Day' },
   'app.month': { zh: '按月', en: 'Month' },
   'app.role': { zh: '工时填报用户', en: 'Timesheet user' },
   'app.lang': { zh: '语言', en: 'Language' },
-  'login.brandTitle': { zh: '服务工时填报系统', en: 'Service Timesheet Entry System' },
+  'login.brandTitle': { zh: '服务工时填报系统', en: 'Service Timesheet System' },
   'login.brandSubtitle': { zh: '全球交付中心 · 内部工时管理', en: 'Global Delivery Center · Internal time management' },
   'login.title': { zh: '登录', en: 'Sign in' },
   'login.subtitle': { zh: '使用企业微信账号，或邮箱密码登录', en: 'Continue with WeCom, or sign in with email and password' },
@@ -237,7 +237,7 @@ const DICT: Record<string, Entry> = {
   'btn.cancel': { zh: '取消', en: 'Cancel' },
   'btn.reset': { zh: '重置数据', en: 'Reset data' },
 
-  'about.title': { zh: 'Mindigital 服务工时填报系统', en: 'Mindigital Service Timesheet Entry System' },
+  'about.title': { zh: 'Mindigital 服务工时填报系统', en: 'Mindigital Service Timesheet System' },
   'about.subtitle': { zh: '高保真原型 · React + Vite · GitHub Pages', en: 'High-fidelity prototype · React + Vite · GitHub Pages' },
   'about.body': {
     zh: 'Mindigital GDC 工时填报的可交互复刻。数据仅存当前页面，刷新即重置。',
@@ -309,7 +309,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
-    document.title = lang === 'zh' ? 'Mindigital 服务工时填报系统 · ICS' : 'Mindigital Service Timesheet Entry System · ICS';
+    document.title = lang === 'zh' ? 'Mindigital 服务工时填报系统 · ICS' : 'Mindigital Service Timesheet System · ICS';
   }, [lang]);
 
   const t = (key: string, vars?: Vars) => {
