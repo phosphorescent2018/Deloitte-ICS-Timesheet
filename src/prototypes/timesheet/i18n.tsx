@@ -101,7 +101,7 @@ const DICT: Record<string, Entry> = {
   'col.weekday': { zh: '星期', en: 'Weekday' },
   'col.location': { zh: '工作地点', en: 'Location' },
   'col.status': { zh: '状态', en: 'Status' },
-  'col.activity': { zh: '活动代码', en: 'Activity code' },
+  'col.activity': { zh: '工作项代码', en: 'Work item code' },
   'col.lineHours': { zh: '本行工时', en: 'Line hours' },
   'col.remark': { zh: '备注', en: 'Remark' },
   'col.savedAt': { zh: '保存时间', en: 'Saved at' },
@@ -138,7 +138,7 @@ const DICT: Record<string, Entry> = {
 
   'editor.kicker': { zh: '每日填报', en: 'Daily entry' },
   'editor.clear': { zh: '清空当天', en: 'Clear day' },
-  'th.activity': { zh: '活动', en: 'Activity' },
+  'th.activity': { zh: '工作项', en: 'Work item' },
   'th.pending': { zh: '待填报项', en: 'Pending entry' },
   'th.remark': { zh: '备注', en: 'Remark' },
   'th.operation': { zh: '操作', en: 'Operation' },
@@ -148,13 +148,13 @@ const DICT: Record<string, Entry> = {
   'field.remarkPlaceholder': { zh: '选填备注', en: 'Optional remark' },
   'field.hoursAria': { zh: '第 {{n}} 行工时', en: 'Line {{n}} hours' },
   'field.remarkAria': { zh: '第 {{n}} 行备注', en: 'Line {{n}} remark' },
-  'btn.addLine': { zh: '添加活动行', en: 'Add activity line' },
+  'btn.addLine': { zh: '添加工作项行', en: 'Add work item' },
   'btn.removeLine': { zh: '删除这一行', en: 'Remove line' },
-  'btn.copyActivity': { zh: '复制活动名称', en: 'Copy activity' },
+  'btn.copyActivity': { zh: '复制工作项名称', en: 'Copy work item' },
   'btn.copied': { zh: '已复制', en: 'Copied' },
   'empty.lines': {
-    zh: '还没有活动行，点左下角 + 添加。',
-    en: 'No activity lines yet — use + to add one.',
+    zh: '还没有工作项行，点左下角 + 添加。',
+    en: 'No work item lines yet — use + to add one.',
   },
   'foot.lastSaved': { zh: '上次保存 {{time}}', en: 'Last saved {{time}}' },
   'foot.notSaved': { zh: '尚未保存', en: 'Not saved yet' },
@@ -188,7 +188,7 @@ const DICT: Record<string, Entry> = {
   'ws.filled': { zh: '{{workdays}} 个工作日中已填 {{filled}} 天', en: '{{filled}} of {{workdays}} weekdays filled' },
   'ws.remaining': { zh: '剩余 {{hours}} 小时', en: 'Remaining {{hours}} h' },
 
-  'mix.kicker': { zh: '工时构成', en: 'Activity mix' },
+  'mix.kicker': { zh: '工时构成', en: 'Work item mix' },
   'mix.month': { zh: '本月', en: 'this month' },
   'mix.empty': {
     zh: '本月还没有记录，保存一天后就能看到构成。',
@@ -245,10 +245,10 @@ const DICT: Record<string, Entry> = {
   },
   'btn.close': { zh: '关闭', en: 'Close' },
 
-  'detail.title': { zh: '活动详情', en: 'Activity detail' },
+  'detail.title': { zh: '工作项详情', en: 'Work item detail' },
   'detail.subtitle': { zh: '{{date}} · {{hours}} 小时', en: '{{date}} · {{hours}} h' },
-  'detail.code': { zh: '活动代码', en: 'Activity code' },
-  'detail.name': { zh: '活动名称', en: 'Activity name' },
+  'detail.code': { zh: '工作项代码', en: 'Work item code' },
+  'detail.name': { zh: '工作项名称', en: 'Work item name' },
   'detail.client': { zh: '客户', en: 'Client' },
   'detail.category': { zh: '类别', en: 'Category' },
   'detail.note': { zh: '备注（随本行一起保存）', en: 'Note (saved with this line)' },
@@ -267,7 +267,7 @@ const DICT: Record<string, Entry> = {
   },
   'toast.prefillSkipped': { zh: ' · 跳过 {{count}} 天已有记录', en: ' · skipped {{count}} existing' },
   'toast.weekFull': { zh: '本周已填满，无需预填。', en: 'This week is already filled — nothing to prefill.' },
-  'toast.noCode': { zh: '请先选择活动代码再预填一周。', en: 'Select an activity code before prefilling the week.' },
+  'toast.noCode': { zh: '请先选择工作项代码再预填一周。', en: 'Select a work item code before prefilling the week.' },
   'toast.copied': {
     zh: '已复制 {{date}}（{{hours}} 小时），请确认后保存。',
     en: 'Copied {{date}} ({{hours}} h) — review and save.',
@@ -283,8 +283,8 @@ const DICT: Record<string, Entry> = {
 
   'err.targetMin': { zh: '目标工时必须大于 0。', en: 'Target hours must be greater than 0.' },
   'err.lineNegative': { zh: '第 {{n}} 行：工时不能为负数。', en: 'Line {{n}}: hours cannot be negative.' },
-  'err.lineCode': { zh: '第 {{n}} 行：请选择活动代码。', en: 'Line {{n}}: select an activity code.' },
-  'err.lineHours': { zh: '第 {{n}} 行：已选活动需填写工时。', en: 'Line {{n}}: enter hours for the selected activity.' },
+  'err.lineCode': { zh: '第 {{n}} 行：请选择工作项代码。', en: 'Line {{n}}: select a work item code.' },
+  'err.lineHours': { zh: '第 {{n}} 行：已选工作项需填写工时。', en: 'Line {{n}}: enter hours for the selected work item.' },
   'err.totalOver': {
     zh: '当天实际工时合计不能超过 {{max}} 小时。',
     en: 'Total actual hours cannot exceed {{max}} hours per day.',

@@ -72,8 +72,8 @@ ics-timesheet/
 │       ├── TimesheetApp.tsx          # 根组件：全局状态、页面切换、保存/预填/复制、弹窗
 │       ├── LoginPage.tsx             # 登录页（演示，点击直接进入）
 │       ├── Calendar.tsx              # 月历（6×7 网格、状态色、节假日标记）
-│       ├── DayEditor.tsx             # 每日填报明细表（活动、工时、备注、增删行）
-│       ├── ActivityPicker.tsx        # 可搜索的活动代码选择器
+│       ├── DayEditor.tsx             # 每日填报明细表（工作项、工时、备注、增删行）
+│       ├── ActivityPicker.tsx        # 可搜索的工作项代码选择器
 │       ├── MonthView.tsx             # 月视图（按天列表）
 │       ├── AdminPage.tsx             # 后台配置：基础数据、用户、导出
 │       ├── ui.tsx                    # Icon / Modal / Toast / StatusPill 等通用件
@@ -140,7 +140,7 @@ seedState() ──► state（已保存数据）
 ```ts
 interface ActivityLine {
   id: string;        // 行唯一 ID
-  code: string;      // 活动代码：业务线-产品-业务阶段
+  code: string;      // 工作项代码：业务线-产品-业务阶段
   hours: number;     // 本行工时
   remark: string;    // 行备注
   note: string;      // 单据备注（历史字段，当前 UI 不再提供入口）
@@ -181,7 +181,7 @@ interface MonthStats {
 
 `seedState()` 生成本周（周一至周日）内所有**工作日**的记录，每天 8 小时：
 
-| 星期 | 活动 | 工时 | 备注 |
+| 星期 | 工作项 | 工时 | 备注 |
 | --- | --- | --- | --- |
 | 周一 | `UG-OD-运营` + `UG-OD-交付` | 4 + 4 | — |
 | 周二 | `CDI-OD-运营` | 8 | Billing batch #2410-03 |
@@ -220,8 +220,8 @@ interface MonthStats {
 | 规则 | 错误文案（中文） | i18n key |
 | --- | --- | --- |
 | 单行工时 < 0 | 第 N 行：工时不能为负数。 | `err.lineNegative` |
-| 填了工时但没选活动代码 | 第 N 行：请选择活动代码。 | `err.lineCode` |
-| 选了活动代码但工时为 0 | 第 N 行：已选活动需填写工时。 | `err.lineHours` |
+| 填了工时但没选工作项代码 | 第 N 行：请选择工作项代码。 | `err.lineCode` |
+| 选了工作项代码但工时为 0 | 第 N 行：已选工作项需填写工时。 | `err.lineHours` |
 | 当天合计 > 24 小时（每日上限） | 当天实际工时合计不能超过 24 小时。 | `err.totalOver` |
 | 目标工时 ≤ 0 | 目标工时必须大于 0。 | `err.targetMin` |
 
@@ -276,7 +276,7 @@ statusOf(day):
 
 **Prefill one week**
 
-1. 模板来源：当前 `draft` 中带活动代码的行；若当前表单完全没有行，则向前最多 30 天查找最近一条有工时的记录，按目标工时 8 小时等比缩放并抹平 0.5 小时误差。
+1. 模板来源：当前 `draft` 中带工作项代码的行；若当前表单完全没有行，则向前最多 30 天查找最近一条有工时的记录，按目标工时 8 小时等比缩放并抹平 0.5 小时误差。
 2. 目标日期：当前选中日期所在周的周一至周五，过滤掉锁定日期与节假日。
 3. 已有工时（> 0）的日期自动跳过。
 4. 直接写入 `state` 并标记 `savedAt = now`，Toast 汇总「已预填 N 天 / 跳过 M 天」。
@@ -326,7 +326,7 @@ statusOf(day):
 | `AdminPage` | 基础数据 / 用户 / 导出 | `config`、`activities`、`days`、`year/month`、`onChange`、`onBack` |
 | `ui.tsx` | `Icon`、`Modal`、`Toast`、`StatusPill` | 纯展示组件 |
 
-`DayEditor` 的列结构：Activity / 日期列（`MM/DD`）/ Remark / Operation。Operation 列只保留红色删除按钮；Activity 选择器右侧有复制图标（复制活动代码，成功后短暂变绿勾）；客户名称列与活动详情弹窗已在迭代中移除。
+`DayEditor` 的列结构：Work item / 日期列（`MM/DD`）/ Remark / Operation。Operation 列只保留红色删除按钮；Work item 选择器右侧有复制图标（复制工作项代码，成功后短暂变绿勾）；客户名称列与工作项详情弹窗已在迭代中移除。
 
 ---
 
@@ -347,7 +347,7 @@ statusOf(day):
 ### 10.1 基础数据与工作地点
 
 - 维护 `businessLines`、`products`、`stages` 三个字符串数组，以及 `locations` 工作地点数组
-- 三元笛卡尔积实时生成活动代码：`业务线-产品-业务阶段`
+- 三元笛卡尔积实时生成工作项代码：`业务线-产品-业务阶段`
 - 默认：`UG / CDI / GH` × `OD / AirtimeLending / BL` × `运营 / 交付` = 18 个组合
 - 默认工作地点：重庆 / 北京 / 新加坡 / 远程，结构为 `{ value, label, labelZh }`
 - 每类至少保留 1 项；重复项会被拒绝
@@ -370,12 +370,12 @@ statusOf(day):
 - 入口：后台「数据导出 → 导出当月数据（Excel）」
 - 实际格式：**CSV（UTF-8 BOM，CRLF）**，Excel 可直接打开
 - 文件名：`工时明细_YYYY-MM.csv`
-- 每行 = 一条活动明细；只导出有工时的记录
+- 每行 = 一条工作项明细；只导出有工时的记录
 - 15 列：
 
 ```
 序号、员工姓名、员工工号、部门、业务线、产品、业务阶段、
-日期、星期、工作地点、状态、活动代码、本行工时、备注、保存时间
+日期、星期、工作地点、状态、工作项代码、本行工时、备注、保存时间
 ```
 
 > 目前导出的是「当前演示用户」的数据；因为原型只有一名填报用户的会话数据。接后端后应按员工维度聚合。
@@ -576,7 +576,7 @@ Record<employeeId, Record<dateKey, DayRecord>>
 - [ ] `npm run build` 通过，`dist/` 资源路径为相对路径
 - [ ] 月历：今天、选中、未填写、部分填写、已完成、锁定、节假日、调休 8 种状态显示正确
 - [ ] 可编辑范围：今天 / 前 2 天 / 本月未来日期可填；更早日期与下月日期被拦截
-- [ ] 校验：负数、超 24 小时、填工时未选活动均被阻断
+- [ ] 校验：负数、超 24 小时、填工时未选工作项均被阻断
 - [ ] Prefill / Copy / Save 三个动作与 Toast 文案正确
 - [ ] 中英文切换后所有文案、日期格式、页面标题正确
 - [ ] 后台：基础数据增删、用户增删改、导出 CSV 15 列
