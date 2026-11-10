@@ -38,7 +38,12 @@ pub async fn save_day(
     Json(body): Json<SaveDayRequest>,
 ) -> ApiResult<Json<TimesheetDayResponse>> {
     let work_date = parse_date(&date)?;
-    ensure_editable(work_date, auth.is_admin())?;
+    ensure_editable_at(
+        work_date,
+        today_shanghai(),
+        auth.is_admin(),
+        state.config.backfill_days,
+    )?;
 
     if !body.target_hours.is_finite() || body.target_hours <= 0.0 {
         return Err(ApiError::BadRequest("目标工时必须大于 0".to_string()));
@@ -309,25 +314,25 @@ fn today_shanghai() -> NaiveDate {
     Utc::now().with_timezone(&offset).date_naive()
 }
 
-fn ensure_editable(work_date: NaiveDate, is_admin: bool) -> ApiResult<()> {
-    ensure_editable_at(work_date, today_shanghai(), is_admin)
-}
-
-fn ensure_editable_at(work_date: NaiveDate, today: NaiveDate, is_admin: bool) -> ApiResult<()> {
+fn ensure_editable_at(
+    work_date: NaiveDate,
+    today: NaiveDate,
+    is_admin: bool,
+    backfill_days: i64,
+) -> ApiResult<()> {
     if is_admin {
         return Ok(());
     }
-    let earliest = today - Duration::days(2);
+    if work_date.year() != today.year() || work_date.month() != today.month() {
+        return Err(ApiError::Forbidden(
+            "跨月日期不允许填写，请发起补填审批".to_string(),
+        ));
+    }
+    let earliest = today - Duration::days(backfill_days);
 
     if work_date < earliest {
         return Err(ApiError::Forbidden(
             "该日期已超出可编辑窗口，请发起补填审批".to_string(),
-        ));
-    }
-    if work_date > today && (work_date.year() != today.year() || work_date.month() != today.month())
-    {
-        return Err(ApiError::Forbidden(
-            "不能填写下个月及以后的工时".to_string(),
         ));
     }
     Ok(())
@@ -344,34 +349,55 @@ mod tests {
     #[test]
     fn allows_today_and_previous_two_days() {
         let today = date("2026-11-10");
-        assert!(ensure_editable_at(today, today, false).is_ok());
-        assert!(ensure_editable_at(date("2026-11-09"), today, false).is_ok());
-        assert!(ensure_editable_at(date("2026-11-08"), today, false).is_ok());
+        assert!(ensure_editable_at(today, today, false, 2).is_ok());
+        assert!(ensure_editable_at(date("2026-11-09"), today, false, 2).is_ok());
+        assert!(ensure_editable_at(date("2026-11-08"), today, false, 2).is_ok());
     }
 
     #[test]
     fn rejects_older_dates_for_employee() {
         let today = date("2026-11-10");
-        let error = ensure_editable_at(date("2026-11-07"), today, false).unwrap_err();
+        let error = ensure_editable_at(date("2026-11-07"), today, false, 2).unwrap_err();
         assert!(matches!(error, ApiError::Forbidden(_)));
     }
 
     #[test]
     fn allows_current_month_future_dates() {
         let today = date("2026-11-10");
-        assert!(ensure_editable_at(date("2026-11-30"), today, false).is_ok());
+        assert!(ensure_editable_at(date("2026-11-30"), today, false, 2).is_ok());
     }
 
     #[test]
     fn rejects_next_month_future_dates() {
         let today = date("2026-11-10");
-        let error = ensure_editable_at(date("2026-12-01"), today, false).unwrap_err();
+        let error = ensure_editable_at(date("2026-12-01"), today, false, 2).unwrap_err();
         assert!(matches!(error, ApiError::Forbidden(_)));
+    }
+
+    #[test]
+    fn rejects_previous_month_even_if_within_window() {
+        let today = date("2026-12-01");
+        let error = ensure_editable_at(date("2026-11-30"), today, false, 2).unwrap_err();
+        assert!(matches!(error, ApiError::Forbidden(_)));
+    }
+
+    #[test]
+    fn zero_backfill_only_allows_today() {
+        let today = date("2026-11-10");
+        assert!(ensure_editable_at(today, today, false, 0).is_ok());
+        assert!(ensure_editable_at(date("2026-11-09"), today, false, 0).is_err());
+    }
+
+    #[test]
+    fn seven_backfill_allows_seven_days_back() {
+        let today = date("2026-11-10");
+        assert!(ensure_editable_at(date("2026-11-03"), today, false, 7).is_ok());
+        assert!(ensure_editable_at(date("2026-11-02"), today, false, 7).is_err());
     }
 
     #[test]
     fn admin_can_edit_historical_dates() {
         let today = date("2026-11-10");
-        assert!(ensure_editable_at(date("2026-01-01"), today, true).is_ok());
+        assert!(ensure_editable_at(date("2026-01-01"), today, true, 2).is_ok());
     }
 }
