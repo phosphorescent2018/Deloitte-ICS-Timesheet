@@ -16,8 +16,12 @@ const DICT: Record<string, Entry> = {
   'login.brandTitle': { zh: '服务工时填报系统', en: 'Service Timesheet Entry System' },
   'login.brandSubtitle': { zh: '全球交付中心 · 内部工时管理', en: 'Global Delivery Center · Internal time management' },
   'login.title': { zh: '登录', en: 'Sign in' },
-  'login.subtitle': { zh: '使用企业微信账号继续', en: 'Continue with your WeCom account' },
+  'login.subtitle': { zh: '使用企业微信账号，或邮箱密码登录', en: 'Continue with WeCom, or sign in with email and password' },
   'login.button': { zh: '企业微信登录', en: 'Sign in with WeCom' },
+  'login.or': { zh: '或', en: 'or' },
+  'login.emailPlaceholder': { zh: '邮箱', en: 'Email' },
+  'login.passwordPlaceholder': { zh: '密码', en: 'Password' },
+  'login.emailButton': { zh: '登录', en: 'Sign in' },
   'login.hint': { zh: '仅限 Mindigital 员工使用', en: 'For Mindigital employees only' },
 
   'menu.export': { zh: '导出 JSON', en: 'Export JSON' },

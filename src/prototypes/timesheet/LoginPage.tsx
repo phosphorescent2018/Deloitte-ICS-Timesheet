@@ -56,6 +56,37 @@ export default function LoginPage({ onLogin }: Props) {
             <span>{t('login.button')}</span>
             <Icon.ChevronRight size={16} />
           </button>
+
+          <div className="login-divider">
+            <span>{t('login.or')}</span>
+          </div>
+
+          <form
+            className="login-form"
+            onSubmit={(event) => {
+              event.preventDefault();
+              onLogin();
+            }}
+          >
+            <input
+              className="login-input"
+              type="email"
+              placeholder={t('login.emailPlaceholder')}
+              aria-label={t('login.emailPlaceholder')}
+              autoComplete="username"
+            />
+            <input
+              className="login-input"
+              type="password"
+              placeholder={t('login.passwordPlaceholder')}
+              aria-label={t('login.passwordPlaceholder')}
+              autoComplete="current-password"
+            />
+            <button type="submit" className="login-email-submit">
+              {t('login.emailButton')}
+            </button>
+          </form>
+
           <p className="login-hint">{t('login.hint')}</p>
         </div>
       </section>
