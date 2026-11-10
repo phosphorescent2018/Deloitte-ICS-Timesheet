@@ -584,5 +584,6 @@ Record<employeeId, Record<dateKey, DayRecord>>
 ## 18. 相关文档
 
 - 产品与使用说明：[`README.md`](../README.md)
+- 生产化设计与实施指南：[`PRODUCTION-DESIGN.md`](./PRODUCTION-DESIGN.md)
 - 预览图：[`docs/preview.png`](./preview.png)
 - 线上演示：<https://phosphorescent2018.github.io/Deloitte-ICS-Timesheet/>

@@ -90,7 +90,8 @@ npm run typecheck  # TypeScript 全量检查
 ├── .axhub/make/                     # Axhub Make 项目身份与资源清单
 ├── .github/workflows/deploy-pages.yml
 ├── docs/preview.png
-├── docs/TECHNICAL.md                 # 技术文档（架构 / 数据模型 / 规则 / 部署）
+├── docs/TECHNICAL.md                 # 原型技术文档
+├── docs/PRODUCTION-DESIGN.md         # 生产化设计与实施指南
 ```
 
 ## 数据与演示数据
@@ -110,7 +111,8 @@ npm run typecheck  # TypeScript 全量检查
 
 ## 技术文档
 
-架构、数据模型、业务规则、Axhub Make 集成与部署细节见 [`docs/TECHNICAL.md`](docs/TECHNICAL.md)。
+- 原型架构、数据模型、业务规则、Axhub Make 集成与部署细节：见 [`docs/TECHNICAL.md`](docs/TECHNICAL.md)
+- 后续真实写程序 / 上线的生产化设计（数据库、API、登录、审批、部署）：见 [`docs/PRODUCTION-DESIGN.md`](docs/PRODUCTION-DESIGN.md)
 
 ## 说明
 
