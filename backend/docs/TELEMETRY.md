@@ -29,7 +29,7 @@
 | `src/error.rs:41-48` | `ApiError::Internal` 把 `self.to_string()` 原样返回客户端 | 可能泄露 SQL/内部错误细节；上日志后更容易被放大 |
 | `src/main.rs:48-53` | `CorsLayer` 允许任意 Origin、任意 Header | 公开的 `/api/events`、`/api/feedback` 可被任意站点刷 |
 | `migrations/0001_init.sql:68-85` | `audit_log`、`feedback` 的时间字段是 `TEXT`（`now()::text`） | 新表用 `TIMESTAMPTZ` 后跨表比较要显式 cast，排序语义也不一致 |
-| `src/routes/admin.rs:178-190` | 先 `DELETE users`，再写审计；`audit_log.actor_id` 是 NOT NULL 外键且无 `ON DELETE` | 删除一个有过审计记录的用户会被外键拒绝。建议改为停用（`active=false`），不要硬删 |
+| `src/routes/admin.rs:166-193` | 已改为软删除：`DELETE` 只把 `active` 置 `FALSE`，不删用户行 | 不会再触发 `timesheet_day` / `audit_log` 外键；历史工时与审计保留 |
 | `src/routes/feedback.rs:12-34` | 反馈接口公开、无身份字段，表里也确实没有身份列 | 表层面成立；但一旦接入请求日志，HTTP 层就会留下 IP/UA，「完全匿名」不再成立 |
 | 前端 `src/prototypes/timesheet/lib/feedback.ts` | 反馈只写内存，刷新即丢；没有调用 `/api/feedback` | 当前「匿名反馈」是演示。接 API 时必须同步改 `i18n.tsx` 文案 |
 
