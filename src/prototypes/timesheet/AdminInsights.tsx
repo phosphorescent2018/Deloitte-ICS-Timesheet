@@ -27,6 +27,7 @@ interface MemberInsight {
 interface TeamInsight {
   workdays: number;
   people: number;
+  filledShifts: number;
   completionRate: number;
   totalHours: number;
   avgHours: number;
@@ -73,8 +74,9 @@ export default function AdminInsights({ users, days, config, year, month }: Prop
       });
     });
 
-    const people = Math.max(users.length, 1);
-    const members = users.map((user, index) => {
+    const activeUsers = users.filter((user) => user.active);
+    const people = activeUsers.length;
+    const members = activeUsers.map((user, index) => {
       if (index === 0) {
         return {
           id: user.id,
@@ -125,10 +127,11 @@ export default function AdminInsights({ users, days, config, year, month }: Prop
     return {
       workdays,
       people,
+      filledShifts,
       completionRate,
       totalHours: Math.round(totalHours * 10) / 10,
-      avgHours: Math.round((totalHours / people) * 10) / 10,
-      missingShifts: Math.max(totalShifts - filledShifts, 0),
+      avgHours: people > 0 ? Math.round((totalHours / people) * 10) / 10 : 0,
+      missingShifts: members.reduce((sum, member) => sum + member.missingDays, 0),
       members,
       trend,
       distribution,
@@ -159,7 +162,7 @@ export default function AdminInsights({ users, days, config, year, month }: Prop
         <div className="insight-kpi is-primary">
           <span>{t('insights.completion')}</span>
           <strong>{Math.round(insight.completionRate * 100)}%</strong>
-          <em>{t('insights.filledShifts', { n: Math.round(insight.completionRate * insight.workdays * insight.people) })}</em>
+          <em>{t('insights.filledShifts', { n: insight.filledShifts })}</em>
         </div>
         <div className="insight-kpi">
           <span>{t('insights.totalHours')}</span>
