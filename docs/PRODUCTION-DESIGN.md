@@ -51,21 +51,39 @@ Browser (React)
    ▼
 Nginx / Ingress
    ├── /            → 静态前端（dist）
-   └── /api/*       → 应用服务（Spring Boot / Node / Go 均可）
-                         ├── MySQL 8（业务数据）
+   └── /api/*       → Rust API（Axum + Tokio）
+                         ├── SQLite（本地）/ MySQL 8（生产，建议）
                          ├── Redis（会话/幂等，可选）
                          ├── 企业微信 SSO
                          ├── 企业微信 OA 审批
-                         └── 对象存储 / 文件服务（导出 Excel）
+                         └── Rust Excel 导出（rust_xlsxwriter）
 ```
 
 建议：
 
 - 前端继续用 React + TypeScript + Vite，直接复用现有组件
-- 后端建议 Spring Boot（与公司现有 Java 体系一致）或 Node/NestJS
-- 数据库 MySQL 8，字符集 `utf8mb4`，时区统一 `Asia/Shanghai`
+- 后端采用 **Rust + Axum + SQLx + Tokio**，本地用 SQLite，生产可切 MySQL 8
+- 数据库生产环境 MySQL 8，字符集 `utf8mb4`，时区统一 `Asia/Shanghai`
 - 部署 Docker + Docker Compose（小规模）或 Kubernetes（公司平台）
 - 所有环境变量管理密钥，不写进代码与镜像
+
+### 3.1 为什么选 Rust
+
+适合这个系统的点：
+
+- **内存安全、无 GC**：100 人规模下性能不是瓶颈，但长期运行稳定、延迟可预测
+- **编译期约束强**：角色、状态、日期窗口这类规则用类型和 `Result` 表达，重构时编译器兜底
+- **单体二进制**：不需要 JVM/Node 运行时，部署体积小，云服务器上占用低
+- **并发模型成熟**：Tokio 适合同时处理 API 请求和企业微信审批轮询
+- **生态够用**：Axum、SQLx、Serde、reqwest、rust_xlsxwriter 能覆盖当前全部需求
+- **适合“尽可能多用 Rust”**：API、鉴权、校验、审计、Excel、审批轮询、CLI 都能用同一语言
+
+代价：
+
+- 编译比 Go/Node 慢，迭代时要有耐心
+- 企业微信没有官方 Rust SDK，OAuth/审批/加解密要自己封装
+- Rust 人才比 Java/Node 少，交接成本要高一些
+- 前端不建议改 WASM，继续 React；Rust 用在服务端和工具链
 
 ---
 

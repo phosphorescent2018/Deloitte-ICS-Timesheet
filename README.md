@@ -55,6 +55,26 @@ Mindigital GDC 内部服务工时系统（原 Internal Client Service Timesheet�
 
 React 18 + TypeScript + Vite 5，无 UI 组件库，纯手写 CSS（企业灰 + 品牌绿 `#86BC25`），产物为纯静态站点。
 
+## Rust 后端（本地）
+
+`backend/` 是本地可运行的 Rust API，使用 Axum + SQLx + SQLite，已实现：
+
+- JWT 登录与角色权限
+- 工时保存/读取、服务端日期窗口与 24 小时校验
+- 业务线/产品/阶段配置
+- 用户管理、最后一名管理员保护
+- 审计日志
+- 全员月度 Excel 导出
+- 匿名反馈提交与后台处理
+
+```bash
+cd backend
+cp .env.example .env
+cargo run
+```
+
+默认 `http://127.0.0.1:8080`，同时把 `../dist` 作为静态站点。首次启动会创建 `MG-0001` 管理员，密码由 `BOOTSTRAP_ADMIN_PASSWORD` 指定。详细接口见 [`backend/README.md`](backend/README.md)。
+
 ## 本地运行
 
 ```bash
