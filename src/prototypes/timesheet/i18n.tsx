@@ -112,10 +112,6 @@ const DICT: Record<string, Entry> = {
   'admin.feedbackResolve': { zh: '标记已处理', en: 'Mark resolved' },
   'admin.feedbackReopen': { zh: '重新打开', en: 'Reopen' },
   'admin.feedbackDelete': { zh: '删除', en: 'Delete' },
-  'admin.usersDesc': {
-    zh: '仅两种角色；超级管理员可进后台，填报用户只能填报自己的工时。',
-    en: 'Two roles only: super admins can open administration; timesheet users fill their own hours.',
-  },
   'admin.addUser': { zh: '新建用户', en: 'New user' },
   'admin.editUser': { zh: '编辑用户', en: 'Edit user' },
   'admin.deleteUser': { zh: '删除', en: 'Delete' },

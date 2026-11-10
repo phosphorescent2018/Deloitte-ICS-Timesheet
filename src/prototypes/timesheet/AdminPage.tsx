@@ -531,7 +531,6 @@ export default function AdminPage({
         <header className="admin-users-head">
           <div>
             <h2>{t('admin.usersTitle')}</h2>
-            <p>{t('admin.usersDesc')}</p>
           </div>
           <button type="button" className="btn btn-blue" onClick={openNewUser}>
             <Icon.Plus size={14} />
