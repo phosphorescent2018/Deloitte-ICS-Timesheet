@@ -804,19 +804,6 @@ input[type='number'] {
   border-left: 1px solid var(--line-soft);
 }
 
-.sheet-row-total {
-  background: #fbfcfd;
-}
-
-.total-value {
-  display: block;
-  padding-right: 0;
-  text-align: center;
-  font-size: 14px;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-}
-
 .sheet-divider {
   height: 3px;
   background: #0f1419;

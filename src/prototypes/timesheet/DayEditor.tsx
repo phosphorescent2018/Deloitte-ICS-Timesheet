@@ -23,9 +23,6 @@ interface Props {
   onClear: () => void;
 }
 
-/** 目标工时与实际工时合计都固定展示标准 8 小时。 */
-const STANDARD_HOURS = 8;
-
 export default function DayEditor({
   draft,
   activities,
@@ -104,24 +101,6 @@ export default function DayEditor({
               </select>
               <Icon.ChevronDown size={14} />
             </div>
-          </div>
-          <div className="cell-empty" />
-          <div className="cell-empty" />
-        </div>
-
-        <div className="sheet-row">
-          <div className="cell-label span2">{t('field.targetHours')}</div>
-          <div className="cell-value">
-            <span className="total-value">{STANDARD_HOURS.toFixed(1)}</span>
-          </div>
-          <div className="cell-empty" />
-          <div className="cell-empty" />
-        </div>
-
-        <div className="sheet-row sheet-row-total">
-          <div className="cell-label span2">{t('field.totalHours')}</div>
-          <div className="cell-value">
-            <span className="total-value">{STANDARD_HOURS.toFixed(1)}</span>
           </div>
           <div className="cell-empty" />
           <div className="cell-empty" />
