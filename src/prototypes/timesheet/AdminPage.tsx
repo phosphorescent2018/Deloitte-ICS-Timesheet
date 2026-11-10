@@ -7,6 +7,7 @@ import { dayTotal, statusOf, type DayRecord } from './lib/model';
 import { newUserId, type AppUser, type UserRole } from './lib/users';
 import type { FeedbackItem } from './lib/feedback';
 import { Icon, Modal } from './ui';
+import AdminInsights from './AdminInsights';
 
 interface Props {
   config: AdminConfig;
@@ -483,6 +484,8 @@ export default function AdminPage({
           </button>
         </div>
       </header>
+
+      <AdminInsights users={users} days={days} config={config} year={year} month={month} />
 
       <div className="admin-grid">
         <ListEditor
