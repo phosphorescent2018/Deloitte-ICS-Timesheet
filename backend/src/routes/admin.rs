@@ -175,14 +175,18 @@ pub async fn delete_user(
     }
 
     let mut tx = state.db.begin().await?;
-    sqlx::query("DELETE FROM users WHERE id = $1")
-        .bind(&id)
-        .execute(&mut *tx)
-        .await?;
+    sqlx::query(
+        "UPDATE users SET active = FALSE,
+         updated_at = now()::text
+         WHERE id = $1",
+    )
+    .bind(&id)
+    .execute(&mut *tx)
+    .await?;
     audit(
         &mut tx,
         &auth.id,
-        "USER_DELETE",
+        "USER_DEACTIVATE",
         "user",
         Some(&id),
         Some(&current.employee_no),

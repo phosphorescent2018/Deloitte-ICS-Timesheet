@@ -116,7 +116,7 @@ pub async fn save_day(
     .bind(&auth.id)
     .bind(work_date.format("%Y-%m-%d").to_string())
     .bind(&body.location)
-    .bind(8.0_f64)
+    .bind(body.target_hours)
     .bind(&now)
     .bind(&now)
     .bind(&now)

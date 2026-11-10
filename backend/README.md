@@ -81,7 +81,7 @@ cargo run
 | GET | `/api/timesheets/{date}` | 某天工时 |
 | PUT | `/api/timesheets/{date}` | 保存某天工时 |
 | GET/POST | `/api/admin/users` | 用户列表/新增 |
-| PUT/DELETE | `/api/admin/users/{id}` | 修改/删除用户 |
+| PUT/DELETE | `/api/admin/users/{id}` | 修改 / 停用用户（软删除，保留工时与审计） |
 | GET | `/api/admin/audit` | 审计日志 |
 | GET | `/api/admin/export?year=2026&month=11` | 全员月度 Excel |
 
@@ -93,6 +93,7 @@ cargo run
 - 单日合计 ≤ 24 小时、负数拒绝、填工时必须选有效工作项
 - 空内容允许保存
 - 用户管理保护最后一名启用的超级管理员
+- 删除用户为软删除（`active=false`），保留其工时与审计记录
 - 审计日志记录工时保存、配置修改、用户变更
 
 ## 下一阶段
