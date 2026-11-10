@@ -2530,13 +2530,8 @@ kbd {
 .login-wecom {
   width: 24px;
   height: 24px;
-  display: grid;
-  place-items: center;
+  flex: 0 0 auto;
   border-radius: 6px;
-  background: #0f1419;
-  color: #fff;
-  font-size: 12px;
-  font-weight: 700;
 }
 
 .login-hint {

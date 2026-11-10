@@ -1,5 +1,6 @@
 import { useI18n } from './i18n';
 import mindigitalMark from './assets/mindigital-mark.svg';
+import wecomMark from './assets/wecom.svg';
 import { Icon } from './ui';
 
 interface Props {
@@ -51,9 +52,7 @@ export default function LoginPage({ onLogin }: Props) {
           <h2>{t('login.title')}</h2>
           <p className="login-sub">{t('login.subtitle')}</p>
           <button type="button" className="login-submit" onClick={onLogin}>
-            <span className="login-wecom" aria-hidden="true">
-              企
-            </span>
+            <img className="login-wecom" src={wecomMark} alt="" aria-hidden="true" />
             <span>{t('login.button')}</span>
             <Icon.ChevronRight size={16} />
           </button>
