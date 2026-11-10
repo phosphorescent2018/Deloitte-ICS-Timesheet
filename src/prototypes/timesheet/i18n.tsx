@@ -98,8 +98,8 @@ const DICT: Record<string, Entry> = {
 
   'banner.reminder': { zh: '提醒：', en: 'Reminder:' },
   'banner.text': {
-    zh: '仅可填写最近 3 天；更早日期需 OA 审批。',
-    en: 'Only the last 3 days are editable; earlier dates need OA approval.',
+    zh: 'xxxxxxx',
+    en: 'xxxxxxx',
   },
   'banner.period': { zh: '{{month}} · 目标 {{hours}} 小时/天', en: '{{month}} · Target {{hours}} h / day' },
 
