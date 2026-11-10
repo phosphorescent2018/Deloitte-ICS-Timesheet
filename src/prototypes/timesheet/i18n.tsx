@@ -13,7 +13,7 @@ const DICT: Record<string, Entry> = {
   'app.month': { zh: '按月', en: 'Month' },
   'app.role': { zh: '工时填报用户', en: 'Timesheet user' },
   'app.lang': { zh: '语言', en: 'Language' },
-  'login.brandTitle': { zh: '服务工时填报系统', en: 'Service Timesheet System' },
+  'login.brandTitle': { zh: 'Mindigital 服务工时填报系统', en: 'Mindigital Service Timesheet System' },
   'login.brandSubtitle': { zh: '全球交付中心 · 内部工时管理', en: 'Global Delivery Center · Internal time management' },
   'login.title': { zh: '登录', en: 'Sign in' },
   'login.subtitle': { zh: '使用企业微信账号，或邮箱密码登录', en: 'Continue with WeCom, or sign in with email and password' },
