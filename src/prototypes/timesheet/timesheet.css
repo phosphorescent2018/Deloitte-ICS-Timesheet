@@ -2552,10 +2552,11 @@ kbd {
 
 .login-brand-copy h1 {
   margin: 14px 0 16px;
-  font-size: 48px;
+  font-size: 40px;
   line-height: 1.08;
   letter-spacing: -0.02em;
   color: #0f1419;
+  white-space: nowrap;
 }
 
 [lang='en'] .login-brand-copy h1 {
@@ -2816,6 +2817,10 @@ kbd {
 }
 
 @media (max-width: 1280px) {
+  [lang='zh'] .login-brand-copy h1 {
+    font-size: 36px;
+  }
+
   [lang='en'] .login-brand-copy h1 {
     font-size: 34px;
   }
