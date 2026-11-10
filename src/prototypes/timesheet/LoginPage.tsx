@@ -143,6 +143,13 @@ export default function LoginPage({ onLogin, onFeedback }: Props) {
             </>
           }
         >
+          <div className="feedback-privacy">
+            <Icon.Lock size={14} />
+            <div>
+              <strong>{t('feedback.privacyTitle')}</strong>
+              <span>{t('feedback.privacyBody')}</span>
+            </div>
+          </div>
           <textarea
             className="feedback-input"
             autoFocus

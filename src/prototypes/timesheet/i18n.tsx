@@ -26,8 +26,13 @@ const DICT: Record<string, Entry> = {
   'feedback.entry': { zh: '匿名反馈', en: 'Anonymous feedback' },
   'feedback.title': { zh: '匿名反馈', en: 'Anonymous feedback' },
   'feedback.subtitle': {
-    zh: '不需要登录，内容不会关联到你的账号。',
-    en: 'No sign-in needed. Your feedback is not linked to your account.',
+    zh: '不需要登录，任何人可提交。',
+    en: 'No sign-in required. Anyone can submit.',
+  },
+  'feedback.privacyTitle': { zh: '完全匿名', en: 'Fully anonymous' },
+  'feedback.privacyBody': {
+    zh: '不记录姓名、工号、账号或联系方式；后台只看到反馈内容、提交时间和处理状态。',
+    en: 'No name, employee ID, account, or contact details are stored. Admins only see the message, time, and handling status.',
   },
   'feedback.placeholder': {
     zh: '写下你的建议、问题或想法…',

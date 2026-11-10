@@ -2752,6 +2752,39 @@ kbd {
   color: var(--brand-dark);
 }
 
+.feedback-privacy {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 9px 11px;
+  border: 1px solid #d9e9bd;
+  border-radius: 8px;
+  background: #f5faec;
+  color: #3f5e14;
+}
+
+.feedback-privacy svg {
+  flex: 0 0 auto;
+  margin-top: 1px;
+}
+
+.feedback-privacy div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.feedback-privacy strong {
+  font-size: 12px;
+}
+
+.feedback-privacy span {
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: #5b6f36;
+}
+
 .feedback-input {
   width: 100%;
   min-height: 132px;
@@ -2765,7 +2798,6 @@ kbd {
   color: #0f1419;
   outline: none;
 }
-
 .feedback-input::placeholder {
   color: #a2acb5;
 }
