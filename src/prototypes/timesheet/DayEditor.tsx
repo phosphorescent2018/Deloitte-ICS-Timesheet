@@ -4,7 +4,7 @@ import { useI18n, formatLongDate } from './i18n';
 import { locationLabel, type LocationOption } from './lib/catalog';
 import type { ActivityCode } from './lib/config';
 import { fromKey, isoWeek, shortDate, timeLabel } from './lib/date';
-import { DAILY_MAX_HOURS, type ActivityLine, type DayRecord, type DayStatus } from './lib/model';
+import { type ActivityLine, type DayRecord, type DayStatus } from './lib/model';
 import { Icon, StatusPill } from './ui';
 
 interface Props {
@@ -82,9 +82,7 @@ export default function DayEditor({
     }
     const parsed = Number.parseFloat(raw);
     if (Number.isFinite(parsed)) {
-      onLineChange(id, {
-        hours: Math.min(DAILY_MAX_HOURS, Math.max(-DAILY_MAX_HOURS, Math.round(parsed * 100) / 100)),
-      });
+      onLineChange(id, { hours: Math.round(parsed * 100) / 100 });
     }
   };
 
