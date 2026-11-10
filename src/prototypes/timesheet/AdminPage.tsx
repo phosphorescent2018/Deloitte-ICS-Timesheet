@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { formatMonth, formatWeekdayShort, useI18n } from './i18n';
-import { locationLabel } from './lib/catalog';
+import { locationLabel, type LocationOption } from './lib/catalog';
 import type { ActivityCode, AdminConfig } from './lib/config';
 import { daysInMonth, toKey } from './lib/date';
 import { dayTotal, statusOf, type DayRecord } from './lib/model';
@@ -80,6 +80,122 @@ function ListEditor({
           placeholder={placeholder}
           onChange={(event) => {
             setValue(event.target.value);
+            setError('');
+          }}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              event.preventDefault();
+              submit();
+            }
+          }}
+        />
+        <button type="button" className="btn btn-blue" onClick={submit}>
+          <Icon.Plus size={14} />
+          {addLabel}
+        </button>
+      </div>
+      {error ? <p className="admin-error">{error}</p> : null}
+    </section>
+  );
+}
+
+interface LocationEditorProps {
+  title: string;
+  lang: 'zh' | 'en';
+  items: LocationOption[];
+  zhPlaceholder: string;
+  enPlaceholder: string;
+  addLabel: string;
+  removeLabel: string;
+  duplicateLabel: string;
+  atLeastOneLabel: string;
+  onChange: (items: LocationOption[]) => void;
+}
+
+function LocationEditor({
+  title,
+  lang,
+  items,
+  zhPlaceholder,
+  enPlaceholder,
+  addLabel,
+  removeLabel,
+  duplicateLabel,
+  atLeastOneLabel,
+  onChange,
+}: LocationEditorProps) {
+  const [zh, setZh] = useState('');
+  const [en, setEn] = useState('');
+  const [error, setError] = useState('');
+
+  const submit = () => {
+    const labelZh = zh.trim();
+    const enText = en.trim();
+    const label = enText ? `${enText} ${labelZh}` : labelZh;
+    if (!labelZh) return;
+    if (
+      items.some(
+        (item) =>
+          item.labelZh.toLowerCase() === labelZh.toLowerCase() ||
+          item.label.toLowerCase() === label.toLowerCase(),
+      )
+    ) {
+      setError(duplicateLabel);
+      return;
+    }
+    onChange([
+      ...items,
+      { value: `loc-${Date.now().toString(36)}`, label, labelZh },
+    ]);
+    setZh('');
+    setEn('');
+    setError('');
+  };
+
+  const remove = (value: string) => {
+    if (items.length <= 1) return;
+    onChange(items.filter((item) => item.value !== value));
+  };
+
+  return (
+    <section className="card admin-card admin-locations">
+      <h2>{title}</h2>
+      <div className="admin-tags">
+        {items.map((item) => (
+          <span className="admin-tag" key={item.value}>
+            {lang === 'zh' ? item.labelZh : item.label}
+            <button
+              type="button"
+              title={items.length <= 1 ? atLeastOneLabel : removeLabel}
+              disabled={items.length <= 1}
+              onClick={() => remove(item.value)}
+              aria-label={`${removeLabel} ${item.labelZh}`}
+            >
+              <Icon.X size={11} />
+            </button>
+          </span>
+        ))}
+      </div>
+      <div className="admin-add admin-add-location">
+        <input
+          value={zh}
+          placeholder={zhPlaceholder}
+          onChange={(event) => {
+            setZh(event.target.value);
+            setError('');
+          }}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              event.preventDefault();
+              submit();
+            }
+          }}
+        />
+        <input
+          value={en}
+          placeholder={enPlaceholder}
+          onChange={(event) => {
+            setEn(event.target.value);
             setError('');
           }}
           onKeyDown={(event) => {
@@ -184,7 +300,7 @@ export default function AdminPage({ config, activities, days, year, month, onCha
     setUsers((prev) => prev.filter((item) => item.id !== user.id));
   };
 
-  const updateList = (field: keyof AdminConfig, next: string[]) => {
+  const updateList = (field: 'businessLines' | 'products' | 'stages', next: string[]) => {
     onChange({ ...config, [field]: next });
   };
 
@@ -214,7 +330,7 @@ export default function AdminPage({ config, activities, days, year, month, onCha
             activity?.stage ?? '—',
             key,
             formatWeekdayShort(key, lang),
-            locationLabel(record.location, lang),
+            locationLabel(record.location, lang, config.locations),
             '8.0',
             totalHours.toFixed(1),
             t(`status.${status}`),
@@ -314,6 +430,19 @@ export default function AdminPage({ config, activities, days, year, month, onCha
           }
         />
       </div>
+
+      <LocationEditor
+        title={t('admin.locations')}
+        lang={lang}
+        items={config.locations}
+        zhPlaceholder={t('admin.locationZh')}
+        enPlaceholder={t('admin.locationEn')}
+        addLabel={t('admin.add')}
+        removeLabel={t('admin.remove')}
+        duplicateLabel={t('admin.duplicate')}
+        atLeastOneLabel={t('admin.atLeastOne')}
+        onChange={(locations) => onChange({ ...config, locations })}
+      />
 
       <div className="admin-summary">
         <span>{t('admin.combinations', { count: activities.length })}</span>

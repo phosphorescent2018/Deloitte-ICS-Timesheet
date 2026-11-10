@@ -32,11 +32,11 @@ function boot(): { state: AppState; key: string } {
   return { state: loadState(), key: toKey(new Date()) };
 }
 
-function draftFor(state: AppState, key: string): DayRecord {
+function draftFor(state: AppState, key: string, fallbackLocation = state.defaultLocation): DayRecord {
   const record = state.days[key];
   return record
     ? cloneDay(record)
-    : blankDay(key, state.defaultLocation, state.defaultTarget);
+    : blankDay(key, fallbackLocation, state.defaultTarget);
 }
 
 export default function TimesheetApp() {
@@ -68,6 +68,10 @@ export default function TimesheetApp() {
   const applyConfig = (next: AdminConfig) => {
     setConfig(next);
     saveConfig(next);
+    if (!next.locations.some((location) => location.value === draft.location)) {
+      const fallback = next.locations[0]?.value ?? '';
+      setDraft((current) => ({ ...current, location: fallback }));
+    }
   };
 
   const pushToast = (text: string, tone: ToastTone = 'ok') => {
@@ -93,7 +97,7 @@ export default function TimesheetApp() {
 
   const openDay = (key: string, syncView = true) => {
     setSelectedKey(key);
-    setDraft(draftFor(state, key));
+    setDraft(draftFor(state, key, config.locations[0]?.value ?? state.defaultLocation));
     setDirty(false);
     setIssues([]);
     if (syncView) {
@@ -456,6 +460,7 @@ export default function TimesheetApp() {
             <DayEditor
               draft={draft}
               activities={activities}
+              locations={config.locations}
               status={statusOf(draft)}
               dirty={dirty}
               issues={issues.map((issue) => t(issue.key, issue.vars))}
@@ -476,6 +481,7 @@ export default function TimesheetApp() {
               month={view.m}
               days={state.days}
               stats={stats}
+              locations={config.locations}
               onSelect={(key) => {
                 setMode('day');
                 selectDate(key);

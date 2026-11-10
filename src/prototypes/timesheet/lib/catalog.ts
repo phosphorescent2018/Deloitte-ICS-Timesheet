@@ -13,8 +13,12 @@ export const LOCATIONS: LocationOption[] = [
 
 export const DEFAULT_LOCATION = 'cq';
 
-export function locationLabel(value: string, lang: 'zh' | 'en' = 'zh'): string {
-  const option = LOCATIONS.find((item) => item.value === value);
+export function locationLabel(
+  value: string,
+  lang: 'zh' | 'en' = 'zh',
+  locations: LocationOption[] = LOCATIONS,
+): string {
+  const option = locations.find((item) => item.value === value);
   if (!option) return value;
   return lang === 'zh' ? option.labelZh : option.label;
 }

@@ -1,3 +1,5 @@
+import { LOCATIONS, type LocationOption } from './catalog';
+
 export type ActivityCategory = string;
 
 export interface ActivityCode {
@@ -21,12 +23,14 @@ export interface AdminConfig {
   businessLines: string[];
   products: string[];
   stages: string[];
+  locations: LocationOption[];
 }
 
 export const DEFAULT_CONFIG: AdminConfig = {
   businessLines: ['UG', 'CDI', 'GH'],
   products: ['OD', 'AirtimeLending', 'BL'],
   stages: ['运营', '交付'],
+  locations: LOCATIONS.map((location) => ({ ...location })),
 };
 
 const CONFIG_KEY = 'deloitte-ics-config.v1';
@@ -42,6 +46,7 @@ export function loadConfig(): AdminConfig {
     businessLines: [...DEFAULT_CONFIG.businessLines],
     products: [...DEFAULT_CONFIG.products],
     stages: [...DEFAULT_CONFIG.stages],
+    locations: DEFAULT_CONFIG.locations.map((location) => ({ ...location })),
   };
 }
 

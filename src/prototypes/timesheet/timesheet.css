@@ -1793,6 +1793,14 @@ input[type='number'] {
   gap: 18px;
 }
 
+.admin-locations {
+  margin-top: 18px;
+}
+
+.admin-add-location input {
+  min-width: 0;
+}
+
 .admin-card {
   padding: 16px 18px;
 }

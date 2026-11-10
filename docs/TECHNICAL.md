@@ -85,7 +85,7 @@ ics-timesheet/
 │           ├── model.ts              # 数据模型、状态判定、校验、月度统计
 │           ├── config.ts             # 业务线/产品/阶段配置与组合生成
 │           ├── users.ts              # 默认用户、角色、ID 生成
-│           ├── catalog.ts            # 办公地点字典
+│           ├── catalog.ts            # 办公地点默认值与显示标签
 │           └── storage.ts            # 演示数据生成（刷新即重置）
 ├── scripts/sync-project-metadata.mjs # 扫描原型入口，生成 Axhub 元数据
 ├── vite-plugins/axhub-dev-server-info.ts # 写入 .dev-server-info.json + /api/health
@@ -341,13 +341,15 @@ statusOf(day):
 
 ## 10. 后台配置
 
-### 10.1 基础数据
+### 10.1 基础数据与工作地点
 
-- 维护 `businessLines`、`products`、`stages` 三个字符串数组
+- 维护 `businessLines`、`products`、`stages` 三个字符串数组，以及 `locations` 工作地点数组
 - 三元笛卡尔积实时生成活动代码：`业务线-产品-业务阶段`
 - 默认：`UG / CDI / GH` × `OD / AirtimeLending / BL` × `运营 / 交付` = 18 个组合
+- 默认工作地点：重庆 / 北京 / 新加坡 / 远程，结构为 `{ value, label, labelZh }`
 - 每类至少保留 1 项；重复项会被拒绝
-- 修改后填报页 `ActivityPicker` 立即增减选项
+- 修改后填报页 `ActivityPicker` 与「工作地点」下拉立即增减选项
+- 新增工作地点时填中文名与英文名，`value` 自动生成（`loc-<timestamp36>`）；删除当前正在编辑的地点时，编辑区自动回退到列表第一项
 
 ### 10.2 用户管理
 

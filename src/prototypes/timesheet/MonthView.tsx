@@ -1,5 +1,5 @@
 import { useI18n, formatWeekdayShort } from './i18n';
-import { locationLabel } from './lib/catalog';
+import { locationLabel, type LocationOption } from './lib/catalog';
 import { daysInMonth, fromKey, isLockedKey, shortDate, toKey } from './lib/date';
 import { isWorkday } from './lib/holidays';
 import {
@@ -15,10 +15,11 @@ interface Props {
   month: number;
   days: Record<string, DayRecord>;
   stats: MonthStats;
+  locations: LocationOption[];
   onSelect: (key: string) => void;
 }
 
-export default function MonthView({ year, month, days, stats, onSelect }: Props) {
+export default function MonthView({ year, month, days, stats, locations, onSelect }: Props) {
   const { t, lang } = useI18n();
   const todayKey = toKey(new Date());
   const total = daysInMonth(year, month);
@@ -97,7 +98,7 @@ export default function MonthView({ year, month, days, stats, onSelect }: Props)
                     {key === todayKey ? <span className="mv-today-dot" aria-hidden="true" /> : null}
                   </td>
                   <td className="cell-weekday">{weekday}</td>
-                  <td>{record ? locationLabel(record.location, lang) : '—'}</td>
+                  <td>{record ? locationLabel(record.location, lang, locations) : '—'}</td>
                   <td className="cell-activities">
                     {record && record.lines.filter((line) => line.code).length > 0 ? (
                       <div className="activity-tags">

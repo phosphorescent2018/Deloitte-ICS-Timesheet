@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import ActivityPicker from './ActivityPicker';
 import { useI18n, formatLongDate } from './i18n';
-import { locationLabel, LOCATIONS } from './lib/catalog';
+import { locationLabel, type LocationOption } from './lib/catalog';
 import type { ActivityCode } from './lib/config';
 import { fromKey, isoWeek, shortDate, timeLabel } from './lib/date';
 import { DAILY_MAX_HOURS, type ActivityLine, type DayRecord, type DayStatus } from './lib/model';
@@ -10,6 +10,7 @@ import { Icon, StatusPill } from './ui';
 interface Props {
   draft: DayRecord;
   activities: ActivityCode[];
+  locations: LocationOption[];
   status: DayStatus;
   dirty: boolean;
   issues: string[];
@@ -26,6 +27,7 @@ interface Props {
 export default function DayEditor({
   draft,
   activities,
+  locations,
   status,
   dirty,
   issues,
@@ -95,9 +97,14 @@ export default function DayEditor({
                 onChange={(event) => onChange({ location: event.target.value })}
                 aria-label={t('field.workLocation')}
               >
-                {LOCATIONS.map((option) => (
+                {!locations.some((option) => option.value === draft.location) ? (
+                  <option value={draft.location}>
+                    {locationLabel(draft.location, lang, locations)}
+                  </option>
+                ) : null}
+                {locations.map((option) => (
                   <option key={option.value} value={option.value}>
-                    {locationLabel(option.value, lang)}
+                    {lang === 'zh' ? option.labelZh : option.label}
                   </option>
                 ))}
               </select>
