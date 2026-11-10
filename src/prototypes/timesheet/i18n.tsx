@@ -182,10 +182,6 @@ const DICT: Record<string, Entry> = {
     en: 'No entries yet — save a day to see the breakdown.',
   },
 
-  'foot.note': {
-    zh: '原型演示 · 刷新页面会重置为默认演示数据。',
-    en: 'Prototype · Demo data resets when the page reloads.',
-  },
   'foot.changeDay': { zh: '切换日期', en: 'change day' },
   'foot.save': { zh: '保存', en: 'save' },
 

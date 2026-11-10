@@ -510,7 +510,6 @@ export default function TimesheetApp() {
       </main>
 
       <footer className="page-foot" style={{ display: page === 'admin' ? 'none' : undefined }}>
-        <span>{t('foot.note')}</span>
         <span className="kbd-hints">
           <kbd>←</kbd>
           <kbd>→</kbd> {t('foot.changeDay')}
