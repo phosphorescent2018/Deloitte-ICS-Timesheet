@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { formatMonth, formatWeekdayShort, useI18n } from './i18n';
 import { locationLabel, type LocationOption } from './lib/catalog';
-import type { ActivityCode, AdminConfig } from './lib/config';
+import type { ActivityCode, AdminConfig, AlertType } from './lib/config';
 import { daysInMonth, toKey } from './lib/date';
 import { dayTotal, statusOf, type DayRecord } from './lib/model';
 import { newUserId, type AppUser, type UserRole } from './lib/users';
@@ -233,6 +233,49 @@ function LocationEditor({
   );
 }
 
+const ALERT_ROWS: {
+  type: AlertType;
+  titleKey: string;
+  descKey: string;
+  min: number;
+  max: number;
+  unitKey?: string;
+  fixed?: boolean;
+}[] = [
+  {
+    type: 'missing_days',
+    titleKey: 'alert.missingDays.title',
+    descKey: 'alert.missingDays.desc',
+    min: 2,
+    max: 7,
+    unitKey: 'alert.daysUnit',
+  },
+  {
+    type: 'missing_today',
+    titleKey: 'alert.missingToday.title',
+    descKey: 'alert.missingToday.desc',
+    min: 0,
+    max: 0,
+    fixed: true,
+  },
+  {
+    type: 'under_target_days',
+    titleKey: 'alert.underTargetDays.title',
+    descKey: 'alert.underTargetDays.desc',
+    min: 2,
+    max: 7,
+    unitKey: 'alert.daysUnit',
+  },
+  {
+    type: 'monthly_low_completion',
+    titleKey: 'alert.monthlyLow.title',
+    descKey: 'alert.monthlyLow.desc',
+    min: 10,
+    max: 100,
+    unitKey: 'alert.percentUnit',
+  },
+];
+
 const COLUMN_KEYS = [
   'col.index',
   'col.employee',
@@ -284,6 +327,23 @@ export default function AdminPage({
     onChange({ ...config, backfillDays: backfillDraft });
     setBackfillConfirm(false);
   };
+
+  const updateAlertRule = (
+    type: AlertType,
+    patch: Partial<{ enabled: boolean; threshold: number }>,
+  ) => {
+    onChange({
+      ...config,
+      alerts: {
+        ...config.alerts,
+        rules: config.alerts.rules.map((rule) =>
+          rule.type === type ? { ...rule, ...patch } : rule,
+        ),
+      },
+    });
+  };
+
+  const enabledAlertCount = config.alerts.rules.filter((rule) => rule.enabled).length;
 
   const openNewUser = () => {
     setEditingId('new');
@@ -526,6 +586,87 @@ export default function AdminPage({
           <p className="admin-rule-note">{t('admin.ruleHint')}</p>
         </section>
       </div>
+
+      <section className="card admin-alerts">
+        <header className="admin-users-head">
+          <div>
+            <h2>{t('admin.alertsTitle')}</h2>
+            <p>{t('admin.alertsDesc')}</p>
+          </div>
+          <span className="admin-feedback-count">
+            {t('admin.alertsEnabled', { n: enabledAlertCount })}
+          </span>
+        </header>
+
+        <div className="alert-sms-row">
+          <label className="alert-sms-toggle">
+            <span className="alert-switch">
+              <input
+                type="checkbox"
+                checked={config.alerts.smsEnabled}
+                onChange={(event) =>
+                  onChange({
+                    ...config,
+                    alerts: { ...config.alerts, smsEnabled: event.target.checked },
+                  })
+                }
+              />
+              <span className="alert-switch-ui" />
+            </span>
+            <strong>{t('admin.alertsSms')}</strong>
+          </label>
+          <span className="alert-sms-meta">{t('admin.alertsRecipient')}</span>
+          <span className="alert-sms-meta">{t('admin.alertsSchedule')}</span>
+        </div>
+
+        <div className="alert-rule-list">
+          {ALERT_ROWS.map((row) => {
+            const rule = config.alerts.rules.find((item) => item.type === row.type);
+            const enabled = rule?.enabled ?? false;
+            const threshold = rule?.threshold ?? row.min;
+            return (
+              <div className={`alert-rule${enabled ? ' is-on' : ''}`} key={row.type}>
+                <label className="alert-switch" title={t(row.titleKey)}>
+                  <input
+                    type="checkbox"
+                    checked={enabled}
+                    onChange={(event) =>
+                      updateAlertRule(row.type, { enabled: event.target.checked })
+                    }
+                  />
+                  <span className="alert-switch-ui" />
+                </label>
+                <div className="alert-rule-copy">
+                  <strong>{t(row.titleKey)}</strong>
+                  <span>{t(row.descKey)}</span>
+                </div>
+                {row.fixed ? (
+                  <span className="alert-threshold-fixed">{t('admin.alertsDaily')}</span>
+                ) : (
+                  <label className="alert-threshold">
+                    <input
+                      type="number"
+                      min={row.min}
+                      max={row.max}
+                      value={threshold}
+                      onChange={(event) => {
+                        const value = Number(event.target.value);
+                        if (!Number.isFinite(value)) return;
+                        updateAlertRule(row.type, {
+                          threshold: Math.min(row.max, Math.max(row.min, Math.round(value))),
+                        });
+                      }}
+                    />
+                    <span>{t(row.unitKey ?? 'alert.daysUnit')}</span>
+                  </label>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        <p className="alert-note">{t('admin.alertsNote')}</p>
+      </section>
 
       <section className="card admin-users">
         <header className="admin-users-head">

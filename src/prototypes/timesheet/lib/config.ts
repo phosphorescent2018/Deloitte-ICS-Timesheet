@@ -19,6 +19,23 @@ export interface ActivityCode {
   descriptionZh: string;
 }
 
+export type AlertType =
+  | 'missing_days'
+  | 'missing_today'
+  | 'under_target_days'
+  | 'monthly_low_completion';
+
+export interface AlertRuleConfig {
+  type: AlertType;
+  enabled: boolean;
+  threshold: number;
+}
+
+export interface AlertConfig {
+  smsEnabled: boolean;
+  rules: AlertRuleConfig[];
+}
+
 export interface AdminConfig {
   businessLines: string[];
   products: string[];
@@ -26,7 +43,15 @@ export interface AdminConfig {
   locations: LocationOption[];
   /** 可补填最近 N 个自然日，0 = 仅今天；跨月始终锁定 */
   backfillDays: number;
+  alerts: AlertConfig;
 }
+
+export const DEFAULT_ALERT_RULES: AlertRuleConfig[] = [
+  { type: 'missing_days', enabled: true, threshold: 3 },
+  { type: 'missing_today', enabled: false, threshold: 0 },
+  { type: 'under_target_days', enabled: false, threshold: 3 },
+  { type: 'monthly_low_completion', enabled: false, threshold: 60 },
+];
 
 export const DEFAULT_CONFIG: AdminConfig = {
   businessLines: ['UG', 'CDI', 'GH'],
@@ -34,6 +59,10 @@ export const DEFAULT_CONFIG: AdminConfig = {
   stages: ['运营', '交付'],
   locations: LOCATIONS.map((location) => ({ ...location })),
   backfillDays: 2,
+  alerts: {
+    smsEnabled: true,
+    rules: DEFAULT_ALERT_RULES.map((rule) => ({ ...rule })),
+  },
 };
 
 const CONFIG_KEY = 'deloitte-ics-config.v1';
@@ -51,6 +80,10 @@ export function loadConfig(): AdminConfig {
     stages: [...DEFAULT_CONFIG.stages],
     locations: DEFAULT_CONFIG.locations.map((location) => ({ ...location })),
     backfillDays: DEFAULT_CONFIG.backfillDays,
+    alerts: {
+      smsEnabled: DEFAULT_CONFIG.alerts.smsEnabled,
+      rules: DEFAULT_CONFIG.alerts.rules.map((rule) => ({ ...rule })),
+    },
   };
 }
 
