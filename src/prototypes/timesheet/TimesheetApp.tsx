@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import Calendar from './Calendar';
 import DayEditor from './DayEditor';
 import MonthView from './MonthView';
+import LoginPage from './LoginPage';
 import { formatMonth, useI18n } from './i18n';
 import mindigitalMark from './assets/mindigital-mark.svg';
 import AdminPage from './AdminPage';
@@ -58,6 +59,7 @@ export default function TimesheetApp() {
   const [approvalKey, setApprovalKey] = useState<string | null>(null);
   const [futureKey, setFutureKey] = useState<string | null>(null);
   const [page, setPage] = useState<'timesheet' | 'admin'>('timesheet');
+  const [authed, setAuthed] = useState(false);
   const [config, setConfig] = useState<AdminConfig>(() => loadConfig());
   const [users, setUsers] = useState<AppUser[]>(() => loadUsers());
   const [currentUserId] = useState<string>(() => users[0]?.id ?? '');
@@ -337,6 +339,7 @@ export default function TimesheetApp() {
 
   useEffect(() => {
     const handler = (event: KeyboardEvent) => {
+      if (!authed) return;
       const target = event.target as HTMLElement | null;
       const tag = target?.tagName ?? '';
       if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || target?.isContentEditable) {
@@ -360,6 +363,10 @@ export default function TimesheetApp() {
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
   });
+
+  if (!authed) {
+    return <LoginPage onLogin={() => setAuthed(true)} />;
+  }
 
   return (
     <div className="app">

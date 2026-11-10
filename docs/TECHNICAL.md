@@ -70,6 +70,7 @@ ics-timesheet/
 │   └── prototypes/timesheet/
 │       ├── index.tsx                 # Axhub Make 原型入口（default export）
 │       ├── TimesheetApp.tsx          # 根组件：全局状态、页面切换、保存/预填/复制、弹窗
+│       ├── LoginPage.tsx             # 登录页（演示，点击直接进入）
 │       ├── Calendar.tsx              # 月历（6×7 网格、状态色、节假日标记）
 │       ├── DayEditor.tsx             # 每日填报明细表（活动、工时、备注、增删行）
 │       ├── ActivityPicker.tsx        # 可搜索的活动代码选择器
@@ -316,7 +317,8 @@ statusOf(day):
 
 | 组件 | 职责 | 关键 props / 行为 |
 | --- | --- | --- |
-| `TimesheetApp` | 全局状态、业务流程、弹窗编排 | `state`、`draft`、`config`、`page`、`mode`、`view` |
+| `TimesheetApp` | 全局状态、业务流程、弹窗编排 | `state`、`draft`、`config`、`page`、`mode`、`view`、`authed` |
+| `LoginPage` | 登录页（演示） | 点击「企业微信登录」调用 `onLogin`，无校验 |
 | `Calendar` | 6×7 月历 | `year/month`、`selectedKey`、`todayKey`、`editableFrom`、`days`、`onSelect/onPrev/onNext/onToday` |
 | `DayEditor` | 当日明细表 | `draft`、`activities`、`issues`、`onLineChange`、`onAddLine`、`onRemoveLine`、`onSave`、`onPrefill`、`onCopyLast` |
 | `ActivityPicker` | 可搜索下拉 | `activities`、`value`、`onChange`；按业务线分组，支持键盘与搜索 |
@@ -361,7 +363,7 @@ statusOf(day):
 - 默认 4 人：吕薇庆、胡雅洁（超级管理员）、曾悦婷、王红玮（填报用户）
 - 至少保留 1 名超级管理员：删除最后一名，或把最后一名降级为填报用户，都会被阻止
 - **后台入口门禁**：`TimesheetApp` 根据当前用户角色计算 `isSuperAdmin`，非超级管理员时后台按钮不渲染（不是仅置灰/隐藏样式）；若角色在后台被改为填报用户，页面会自动退回填报页
-- 本原型不做登录页与真实鉴权，角色在前端 state 中判定；接后端时应改为服务端鉴权
+- 登录页仅用于演示，点击「企业微信登录」直接进入，不做账号校验；角色仍在前端 state 中判定，接后端时应改为服务端鉴权
 
 ### 10.3 导出当月数据
 
