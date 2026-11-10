@@ -99,5 +99,5 @@ cargo run
 
 - 企业微信可信域名 / 可信 IP / 审批轮询
 - 请假同步与 Leave 自动写入
-- 反馈接口与后台列表
 - 前端从内存态切到 API
+- 请求日志 / 前端事件上报 / 匿名反馈审计，见 [`docs/TELEMETRY.md`](docs/TELEMETRY.md)
