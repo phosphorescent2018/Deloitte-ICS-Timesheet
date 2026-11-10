@@ -241,13 +241,10 @@ const COLUMN_KEYS = [
   'col.date',
   'col.weekday',
   'col.location',
-  'col.target',
-  'col.actual',
   'col.status',
   'col.activity',
   'col.lineHours',
   'col.remark',
-  'col.note',
   'col.savedAt',
 ];
 
@@ -360,13 +357,10 @@ export default function AdminPage({
             key,
             formatWeekdayShort(key, lang),
             locationLabel(record.location, lang, config.locations),
-            '8.0',
-            totalHours.toFixed(1),
             t(`status.${status}`),
             line.code || '—',
             line.hours.toFixed(1),
             line.remark || '',
-            line.note || '',
             record.savedAt
               ? new Date(record.savedAt).toLocaleString(lang === 'zh' ? 'zh-CN' : 'en-US', { hour12: false })
               : '',

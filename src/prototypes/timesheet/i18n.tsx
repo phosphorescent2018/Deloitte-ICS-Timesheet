@@ -90,13 +90,10 @@ const DICT: Record<string, Entry> = {
   'col.date': { zh: '日期', en: 'Date' },
   'col.weekday': { zh: '星期', en: 'Weekday' },
   'col.location': { zh: '工作地点', en: 'Location' },
-  'col.target': { zh: '目标工时', en: 'Target hours' },
-  'col.actual': { zh: '实际工时合计', en: 'Total actual hours' },
   'col.status': { zh: '状态', en: 'Status' },
   'col.activity': { zh: '活动代码', en: 'Activity code' },
   'col.lineHours': { zh: '本行工时', en: 'Line hours' },
   'col.remark': { zh: '备注', en: 'Remark' },
-  'col.note': { zh: '单据备注', en: 'Note' },
   'col.savedAt': { zh: '保存时间', en: 'Saved at' },
 
   'banner.reminder': { zh: '提醒：', en: 'Reminder:' },
