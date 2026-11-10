@@ -1,5 +1,5 @@
 import { formatMonth, useI18n, weekdayLabels } from './i18n';
-import { dayTotal, statusOf, type DayRecord, type MonthStats } from './lib/model';
+import { dayTotal, statusOf, type DayRecord } from './lib/model';
 import { addDays, fromKey, isLockedKey, isWeekend, isoWeek, monthGrid, shortDate, startOfWeekMonday, toKey } from './lib/date';
 import { holidayInfo, isWorkday, makeupWorkdayInfo } from './lib/holidays';
 import { Icon } from './ui';
@@ -11,7 +11,6 @@ interface Props {
   todayKey: string;
   editableFrom: string;
   days: Record<string, DayRecord>;
-  stats: MonthStats;
   onSelect: (key: string) => void;
   onPrev: () => void;
   onNext: () => void;
@@ -25,7 +24,6 @@ export default function Calendar({
   todayKey,
   editableFrom,
   days,
-  stats,
   onSelect,
   onPrev,
   onNext,
@@ -150,20 +148,6 @@ export default function Calendar({
         <span className="legend-item">
           <i className="swatch swatch-makeup" /> {t('legend.makeup')}
         </span>
-      </div>
-
-      <div className="cal-stats">
-        <div className="cal-stat">
-          <span>{t('cal.filled')}</span>
-          <strong>
-            {stats.filledDays}
-            <em>/{stats.workdays}</em>
-          </strong>
-        </div>
-        <div className="cal-stat">
-          <span>{t('cal.hours')}</span>
-          <strong>{stats.hours.toFixed(1)}</strong>
-        </div>
       </div>
     </section>
   );

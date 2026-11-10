@@ -305,12 +305,6 @@ input[type='number'] {
   min-width: 0;
 }
 
-.insights {
-  display: grid;
-  grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.9fr);
-  gap: 18px;
-  align-items: start;
-}
 
 .card {
   background: var(--card);
@@ -654,46 +648,7 @@ input[type='number'] {
   border-color: #9ec7e3;
 }
 
-.cal-stats {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
-  margin-top: 12px;
-}
 
-.cal-stat {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 8px 10px;
-  background: #f5f7f9;
-  border: 1px solid #e7eaee;
-  border-radius: 7px;
-}
-
-.cal-stat span {
-  font-size: 10.5px;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: #78828b;
-}
-
-.cal-stat strong {
-  font-size: 15px;
-  font-variant-numeric: tabular-nums;
-}
-
-.cal-stat em {
-  font-style: normal;
-  font-size: 11px;
-  font-weight: 600;
-  color: #8d969e;
-}
-
-.cal-stat strong.is-ot {
-  color: var(--ot);
-}
 
 /* ---------------- Editor ---------------- */
 
@@ -2369,9 +2324,6 @@ kbd {
     max-width: 520px;
   }
 
-  .insights {
-    grid-template-columns: 1fr;
-  }
 
   .sheet {
     overflow-x: auto;

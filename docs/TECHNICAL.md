@@ -74,8 +74,6 @@ ics-timesheet/
 │       ├── DayEditor.tsx             # 每日填报明细表（活动、工时、备注、增删行）
 │       ├── ActivityPicker.tsx        # 可搜索的活动代码选择器
 │       ├── MonthView.tsx             # 月视图（按天列表）
-│       ├── WeekStrip.tsx             # 本周 7 天卡片
-│       ├── ActivityMix.tsx           # 本月工时构成 Top 5
 │       ├── AdminPage.tsx             # 后台配置：基础数据、用户、导出
 │       ├── ui.tsx                    # Icon / Modal / Toast / StatusPill 等通用件
 │       ├── i18n.tsx                  # 中英文词典与语言上下文
@@ -109,7 +107,6 @@ main.tsx
               ├── Topbar（品牌、Day/Month、语言、后台入口）
               ├── Calendar（月历）
               ├── DayEditor（当天明细，操作 draft）
-              ├── WeekStrip / ActivityMix（右侧洞察）
               ├── MonthView（按月列表）
               └── AdminPage（config / users / export）
 ```
@@ -119,7 +116,7 @@ main.tsx
 ```
 seedState() ──► state（已保存数据）
                   │
-                  ├─► Calendar / MonthView / WeekStrip / ActivityMix   （只读）
+                  ├─► Calendar / MonthView   （只读）
                   ├─► AdminPage（只读 days，读写 config / users）
                   └─► draft（当天编辑副本）
                           │  DayEditor 修改
@@ -319,12 +316,10 @@ statusOf(day):
 | 组件 | 职责 | 关键 props / 行为 |
 | --- | --- | --- |
 | `TimesheetApp` | 全局状态、业务流程、弹窗编排 | `state`、`draft`、`config`、`page`、`mode`、`view` |
-| `Calendar` | 6×7 月历 | `year/month`、`selectedKey`、`todayKey`、`editableFrom`、`days`、`stats`、`onSelect/onPrev/onNext/onToday` |
+| `Calendar` | 6×7 月历 | `year/month`、`selectedKey`、`todayKey`、`editableFrom`、`days`、`onSelect/onPrev/onNext/onToday` |
 | `DayEditor` | 当日明细表 | `draft`、`activities`、`issues`、`onLineChange`、`onAddLine`、`onRemoveLine`、`onSave`、`onPrefill`、`onCopyLast` |
 | `ActivityPicker` | 可搜索下拉 | `activities`、`value`、`onChange`；按业务线分组，支持键盘与搜索 |
-| `WeekStrip` | 本周 7 天卡片 | `selectedKey`、`editableFrom`、`days`、`onSelect` |
 | `MonthView` | 按月表格 | `year/month`、`days`、`stats`、`onSelect` |
-| `ActivityMix` | 本月 Top 5 工时构成 | `year/month`、`days` |
 | `AdminPage` | 基础数据 / 用户 / 导出 | `config`、`activities`、`days`、`year/month`、`onChange`、`onBack` |
 | `ui.tsx` | `Icon`、`Modal`、`Toast`、`StatusPill` | 纯展示组件 |
 

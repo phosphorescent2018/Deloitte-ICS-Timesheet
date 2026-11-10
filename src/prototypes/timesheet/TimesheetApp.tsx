@@ -2,8 +2,6 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import Calendar from './Calendar';
 import DayEditor from './DayEditor';
 import MonthView from './MonthView';
-import WeekStrip from './WeekStrip';
-import ActivityMix from './ActivityMix';
 import { formatMonth, useI18n } from './i18n';
 import mindigitalMark from './assets/mindigital-mark.svg';
 import AdminPage from './AdminPage';
@@ -447,7 +445,6 @@ export default function TimesheetApp() {
           todayKey={todayKey}
           editableFrom={editableFrom}
           days={state.days}
-          stats={stats}
           onSelect={(key) => selectDate(key)}
           onPrev={() => changeMonth(-1)}
           onNext={() => changeMonth(1)}
@@ -471,15 +468,6 @@ export default function TimesheetApp() {
               onCopyLast={copyLastDay}
               onClear={clearDay}
             />
-            <div className="insights">
-              <WeekStrip
-                selectedKey={selectedKey}
-                editableFrom={editableFrom}
-                days={state.days}
-                onSelect={selectDate}
-              />
-              <ActivityMix year={view.y} month={view.m} days={state.days} />
-            </div>
           </div>
         ) : (
           <div className="workspace">
@@ -493,15 +481,6 @@ export default function TimesheetApp() {
                 selectDate(key);
               }}
             />
-            <div className="insights">
-              <WeekStrip
-                selectedKey={selectedKey}
-                editableFrom={editableFrom}
-                days={state.days}
-                onSelect={selectDate}
-              />
-              <ActivityMix year={view.y} month={view.m} days={state.days} />
-            </div>
           </div>
         )}
       </main>
