@@ -226,7 +226,7 @@ interface MonthStats {
 - `isLockedKey` 同时判断 `key` 与 `todayKey` 是否同月，以及是否早于窗口起点；跨月无论日期多近都锁定。
 - 日历、周视图、月视图、`Prefill one week` 全部复用同一套判定，避免边界不一致。
 - 保存入口 `saveDay` 会再次调用 `isLockedKey` 兜底，防止通过非正常路径写入锁定日期。
-- 后台修改 `backfillDays` 后立即影响日历锁态；该配置仅当前会话生效。
+- 后台修改 `backfillDays` 后，先进入「未应用」状态，点「应用」并二次确认后才生效；该配置仅当前会话生效。
 
 ### 7.2 校验规则
 

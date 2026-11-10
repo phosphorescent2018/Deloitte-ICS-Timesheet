@@ -69,6 +69,13 @@ const DICT: Record<string, Entry> = {
     zh: '0 = 仅今天，最大 7 天；按自然日计算。',
     en: '0 = today only, maximum 7 days. Calendar days.',
   },
+  'admin.ruleApply': { zh: '应用', en: 'Apply' },
+  'admin.rulePending': { zh: '未应用', en: 'Not applied' },
+  'admin.ruleConfirmTitle': { zh: '确认修改填报规则？', en: 'Apply entry rule change?' },
+  'admin.ruleConfirmBody': {
+    zh: '可补填天数将从 {{from}} 天改为 {{to}} 天。跨月日期仍然锁定。',
+    en: 'Backfill window will change from {{from}} to {{to}} days. Dates outside the current month remain locked.',
+  },
   'admin.locationName': { zh: '地点名称', en: 'Location name' },
   'admin.locationSpecial': { zh: '不能包含特殊字符。', en: 'Special characters are not allowed.' },
   'admin.addPlaceholder': { zh: '输入名称后回车', en: 'Type a name and press Enter' },

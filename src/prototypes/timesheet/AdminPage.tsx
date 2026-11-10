@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { formatMonth, formatWeekdayShort, useI18n } from './i18n';
 import { locationLabel, type LocationOption } from './lib/catalog';
 import type { ActivityCode, AdminConfig } from './lib/config';
@@ -268,6 +268,22 @@ export default function AdminPage({
   const [userForm, setUserForm] = useState<AppUser | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [userError, setUserError] = useState('');
+  const [backfillDraft, setBackfillDraft] = useState(config.backfillDays);
+  const [backfillConfirm, setBackfillConfirm] = useState(false);
+
+  useEffect(() => {
+    setBackfillDraft(config.backfillDays);
+  }, [config.backfillDays]);
+
+  const cancelBackfill = () => {
+    setBackfillDraft(config.backfillDays);
+    setBackfillConfirm(false);
+  };
+
+  const applyBackfill = () => {
+    onChange({ ...config, backfillDays: backfillDraft });
+    setBackfillConfirm(false);
+  };
 
   const openNewUser = () => {
     setEditingId('new');
@@ -486,18 +502,26 @@ export default function AdminPage({
                 type="number"
                 min={0}
                 max={7}
-                value={config.backfillDays}
+                value={backfillDraft}
                 onChange={(event) => {
                   const value = Number(event.target.value);
                   if (!Number.isFinite(value)) return;
-                  onChange({
-                    ...config,
-                    backfillDays: Math.min(7, Math.max(0, Math.round(value))),
-                  });
+                  setBackfillDraft(Math.min(7, Math.max(0, Math.round(value))));
                 }}
               />
               <span>{t('admin.daysUnit')}</span>
             </div>
+            <button
+              type="button"
+              className="btn btn-blue admin-rule-apply"
+              disabled={backfillDraft === config.backfillDays}
+              onClick={() => setBackfillConfirm(true)}
+            >
+              {t('admin.ruleApply')}
+            </button>
+            {backfillDraft !== config.backfillDays ? (
+              <span className="admin-rule-pending">{t('admin.rulePending')}</span>
+            ) : null}
           </div>
           <p className="admin-rule-note">{t('admin.ruleHint')}</p>
         </section>
@@ -678,6 +702,28 @@ export default function AdminPage({
           </div>
         )}
       </section>
+
+      {backfillConfirm ? (
+        <Modal
+          title={t('admin.ruleConfirmTitle')}
+          width={440}
+          onClose={cancelBackfill}
+          footer={
+            <>
+              <button type="button" className="btn btn-ghost" onClick={cancelBackfill}>
+                {t('admin.cancel')}
+              </button>
+              <button type="button" className="btn btn-blue" onClick={applyBackfill}>
+                {t('admin.ruleApply')}
+              </button>
+            </>
+          }
+        >
+          <p className="modal-copy">
+            {t('admin.ruleConfirmBody', { from: config.backfillDays, to: backfillDraft })}
+          </p>
+        </Modal>
+      ) : null}
 
       {userForm ? (
         <Modal
