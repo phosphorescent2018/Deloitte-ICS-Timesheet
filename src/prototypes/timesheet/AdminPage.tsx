@@ -658,25 +658,41 @@ export default function AdminPage({
           </span>
         </header>
 
-        <div className="alert-sms-row">
-          <label className="alert-sms-toggle">
+        <div className="alert-channel-row">
+          <label className="alert-channel-toggle">
             <span className="alert-switch">
               <input
                 type="checkbox"
-                checked={config.alerts.smsEnabled}
+                checked={config.alerts.emailEnabled}
                 onChange={(event) =>
                   onChange({
                     ...config,
-                    alerts: { ...config.alerts, smsEnabled: event.target.checked },
+                    alerts: { ...config.alerts, emailEnabled: event.target.checked },
                   })
                 }
               />
               <span className="alert-switch-ui" />
             </span>
-            <strong>{t('admin.alertsSms')}</strong>
+            <strong>{t('admin.alertsEmail')}</strong>
           </label>
-          <span className="alert-sms-meta">{t('admin.alertsRecipient')}</span>
-          <span className="alert-sms-meta">{t('admin.alertsSchedule')}</span>
+          <label className="alert-channel-toggle">
+            <span className="alert-switch">
+              <input
+                type="checkbox"
+                checked={config.alerts.wecomEnabled}
+                onChange={(event) =>
+                  onChange({
+                    ...config,
+                    alerts: { ...config.alerts, wecomEnabled: event.target.checked },
+                  })
+                }
+              />
+              <span className="alert-switch-ui" />
+            </span>
+            <strong>{t('admin.alertsWecom')}</strong>
+          </label>
+          <span className="alert-channel-meta">{t('admin.alertsRecipient')}</span>
+          <span className="alert-channel-meta">{t('admin.alertsSchedule')}</span>
         </div>
 
         <div className="alert-rule-list">

@@ -32,7 +32,10 @@ export interface AlertRuleConfig {
 }
 
 export interface AlertConfig {
-  smsEnabled: boolean;
+  /** 邮件通知总开关 */
+  emailEnabled: boolean;
+  /** 企业微信应用消息总开关 */
+  wecomEnabled: boolean;
   rules: AlertRuleConfig[];
 }
 
@@ -60,7 +63,8 @@ export const DEFAULT_CONFIG: AdminConfig = {
   locations: LOCATIONS.map((location) => ({ ...location })),
   backfillDays: 2,
   alerts: {
-    smsEnabled: true,
+    emailEnabled: true,
+    wecomEnabled: true,
     rules: DEFAULT_ALERT_RULES.map((rule) => ({ ...rule })),
   },
 };
@@ -81,7 +85,8 @@ export function loadConfig(): AdminConfig {
     locations: DEFAULT_CONFIG.locations.map((location) => ({ ...location })),
     backfillDays: DEFAULT_CONFIG.backfillDays,
     alerts: {
-      smsEnabled: DEFAULT_CONFIG.alerts.smsEnabled,
+      emailEnabled: DEFAULT_CONFIG.alerts.emailEnabled,
+      wecomEnabled: DEFAULT_CONFIG.alerts.wecomEnabled,
       rules: DEFAULT_CONFIG.alerts.rules.map((rule) => ({ ...rule })),
     },
   };

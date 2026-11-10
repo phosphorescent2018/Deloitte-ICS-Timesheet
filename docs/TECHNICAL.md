@@ -408,11 +408,12 @@ statusOf(day):
 
 ### 10.5 告警配置
 
-- 数据结构：`AdminConfig.alerts = { smsEnabled, rules: AlertRuleConfig[] }`；规则含 `type / enabled / threshold`
+- 数据结构：`AdminConfig.alerts = { emailEnabled, wecomEnabled, rules: AlertRuleConfig[] }`；规则含 `type / enabled / threshold`
 - 四类规则：`missing_days`（连续 N 个工作日未填）、`missing_today`（当天未填）、`under_target_days`（连续 N 个工作日不足 8h）、`monthly_low_completion`（当月完成率低于 X%）
-- 后台可逐类开关、改阈值；短信总开关关闭时仍保留规则配置，只是不发送
+- 后台可逐类开关、改阈值；邮件/企业微信总开关关闭时仍保留规则配置，只是不发送
 - 发送对象固定为填报用户本人，检查时间显示为每天 18:00
-- 原型只保存当前会话配置，不调用真实短信网关；后端需按 `alert_rule / alert_event / alert_delivery` 实现调度、幂等和重试
+- 通知渠道只有邮件和企业微信应用消息，不接短信
+- 原型只保存当前会话配置，不调用真实邮件/企业微信网关；后端需按 `alert_rule / alert_event / alert_delivery` 实现调度、幂等和重试（delivery.channel 取 `EMAIL` / `WECOM`）
 
 ### 10.6 本月分析看板
 
