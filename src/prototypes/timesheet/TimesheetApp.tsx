@@ -9,7 +9,7 @@ import AdminPage from './AdminPage';
 import { buildActivities, loadConfig, saveConfig, type AdminConfig } from './lib/config';
 import { loadUsers, saveUsers, type AppUser } from './lib/users';
 import { createFeedback, type FeedbackItem } from './lib/feedback';
-import { addDays, editableFromKey, fromKey, isFutureMonthKey, isLockedKey, shortDate, toKey } from './lib/date';
+import { addDays, editableFromKey, fromKey, isFutureMonthKey, isLockedKey, isPastMonthKey, shortDate, toKey } from './lib/date';
 import {
   blankDay,
   cloneDay,
@@ -59,6 +59,7 @@ export default function TimesheetApp() {
   const [pending, setPending] = useState<{ label: string; run: () => void } | null>(null);
   const [approvalKey, setApprovalKey] = useState<string | null>(null);
   const [futureKey, setFutureKey] = useState<string | null>(null);
+  const [pastKey, setPastKey] = useState<string | null>(null);
   const [page, setPage] = useState<'timesheet' | 'admin'>('timesheet');
   const [authed, setAuthed] = useState(false);
   const [logoutArmed, setLogoutArmed] = useState(false);
@@ -164,6 +165,10 @@ export default function TimesheetApp() {
   };
 
   const selectDate = (key: string, syncView = true) => {
+    if (isPastMonthKey(key, todayKey)) {
+      setPastKey(key);
+      return;
+    }
     if (isFutureMonthKey(key, todayKey)) {
       setFutureKey(key);
       return;
@@ -178,7 +183,7 @@ export default function TimesheetApp() {
 
   const changeMonth = (delta: number) => {
     const next = new Date(view.y, view.m + delta, 1);
-    setView({ y: next.getFullYear(), m: next.getMonth() });
+    guard(t('action.month'), () => setView({ y: next.getFullYear(), m: next.getMonth() }));
   };
 
   const goToday = () => {
@@ -630,6 +635,22 @@ export default function TimesheetApp() {
           }
         >
           <p className="modal-copy">{t('discard.body', { action: pending.label })}</p>
+        </Modal>
+      ) : null}
+
+      {pastKey ? (
+        <Modal
+          title={t('past.title')}
+          subtitle={shortDate(pastKey)}
+          width={460}
+          onClose={() => setPastKey(null)}
+          footer={
+            <button type="button" className="btn btn-blue" onClick={() => setPastKey(null)}>
+              {t('past.confirm')}
+            </button>
+          }
+        >
+          <p className="modal-copy">{t('past.body', { date: shortDate(pastKey) })}</p>
         </Modal>
       ) : null}
 

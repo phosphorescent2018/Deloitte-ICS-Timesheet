@@ -49,10 +49,10 @@ const DICT: Record<string, Entry> = {
   'nav.admin': { zh: '后台配置', en: 'Admin' },
 
   'admin.kicker': { zh: '后台配置', en: 'Administration' },
-  'admin.title': { zh: '基础数据配置', en: 'Master data' },
+  'admin.title': { zh: '后台配置', en: 'Administration' },
   'admin.subtitle': {
-    zh: '维护业务线、产品、业务阶段和工作地点。',
-    en: 'Maintain business lines, products, stages and work locations.',
+    zh: '维护基础数据、填报规则、告警与用户，导出当月明细。',
+    en: 'Maintain master data, entry rules, alerts and users; export monthly entries.',
   },
   'admin.businessLines': { zh: '业务线', en: 'Business lines' },
   'admin.products': { zh: '产品', en: 'Products' },
@@ -122,13 +122,13 @@ const DICT: Record<string, Entry> = {
   'insights.team': { zh: '团队人数', en: 'People' },
   'insights.peopleUnit': { zh: '人', en: 'people' },
   'insights.completion': { zh: '填报完成率', en: 'Completion' },
-  'insights.filledShifts': { zh: '{{n}} 个班次已填', en: '{{n}} shifts filled' },
+  'insights.filledShifts': { zh: '{{n}} 人次已填', en: '{{n}} person-days filled' },
   'insights.totalHours': { zh: '总工时', en: 'Total hours' },
   'insights.avgHours': { zh: '人均工时', en: 'Avg hours' },
   'insights.hoursUnit': { zh: '小时', en: 'h' },
   'insights.missing': { zh: '未填人次', en: 'Missing' },
-  'insights.shiftsUnit': { zh: '人次', en: 'shifts' },
-  'insights.trend': { zh: '近 4 周完成率', en: '4-week completion' },
+  'insights.shiftsUnit': { zh: '人次', en: 'person-days' },
+  'insights.trend': { zh: '完成率趋势（示意）', en: 'Completion trend (demo)' },
   'insights.week': { zh: '第 {{n}} 周', en: 'W{{n}}' },
   'insights.distribution': { zh: '工时分布', en: 'Hours by business line' },
   'insights.members': { zh: '成员完成情况', en: 'Member completion' },
@@ -153,10 +153,10 @@ const DICT: Record<string, Entry> = {
   'admin.atLeastOne': { zh: '至少保留一项', en: 'Keep at least one item' },
   'admin.exportTitle': { zh: '数据导出', en: 'Data export' },
   'admin.exportDesc': {
-    zh: '导出当月全部员工明细（CSV，Excel 可直接打开）。',
-    en: 'Export all entries for the month as CSV (opens in Excel).',
+    zh: '导出当前演示用户的当月填报明细（CSV，Excel 可直接打开）。',
+    en: 'Export this demo user’s entries for the month as CSV (opens in Excel).',
   },
-  'admin.exportBtn': { zh: '导出当月数据（Excel）', en: 'Export month (Excel)' },
+  'admin.exportBtn': { zh: '导出当月数据（CSV）', en: 'Export month (CSV)' },
   'admin.preview': { zh: '导出预览', en: 'Preview' },
   'admin.empty': { zh: '本月暂无填报数据。', en: 'No entries this month.' },
   'admin.back': { zh: '返回填报', en: 'Back to timesheet' },
@@ -216,8 +216,8 @@ const DICT: Record<string, Entry> = {
 
   'banner.reminder': { zh: '提醒：', en: 'Reminder:' },
   'banner.text': {
-    zh: '仅可填写本月工时；可补填最近 {{days}} 天，跨月需发起 OA 审批。',
-    en: 'This month only; the last {{days}} days can be backfilled. Cross-month edits need OA approval.',
+    zh: '仅可填写本月工时；可补填最近 {{days}} 天，跨月日期不可填写。',
+    en: 'This month only; the last {{days}} days can be backfilled. Cross-month dates are locked.',
   },
   'banner.period': { zh: '{{month}} · 目标 {{hours}} 小时/天', en: '{{month}} · Target {{hours}} h / day' },
 
@@ -230,7 +230,7 @@ const DICT: Record<string, Entry> = {
   'cal.hours': { zh: '工时', en: 'Hours' },
   'cal.cell': { zh: '{{date}} · {{hours}} 小时', en: '{{date}} · {{hours}} h' },
   'cal.cellEmpty': { zh: '{{date}} · 无记录', en: '{{date}} · no entry' },
-  'cal.cellLocked': { zh: '{{date}} · 已锁定，需 OA 审批', en: '{{date}} · locked, OA approval required' },
+  'cal.cellLocked': { zh: '{{date}} · 已锁定', en: '{{date}} · locked' },
 
   'legend.unfinished': { zh: '未填写', en: 'Not filled' },
   'legend.partial': { zh: '部分', en: 'Partial' },
@@ -247,7 +247,7 @@ const DICT: Record<string, Entry> = {
   'editor.kicker': { zh: '每日填报', en: 'Daily entry' },
   'editor.clear': { zh: '清空当天', en: 'Clear day' },
   'th.activity': { zh: '工作项', en: 'Work item' },
-  'th.pending': { zh: '待填报项', en: 'Pending entry' },
+  'th.pending': { zh: '日期', en: 'Date' },
   'th.remark': { zh: '备注', en: 'Remark' },
   'th.operation': { zh: '操作', en: 'Operation' },
   'field.workLocation': { zh: '工作地点', en: 'Work Location' },
@@ -258,7 +258,7 @@ const DICT: Record<string, Entry> = {
   'field.remarkAria': { zh: '第 {{n}} 行备注', en: 'Line {{n}} remark' },
   'btn.addLine': { zh: '添加工作项行', en: 'Add work item' },
   'btn.removeLine': { zh: '删除这一行', en: 'Remove line' },
-  'btn.copyActivity': { zh: '复制工作项名称', en: 'Copy work item' },
+  'btn.copyActivity': { zh: '复制工作项代码', en: 'Copy work item code' },
   'btn.copied': { zh: '已复制', en: 'Copied' },
   'empty.lines': {
     zh: '还没有工作项行，点左下角 + 添加。',
@@ -332,6 +332,12 @@ const DICT: Record<string, Entry> = {
     en: '{{date}} is next month — please fill it then.',
   },
   'future.confirm': { zh: '知道了', en: 'Got it' },
+  'past.title': { zh: '不能填写上月工时', en: 'Previous month is locked' },
+  'past.body': {
+    zh: '{{date}} 属于上个月，跨月工时不可补填，也不能通过审批解锁。',
+    en: '{{date}} is in a previous month; cross-month entries cannot be filled or unlocked by approval.',
+  },
+  'past.confirm': { zh: '知道了', en: 'Got it' },
 
   'reset.title': { zh: '重置演示数据？', en: 'Reset demo data?' },
   'reset.subtitle': {

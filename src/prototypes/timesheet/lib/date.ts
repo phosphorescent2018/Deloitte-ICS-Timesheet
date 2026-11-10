@@ -111,6 +111,13 @@ export function editableFromKey(todayKey: string, backfillDays = 2): string {
   return toKey(addDays(fromKey(todayKey), -backfillDays));
 }
 
+/** 是否属于「上个月及以前」的日期（跨月硬锁，不可审批）。 */
+export function isPastMonthKey(key: string, todayKey: string): boolean {
+  const today = fromKey(todayKey);
+  const monthStart = toKey(new Date(today.getFullYear(), today.getMonth(), 1));
+  return key < monthStart;
+}
+
 /** 是否属于「下个月及以后」的日期。 */
 export function isFutureMonthKey(key: string, todayKey: string): boolean {
   const today = fromKey(todayKey);

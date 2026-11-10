@@ -366,6 +366,7 @@ export default function AdminPage({
   onBack,
 }: Props) {
   const { t, lang } = useI18n();
+  const currentUser = users[0];
   const [userForm, setUserForm] = useState<AppUser | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [userError, setUserError] = useState('');
@@ -487,9 +488,9 @@ export default function AdminPage({
           const activity = activities.find((item) => item.code === line.code);
           list.push([
             String(list.length + 1),
-            t('admin.employeeName'),
-            t('admin.employeeId'),
-            t('admin.department'),
+            currentUser?.name ?? '—',
+            currentUser?.employeeId ?? '—',
+            currentUser?.department ?? '—',
             activity?.category ?? '—',
             activity?.product ?? '—',
             activity?.stage ?? '—',
@@ -508,7 +509,7 @@ export default function AdminPage({
     }
 
     return list;
-  }, [activities, days, lang, month, t, year]);
+  }, [activities, currentUser, days, lang, month, t, year]);
 
   const handleExport = () => {
     const escape = (value: string) =>
