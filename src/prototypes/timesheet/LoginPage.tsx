@@ -1,14 +1,34 @@
+import { useEffect, useState } from 'react';
 import { useI18n } from './i18n';
 import mindigitalMark from './assets/mindigital-mark.svg';
 import wecomMark from './assets/wecom.png';
-import { Icon } from './ui';
+import { Icon, Modal } from './ui';
 
 interface Props {
   onLogin: () => void;
+  onFeedback: (content: string) => void;
 }
 
-export default function LoginPage({ onLogin }: Props) {
+export default function LoginPage({ onLogin, onFeedback }: Props) {
   const { t, lang, setLang } = useI18n();
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
+  const [feedbackText, setFeedbackText] = useState('');
+  const [feedbackSent, setFeedbackSent] = useState(false);
+
+  useEffect(() => {
+    if (!feedbackSent) return;
+    const timer = window.setTimeout(() => setFeedbackSent(false), 2800);
+    return () => window.clearTimeout(timer);
+  }, [feedbackSent]);
+
+  const submitFeedback = () => {
+    const content = feedbackText.trim();
+    if (!content) return;
+    onFeedback(content);
+    setFeedbackText('');
+    setFeedbackOpen(false);
+    setFeedbackSent(true);
+  };
 
   return (
     <div className="login-page">
@@ -89,7 +109,51 @@ export default function LoginPage({ onLogin }: Props) {
 
           <p className="login-hint">{t('login.hint')}</p>
         </div>
+
+        <button
+          type="button"
+          className="login-feedback"
+          onClick={() => setFeedbackOpen(true)}
+        >
+          <Icon.Message size={14} />
+          {t('feedback.entry')}
+        </button>
+        {feedbackSent ? <span className="login-feedback-sent">{t('feedback.sent')}</span> : null}
       </section>
+
+      {feedbackOpen ? (
+        <Modal
+          title={t('feedback.title')}
+          subtitle={t('feedback.subtitle')}
+          width={520}
+          onClose={() => setFeedbackOpen(false)}
+          footer={
+            <>
+              <button type="button" className="btn btn-ghost" onClick={() => setFeedbackOpen(false)}>
+                {t('btn.cancel')}
+              </button>
+              <button
+                type="button"
+                className="btn btn-blue"
+                disabled={!feedbackText.trim()}
+                onClick={submitFeedback}
+              >
+                {t('feedback.submit')}
+              </button>
+            </>
+          }
+        >
+          <textarea
+            className="feedback-input"
+            autoFocus
+            maxLength={1000}
+            value={feedbackText}
+            placeholder={t('feedback.placeholder')}
+            onChange={(event) => setFeedbackText(event.target.value)}
+          />
+          <div className="feedback-count">{feedbackText.length}/1000</div>
+        </Modal>
+      ) : null}
     </div>
   );
 }

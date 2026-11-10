@@ -70,12 +70,12 @@ ics-timesheet/
 │   └── prototypes/timesheet/
 │       ├── index.tsx                 # Axhub Make 原型入口（default export）
 │       ├── TimesheetApp.tsx          # 根组件：全局状态、页面切换、保存/预填/复制、弹窗
-│       ├── LoginPage.tsx             # 登录页（演示，点击直接进入）
+│       ├── LoginPage.tsx             # 登录页（演示，含匿名反馈入口）
 │       ├── Calendar.tsx              # 月历（6×7 网格、状态色、节假日标记）
 │       ├── DayEditor.tsx             # 每日填报明细表（工作项、工时、备注、增删行）
 │       ├── ActivityPicker.tsx        # 可搜索的工作项代码选择器
 │       ├── MonthView.tsx             # 月视图（按天列表）
-│       ├── AdminPage.tsx             # 后台配置：基础数据、用户、导出
+│       ├── AdminPage.tsx             # 后台配置：基础数据、用户、匿名反馈、导出
 │       ├── ui.tsx                    # Icon / Modal / Toast / StatusPill 等通用件
 │       ├── i18n.tsx                  # 中英文词典与语言上下文
 │       ├── timesheet.css             # 全部样式
@@ -86,6 +86,7 @@ ics-timesheet/
 │           ├── model.ts              # 数据模型、状态判定、校验、月度统计
 │           ├── config.ts             # 业务线/产品/阶段配置与组合生成
 │           ├── users.ts              # 默认用户、角色、ID 生成
+│           ├── feedback.ts           # 匿名反馈数据模型与创建函数
 │           ├── catalog.ts            # 办公地点默认值与显示标签
 │           └── storage.ts            # 演示数据生成（刷新即重置）
 ├── scripts/sync-project-metadata.mjs # 扫描原型入口，生成 Axhub 元数据
@@ -159,6 +160,19 @@ interface AppState {
   days: Record<string, DayRecord>; // key = yyyy-mm-dd
   defaultLocation: string;         // 默认 cq
   defaultTarget: number;           // 8
+}
+```
+
+匿名反馈模型定义在 `lib/feedback.ts`：
+
+```ts
+type FeedbackStatus = 'open' | 'done';
+
+interface FeedbackItem {
+  id: string;
+  content: string;
+  createdAt: string; // ISO
+  status: FeedbackStatus;
 }
 ```
 
@@ -318,12 +332,12 @@ statusOf(day):
 | 组件 | 职责 | 关键 props / 行为 |
 | --- | --- | --- |
 | `TimesheetApp` | 全局状态、业务流程、弹窗编排 | `state`、`draft`、`config`、`page`、`mode`、`view`、`authed` |
-| `LoginPage` | 登录页（演示） | 企业微信登录 / 邮箱密码登录，点击均直接调用 `onLogin`，无校验 |
+| `LoginPage` | 登录页（演示） | 企业微信登录 / 邮箱密码登录，点击均直接调用 `onLogin`，无校验；底部「匿名反馈」打开弹窗，提交调用 `onFeedback` |
 | `Calendar` | 6×7 月历 | `year/month`、`selectedKey`、`todayKey`、`editableFrom`、`days`、`onSelect/onPrev/onNext/onToday` |
 | `DayEditor` | 当日明细表 | `draft`、`activities`、`issues`、`onLineChange`、`onAddLine`、`onRemoveLine`、`onSave`、`onPrefill`、`onCopyLast` |
 | `ActivityPicker` | 可搜索下拉 | `activities`、`value`、`onChange`；按业务线分组，支持键盘与搜索 |
 | `MonthView` | 按月表格 | `year/month`、`days`、`stats`、`onSelect` |
-| `AdminPage` | 基础数据 / 用户 / 导出 | `config`、`activities`、`days`、`year/month`、`onChange`、`onBack` |
+| `AdminPage` | 基础数据 / 用户 / 匿名反馈 / 导出 | `config`、`activities`、`days`、`year/month`、`users`、`feedback`、`onChange`、`onUsersChange`、`onFeedbackChange`、`onBack` |
 | `ui.tsx` | `Icon`、`Modal`、`Toast`、`StatusPill` | 纯展示组件 |
 
 `DayEditor` 的列结构：Work item / 日期列（`MM/DD`）/ Remark / Operation。Operation 列只保留红色删除按钮；Work item 选择器右侧有复制图标（复制工作项代码，成功后短暂变绿勾）；客户名称列与工作项详情弹窗已在迭代中移除。
@@ -379,6 +393,14 @@ statusOf(day):
 ```
 
 > 目前导出的是「当前演示用户」的数据；因为原型只有一名填报用户的会话数据。接后端后应按员工维度聚合。
+
+### 10.4 匿名反馈
+
+- 入口：登录页底部「匿名反馈」，**不需要登录**；任何能打开登录页的人都可以提交
+- 弹窗字段：一段反馈内容，最多 1000 字；不收集姓名、工号、邮箱、IP 等身份信息
+- 提交后写入 `TimesheetApp` 内存态，登录后在后台「匿名反馈」区展示
+- 后台列：提交时间、反馈内容、状态（待处理 / 已处理）、操作（切换状态 / 删除）
+- 匿名反馈只存在当前会话，刷新即清空；真实上线应对接后端接口，并在服务端做长度校验、频率限制和内容转义
 
 ---
 
@@ -523,6 +545,7 @@ curl -s http://127.0.0.1:5178/api/health
 5. **导出为 CSV**：不是真正的 `.xlsx`，但 Excel 可直接打开；导出范围为当前演示用户。
 6. **无路由**：页面切换靠 `page` state，刷新后回到填报页。
 7. **浏览器要求**：现代 Chromium / Safari；不支持 IE。
+8. **匿名反馈仅前端内存**：没有后端、没有频率限制；刷新后清空，真实上线需补提交接口、服务端校验与限流。
 
 ---
 

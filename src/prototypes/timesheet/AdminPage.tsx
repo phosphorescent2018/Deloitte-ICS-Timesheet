@@ -5,6 +5,7 @@ import type { ActivityCode, AdminConfig } from './lib/config';
 import { daysInMonth, toKey } from './lib/date';
 import { dayTotal, statusOf, type DayRecord } from './lib/model';
 import { newUserId, type AppUser, type UserRole } from './lib/users';
+import type { FeedbackItem } from './lib/feedback';
 import { Icon, Modal } from './ui';
 
 interface Props {
@@ -14,8 +15,10 @@ interface Props {
   year: number;
   month: number;
   users: AppUser[];
+  feedback: FeedbackItem[];
   onChange: (next: AdminConfig) => void;
   onUsersChange: (users: AppUser[]) => void;
+  onFeedbackChange: (feedback: FeedbackItem[]) => void;
   onBack: () => void;
 }
 
@@ -255,8 +258,10 @@ export default function AdminPage({
   year,
   month,
   users,
+  feedback,
   onChange,
   onUsersChange,
+  onFeedbackChange,
   onBack,
 }: Props) {
   const { t, lang } = useI18n();
@@ -528,6 +533,78 @@ export default function AdminPage({
             </tbody>
           </table>
         </div>
+      </section>
+
+      <section className="card admin-feedback">
+        <header className="admin-users-head">
+          <div>
+            <span className="editor-kicker">{t('admin.feedbackTitle')}</span>
+            <p>{t('admin.feedbackDesc')}</p>
+          </div>
+          <span className="admin-feedback-count">{feedback.length}</span>
+        </header>
+
+        {feedback.length === 0 ? (
+          <p className="admin-empty">{t('admin.feedbackEmpty')}</p>
+        ) : (
+          <div className="admin-table-wrap">
+            <table className="admin-table admin-feedback-table">
+              <thead>
+                <tr>
+                  <th>{t('admin.feedbackTime')}</th>
+                  <th>{t('admin.feedbackContent')}</th>
+                  <th>{t('admin.feedbackStatus')}</th>
+                  <th>{t('admin.actions')}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {feedback.map((item) => {
+                  const when = new Date(item.createdAt).toLocaleString(
+                    lang === 'zh' ? 'zh-CN' : 'en-US',
+                    { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' },
+                  );
+                  return (
+                    <tr key={item.id}>
+                      <td className="feedback-time">{when}</td>
+                      <td className="feedback-content">{item.content}</td>
+                      <td>
+                        <span className={`feedback-status is-${item.status}`}>
+                          {t(item.status === 'open' ? 'admin.feedbackOpen' : 'admin.feedbackDone')}
+                        </span>
+                      </td>
+                      <td className="admin-row-actions">
+                        <button
+                          type="button"
+                          className="link-btn"
+                          onClick={() =>
+                            onFeedbackChange(
+                              feedback.map((entry) =>
+                                entry.id === item.id
+                                  ? { ...entry, status: entry.status === 'open' ? 'done' : 'open' }
+                                  : entry,
+                              ),
+                            )
+                          }
+                        >
+                          {t(item.status === 'open' ? 'admin.feedbackResolve' : 'admin.feedbackReopen')}
+                        </button>
+                        <button
+                          type="button"
+                          className="link-btn is-danger"
+                          onClick={() =>
+                            onFeedbackChange(feedback.filter((entry) => entry.id !== item.id))
+                          }
+                        >
+                          {t('admin.feedbackDelete')}
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
       </section>
 
       <section className="card admin-export">

@@ -8,6 +8,7 @@ import mindigitalMark from './assets/mindigital-mark.svg';
 import AdminPage from './AdminPage';
 import { buildActivities, loadConfig, saveConfig, type AdminConfig } from './lib/config';
 import { loadUsers, saveUsers, type AppUser } from './lib/users';
+import { createFeedback, type FeedbackItem } from './lib/feedback';
 import { addDays, editableFromKey, fromKey, isFutureMonthKey, isLockedKey, shortDate, toKey } from './lib/date';
 import {
   blankDay,
@@ -60,8 +61,10 @@ export default function TimesheetApp() {
   const [futureKey, setFutureKey] = useState<string | null>(null);
   const [page, setPage] = useState<'timesheet' | 'admin'>('timesheet');
   const [authed, setAuthed] = useState(false);
+  const [logoutConfirm, setLogoutConfirm] = useState(false);
   const [config, setConfig] = useState<AdminConfig>(() => loadConfig());
   const [users, setUsers] = useState<AppUser[]>(() => loadUsers());
+  const [feedback, setFeedback] = useState<FeedbackItem[]>([]);
   const [currentUserId] = useState<string>(() => users[0]?.id ?? '');
   const toastTimer = useRef<number | null>(null);
 
@@ -84,6 +87,26 @@ export default function TimesheetApp() {
   const applyUsers = (next: AppUser[]) => {
     setUsers(next);
     saveUsers(next);
+  };
+
+  const doLogout = () => {
+    setLogoutConfirm(false);
+    setPending(null);
+    setApprovalKey(null);
+    setFutureKey(null);
+    setPage('timesheet');
+    setDirty(false);
+    setIssues([]);
+    setToast(null);
+    setAuthed(false);
+  };
+
+  const requestLogout = () => {
+    if (dirty) {
+      setLogoutConfirm(true);
+      return;
+    }
+    doLogout();
   };
 
   useEffect(() => {
@@ -365,7 +388,12 @@ export default function TimesheetApp() {
   });
 
   if (!authed) {
-    return <LoginPage onLogin={() => setAuthed(true)} />;
+    return (
+      <LoginPage
+        onLogin={() => setAuthed(true)}
+        onFeedback={(content) => setFeedback((prev) => [createFeedback(content), ...prev])}
+      />
+    );
   }
 
   return (
@@ -436,13 +464,20 @@ export default function TimesheetApp() {
             </button>
           ) : null}
 
-          <div className="user-chip">
+          <button
+            type="button"
+            className="user-chip"
+            onClick={requestLogout}
+            title={t('user.logout')}
+            aria-label={t('user.logout')}
+          >
             <span className="avatar">{currentUser?.name.slice(0, 1) ?? '—'}</span>
             <div>
               <strong>{currentUser?.name ?? '—'}</strong>
               <span>{currentUser ? t(`role.${currentUser.role}`) : ''}</span>
             </div>
-          </div>
+            <Icon.LogOut size={13} className="logout-hint" />
+          </button>
         </div>
       </header>
 
@@ -468,8 +503,10 @@ export default function TimesheetApp() {
             year={view.y}
             month={view.m}
             users={users}
+            feedback={feedback}
             onChange={applyConfig}
             onUsersChange={applyUsers}
+            onFeedbackChange={setFeedback}
             onBack={() => setPage('timesheet')}
           />
         </main>
@@ -534,6 +571,26 @@ export default function TimesheetApp() {
           <kbd>S</kbd> {t('foot.save')}
         </span>
       </footer>
+
+      {logoutConfirm ? (
+        <Modal
+          title={t('user.logoutTitle')}
+          width={420}
+          onClose={() => setLogoutConfirm(false)}
+          footer={
+            <>
+              <button type="button" className="btn btn-ghost" onClick={() => setLogoutConfirm(false)}>
+                {t('btn.cancel')}
+              </button>
+              <button type="button" className="btn btn-danger" onClick={doLogout}>
+                {t('user.logout')}
+              </button>
+            </>
+          }
+        >
+          <p className="modal-copy">{t('user.logoutBody')}</p>
+        </Modal>
+      ) : null}
 
       <Toast toast={toast} />
 
