@@ -138,6 +138,8 @@ const DICT: Record<string, Entry> = {
   'field.remarkAria': { zh: '第 {{n}} 行备注', en: 'Line {{n}} remark' },
   'btn.addLine': { zh: '添加活动行', en: 'Add activity line' },
   'btn.removeLine': { zh: '删除这一行', en: 'Remove line' },
+  'btn.copyActivity': { zh: '复制活动名称', en: 'Copy activity' },
+  'btn.copied': { zh: '已复制', en: 'Copied' },
   'empty.lines': {
     zh: '还没有活动行，点左下角的绿色加号添加一行。',
     en: 'No activity lines yet — add one to start filling this day.',

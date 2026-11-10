@@ -42,6 +42,33 @@ export default function DayEditor({
 }: Props) {
   const { t, lang } = useI18n();
   const [hourText, setHourText] = useState<Record<string, string>>({});
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  const copyActivity = async (line: ActivityLine) => {
+    if (!line.code) return;
+    let ok = false;
+    try {
+      await navigator.clipboard.writeText(line.code);
+      ok = true;
+    } catch {
+      try {
+        const area = document.createElement('textarea');
+        area.value = line.code;
+        area.style.position = 'fixed';
+        area.style.opacity = '0';
+        document.body.appendChild(area);
+        area.select();
+        ok = document.execCommand('copy');
+        area.remove();
+      } catch {
+        ok = false;
+      }
+    }
+    if (ok) {
+      setCopiedId(line.id);
+      window.setTimeout(() => setCopiedId((current) => (current === line.id ? null : current)), 1200);
+    }
+  };
 
   useEffect(() => {
     setHourText({});
@@ -126,6 +153,18 @@ export default function DayEditor({
                   onChange={(code) => onLineChange(line.id, { code })}
                   invalid={line.hours > 0 && !line.code}
                 />
+                <button
+                  type="button"
+                  className={`copy-activity${line.code ? '' : ' is-hidden'}${
+                    copiedId === line.id ? ' is-done' : ''
+                  }`}
+                  title={copiedId === line.id ? t('btn.copied') : t('btn.copyActivity')}
+                  aria-label={copiedId === line.id ? t('btn.copied') : t('btn.copyActivity')}
+                  onClick={() => copyActivity(line)}
+                  tabIndex={line.code ? 0 : -1}
+                >
+                  {copiedId === line.id ? <Icon.Check size={14} /> : <Icon.Copy size={14} />}
+                </button>
               </div>
               <div className="cell-value">
                 <div className="hours-field">
