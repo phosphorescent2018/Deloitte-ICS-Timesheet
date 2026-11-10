@@ -93,7 +93,7 @@ export default function DayEditor({
           <span className="editor-kicker">{t('editor.kicker')}</span>
           <h2>{formatLongDate(draft.date, lang)}</h2>
           <span className="editor-sub">
-            {shortDate(draft.date)} · {t('cal.week', { week: isoWeek(fromKey(draft.date)) })}
+            {shortDate(draft.date)} · {t('cal.weekOnly', { week: isoWeek(fromKey(draft.date)) })}
           </span>
         </div>
         <div className="editor-top-right">

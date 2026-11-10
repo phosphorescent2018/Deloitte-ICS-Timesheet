@@ -514,7 +514,7 @@ export default function TimesheetApp() {
           <div className="banner-left">
             <span className="banner-dot" aria-hidden="true" />
             <strong>{t('banner.reminder')}</strong>
-            <span>{t('banner.text')}</span>
+            <span>{t('banner.text', { days: config.backfillDays })}</span>
           </div>
           <div className="banner-right">
             {t('banner.period', { month: formatMonth(view.y, view.m, lang), hours: '8.0' })}

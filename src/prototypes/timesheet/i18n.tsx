@@ -107,8 +107,8 @@ const DICT: Record<string, Entry> = {
   },
   'alert.monthlyLow.title': { zh: '当月完成率低于 X%', en: 'Monthly completion below X%' },
   'alert.monthlyLow.desc': {
-    zh: '按应填工作日计算，月中达到阈值即提醒。',
-    en: 'Calculated against required workdays; alerts when the threshold is reached mid-month.',
+    zh: '按截至今天的应填工作日计算，完成率低于阈值时提醒。',
+    en: 'Calculated against workdays to date; alerts when completion falls below the threshold.',
   },
   'alert.daysUnit': { zh: '个工作日', en: 'workdays' },
   'alert.percentUnit': { zh: '%', en: '%' },
@@ -215,12 +215,13 @@ const DICT: Record<string, Entry> = {
 
   'banner.reminder': { zh: '提醒：', en: 'Reminder:' },
   'banner.text': {
-    zh: 'xxxxxxx',
-    en: 'xxxxxxx',
+    zh: '仅可填写本月工时；可补填最近 {{days}} 天，跨月需发起 OA 审批。',
+    en: 'This month only; the last {{days}} days can be backfilled. Cross-month edits need OA approval.',
   },
   'banner.period': { zh: '{{month}} · 目标 {{hours}} 小时/天', en: '{{month}} · Target {{hours}} h / day' },
 
   'cal.week': { zh: '第 {{week}} 周 · {{days}} 个工作日', en: 'Week {{week}} · {{days}} working days' },
+  'cal.weekOnly': { zh: '第 {{week}} 周', en: 'Week {{week}}' },
   'cal.today': { zh: '今天', en: 'Today' },
   'cal.prev': { zh: '上个月', en: 'Previous month' },
   'cal.next': { zh: '下个月', en: 'Next month' },

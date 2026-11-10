@@ -235,6 +235,62 @@ function LocationEditor({
   );
 }
 
+function AlertThresholdInput({
+  value,
+  min,
+  max,
+  unit,
+  onChange,
+}: {
+  value: number;
+  min: number;
+  max: number;
+  unit: string;
+  onChange: (value: number) => void;
+}) {
+  const [draft, setDraft] = useState(String(value));
+
+  useEffect(() => {
+    setDraft(String(value));
+  }, [value]);
+
+  const commit = () => {
+    const parsed = Number(draft);
+    if (!Number.isFinite(parsed)) {
+      setDraft(String(value));
+      return;
+    }
+    const next = Math.min(max, Math.max(min, Math.round(parsed)));
+    setDraft(String(next));
+    onChange(next);
+  };
+
+  return (
+    <label className="alert-threshold">
+      <input
+        type="number"
+        min={min}
+        max={max}
+        value={draft}
+        onChange={(event) => {
+          const next = event.target.value;
+          setDraft(next);
+          const parsed = Number(next);
+          if (next !== '' && Number.isFinite(parsed)) onChange(Math.round(parsed));
+        }}
+        onBlur={commit}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter') {
+            event.preventDefault();
+            commit();
+          }
+        }}
+      />
+      <span>{unit}</span>
+    </label>
+  );
+}
+
 const ALERT_ROWS: {
   type: AlertType;
   titleKey: string;
@@ -273,7 +329,7 @@ const ALERT_ROWS: {
     titleKey: 'alert.monthlyLow.title',
     descKey: 'alert.monthlyLow.desc',
     min: 10,
-    max: 100,
+    max: 95,
     unitKey: 'alert.percentUnit',
   },
 ];
@@ -647,22 +703,13 @@ export default function AdminPage({
                 {row.fixed ? (
                   <span className="alert-threshold-fixed">{t('admin.alertsDaily')}</span>
                 ) : (
-                  <label className="alert-threshold">
-                    <input
-                      type="number"
-                      min={row.min}
-                      max={row.max}
-                      value={threshold}
-                      onChange={(event) => {
-                        const value = Number(event.target.value);
-                        if (!Number.isFinite(value)) return;
-                        updateAlertRule(row.type, {
-                          threshold: Math.min(row.max, Math.max(row.min, Math.round(value))),
-                        });
-                      }}
-                    />
-                    <span>{t(row.unitKey ?? 'alert.daysUnit')}</span>
-                  </label>
+                  <AlertThresholdInput
+                    value={threshold}
+                    min={row.min}
+                    max={row.max}
+                    unit={t(row.unitKey ?? 'alert.daysUnit')}
+                    onChange={(value) => updateAlertRule(row.type, { threshold: value })}
+                  />
                 )}
               </div>
             );
