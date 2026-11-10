@@ -35,6 +35,11 @@ const DICT: Record<string, Entry> = {
   'admin.locationEn': { zh: '英文名称', en: 'English name' },
   'admin.addPlaceholder': { zh: '输入名称后回车', en: 'Type a name and press Enter' },
   'admin.add': { zh: '添加', en: 'Add' },
+  'admin.confirmAddTitle': { zh: '确认添加？', en: 'Confirm add?' },
+  'admin.confirmAddBody': {
+    zh: '将「{{value}}」加入{{title}}。',
+    en: 'Add "{{value}}" to {{title}}.',
+  },
   'admin.remove': { zh: '删除', en: 'Remove' },
   'admin.duplicate': { zh: '已存在', en: 'Already exists' },
   'admin.atLeastOne': { zh: '至少保留一项', en: 'Keep at least one item' },

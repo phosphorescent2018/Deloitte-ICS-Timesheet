@@ -42,8 +42,10 @@ function ListEditor({
   onAdd,
   onRemove,
 }: ListEditorProps) {
+  const { t } = useI18n();
   const [value, setValue] = useState('');
   const [error, setError] = useState('');
+  const [pending, setPending] = useState<string | null>(null);
 
   const submit = () => {
     const next = value.trim();
@@ -52,52 +54,80 @@ function ListEditor({
       setError(duplicateLabel);
       return;
     }
-    onAdd(next);
+    setPending(next);
+  };
+
+  const confirm = () => {
+    if (!pending) return;
+    onAdd(pending);
+    setPending(null);
     setValue('');
     setError('');
   };
 
   return (
-    <section className="card admin-card">
-      <h2>{title}</h2>
-      <div className="admin-tags">
-        {items.map((item) => (
-          <span className="admin-tag" key={item}>
-            {item}
-            <button
-              type="button"
-              title={items.length <= 1 ? atLeastOneLabel : removeLabel}
-              disabled={items.length <= 1}
-              onClick={() => onRemove(item)}
-              aria-label={`${removeLabel} ${item}`}
-            >
-              <Icon.X size={11} />
-            </button>
-          </span>
-        ))}
-      </div>
-      <div className="admin-add">
-        <input
-          value={value}
-          placeholder={placeholder}
-          onChange={(event) => {
-            setValue(event.target.value);
-            setError('');
-          }}
-          onKeyDown={(event) => {
-            if (event.key === 'Enter') {
-              event.preventDefault();
-              submit();
-            }
-          }}
-        />
-        <button type="button" className="btn btn-blue" onClick={submit}>
-          <Icon.Plus size={14} />
-          {addLabel}
-        </button>
-      </div>
-      {error ? <p className="admin-error">{error}</p> : null}
-    </section>
+    <>
+      <section className="card admin-card">
+        <h2>{title}</h2>
+        <div className="admin-tags">
+          {items.map((item) => (
+            <span className="admin-tag" key={item}>
+              {item}
+              <button
+                type="button"
+                title={items.length <= 1 ? atLeastOneLabel : removeLabel}
+                disabled={items.length <= 1}
+                onClick={() => onRemove(item)}
+                aria-label={`${removeLabel} ${item}`}
+              >
+                <Icon.X size={11} />
+              </button>
+            </span>
+          ))}
+        </div>
+        <div className="admin-add">
+          <input
+            value={value}
+            placeholder={placeholder}
+            onChange={(event) => {
+              setValue(event.target.value);
+              setError('');
+            }}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') {
+                event.preventDefault();
+                submit();
+              }
+            }}
+          />
+          <button type="button" className="btn btn-blue" onClick={submit}>
+            <Icon.Plus size={14} />
+            {addLabel}
+          </button>
+        </div>
+        {error ? <p className="admin-error">{error}</p> : null}
+      </section>
+
+      {pending ? (
+        <Modal
+          title={t('admin.confirmAddTitle')}
+          width={420}
+          onClose={() => setPending(null)}
+          footer={
+            <>
+              <button type="button" className="btn btn-ghost" onClick={() => setPending(null)}>
+                {t('admin.cancel')}
+              </button>
+              <button type="button" className="btn btn-blue" onClick={confirm}>
+                {addLabel}
+              </button>
+            </>
+          }
+        >
+          <p className="modal-copy">{t('admin.confirmAddBody', { value: pending, title })}</p>
+        </Modal>
+      ) : null}
+    </>
   );
 }
 
