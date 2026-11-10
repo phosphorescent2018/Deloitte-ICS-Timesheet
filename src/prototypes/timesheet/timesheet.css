@@ -2022,6 +2022,73 @@ input[type='number'] {
   font-size: 12.5px;
 }
 
+.admin-rule {
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px 18px;
+}
+
+.admin-rule-copy {
+  flex: 1 1 300px;
+}
+
+.admin-rule-copy p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.admin-rule-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-rule-control label {
+  font-size: 12px;
+  color: #5a646d;
+}
+
+.admin-rule-input {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #fff;
+}
+
+.admin-rule-input input {
+  width: 44px;
+  border: 0;
+  outline: none;
+  background: transparent;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+  color: var(--ink);
+}
+
+.admin-rule-input span {
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+.admin-rule-note {
+  flex: 1 0 100%;
+  margin: 0;
+  padding-top: 10px;
+  border-top: 1px solid var(--line-soft);
+  font-size: 11.5px;
+  color: #8b959d;
+}
+
 .admin-users {
   padding: 16px 18px 18px;
 }

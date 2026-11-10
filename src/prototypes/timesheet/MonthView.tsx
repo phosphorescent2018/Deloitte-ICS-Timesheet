@@ -16,10 +16,11 @@ interface Props {
   days: Record<string, DayRecord>;
   stats: MonthStats;
   locations: LocationOption[];
+  backfillDays: number;
   onSelect: (key: string) => void;
 }
 
-export default function MonthView({ year, month, days, stats, locations, onSelect }: Props) {
+export default function MonthView({ year, month, days, stats, locations, backfillDays, onSelect }: Props) {
   const { t, lang } = useI18n();
   const todayKey = toKey(new Date());
   const total = daysInMonth(year, month);
@@ -31,7 +32,7 @@ export default function MonthView({ year, month, days, stats, locations, onSelec
       key,
       weekday: formatWeekdayShort(key, lang),
       weekend: !isWorkday(fromKey(key)),
-      locked: isLockedKey(key, todayKey),
+      locked: isLockedKey(key, todayKey, backfillDays),
       record: days[key],
     };
   });

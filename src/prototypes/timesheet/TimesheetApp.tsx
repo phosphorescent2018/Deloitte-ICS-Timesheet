@@ -70,7 +70,7 @@ export default function TimesheetApp() {
   const logoutTimer = useRef<number | null>(null);
 
   const todayKey = toKey(new Date());
-  const editableFrom = editableFromKey(todayKey);
+  const editableFrom = editableFromKey(todayKey, config.backfillDays);
   const currentUser = users.find((user) => user.id === currentUserId) ?? users[0];
   const isSuperAdmin = currentUser?.role === 'super_admin';
   const activities = useMemo(() => buildActivities(config), [config]);
@@ -168,7 +168,7 @@ export default function TimesheetApp() {
       setFutureKey(key);
       return;
     }
-    if (isLockedKey(key, todayKey)) {
+    if (isLockedKey(key, todayKey, config.backfillDays)) {
       setApprovalKey(key);
       return;
     }
@@ -221,7 +221,7 @@ export default function TimesheetApp() {
   };
 
   const saveDay = (): boolean => {
-    if (isLockedKey(draft.date, todayKey)) {
+    if (isLockedKey(draft.date, todayKey, config.backfillDays)) {
       setApprovalKey(draft.date);
       return false;
     }
@@ -310,7 +310,7 @@ export default function TimesheetApp() {
     const filled: string[] = [];
     const skipped: string[] = [];
 
-    weekdaysOf(selectedKey).filter((key) => !isLockedKey(key, todayKey)).forEach((key) => {
+    weekdaysOf(selectedKey).filter((key) => !isLockedKey(key, todayKey, config.backfillDays)).forEach((key) => {
       const existing = nextDays[key];
       if (existing && dayTotal(existing) > 0) {
         skipped.push(shortDate(key));
@@ -547,6 +547,7 @@ export default function TimesheetApp() {
           selectedKey={selectedKey}
           todayKey={todayKey}
           editableFrom={editableFrom}
+          backfillDays={config.backfillDays}
           days={state.days}
           onSelect={(key) => selectDate(key)}
           onPrev={() => changeMonth(-1)}
@@ -581,6 +582,7 @@ export default function TimesheetApp() {
               days={state.days}
               stats={stats}
               locations={config.locations}
+              backfillDays={config.backfillDays}
               onSelect={(key) => {
                 setMode('day');
                 selectDate(key);

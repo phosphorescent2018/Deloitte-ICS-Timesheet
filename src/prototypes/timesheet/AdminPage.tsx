@@ -472,6 +472,35 @@ export default function AdminPage({
         onChange={(locations) => onChange({ ...config, locations })}
       />
 
+      <section className="card admin-rule">
+        <div className="admin-rule-copy">
+          <span className="editor-kicker">{t('admin.ruleTitle')}</span>
+          <p>{t('admin.ruleDesc')}</p>
+        </div>
+        <div className="admin-rule-control">
+          <label htmlFor="backfill-days">{t('admin.backfillDays')}</label>
+          <div className="admin-rule-input">
+            <input
+              id="backfill-days"
+              type="number"
+              min={0}
+              max={7}
+              value={config.backfillDays}
+              onChange={(event) => {
+                const value = Number(event.target.value);
+                if (!Number.isFinite(value)) return;
+                onChange({
+                  ...config,
+                  backfillDays: Math.min(7, Math.max(0, Math.round(value))),
+                });
+              }}
+            />
+            <span>{t('admin.daysUnit')}</span>
+          </div>
+        </div>
+        <p className="admin-rule-note">{t('admin.ruleHint')}</p>
+      </section>
+
       <section className="card admin-users">
         <header className="admin-users-head">
           <div>

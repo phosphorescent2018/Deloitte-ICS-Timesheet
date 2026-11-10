@@ -106,9 +106,9 @@ export function round1(value: number): number {
   return Math.round(value * 10) / 10;
 }
 
-/** 可编辑窗口起始日：默认 3 天（含当天）→ 今天、昨天、前天。 */
-export function editableFromKey(todayKey: string, windowDays = 3): string {
-  return toKey(addDays(fromKey(todayKey), -(windowDays - 1)));
+/** 可编辑窗口起始日：可补填最近 N 个自然日（0 = 仅今天）。 */
+export function editableFromKey(todayKey: string, backfillDays = 2): string {
+  return toKey(addDays(fromKey(todayKey), -backfillDays));
 }
 
 /** 是否属于「下个月及以后」的日期。 */
@@ -118,8 +118,12 @@ export function isFutureMonthKey(key: string, todayKey: string): boolean {
   return key > monthEnd;
 }
 
-/** 历史窗口之外、或晚于当月最后一天的日期视为锁定。 */
-export function isLockedKey(key: string, todayKey: string, windowDays = 3): boolean {
-  const from = editableFromKey(todayKey, windowDays);
-  return key < from || isFutureMonthKey(key, todayKey);
+/**
+ * 锁定判定：必须同时满足
+ * 1) 在当前自然月内（跨月一律锁定，写死）
+ * 2) 不早于 today - backfillDays
+ */
+export function isLockedKey(key: string, todayKey: string, backfillDays = 2): boolean {
+  const sameMonth = key.slice(0, 7) === todayKey.slice(0, 7);
+  return !sameMonth || key < editableFromKey(todayKey, backfillDays);
 }

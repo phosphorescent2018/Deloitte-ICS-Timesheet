@@ -211,21 +211,22 @@ interface MonthStats {
 
 ### 7.1 可编辑范围
 
-日期分三类，判定函数为 `lib/date.ts` 的 `isLockedKey(key, todayKey)` 与 `isFutureMonthKey(key, todayKey)`：
+后台「填报规则」维护 `backfillDays`（0–7，默认 2，按自然日）；跨月日期写死锁定。判定函数为 `lib/date.ts` 的 `isLockedKey(key, todayKey, backfillDays)` 与 `isFutureMonthKey(key, todayKey)`，两者是且的关系：
 
 | 日期范围 | 是否可编辑 | 点击行为 |
 | --- | --- | --- |
-| 今天及前 2 天（含当天，共 3 天） | ✅ | 正常打开编辑器 |
-| 本月内晚于今天的日期 | ✅ | 正常打开编辑器（可提前填报） |
-| 早于「今天 − 2 天」的日期 | ❌ | 弹窗「企业微信 OA 审批流」 |
-| 下个月及以后的所有日期 | ❌ | 弹窗「不能填写下月工时」 |
+| 当前自然月内、今天及前 N 天 | ✅ | 正常打开编辑器 |
+| 当前自然月内、晚于今天的日期 | ✅ | 正常打开编辑器（可提前填报） |
+| 当前自然月内、早于「今天 − N 天」 | ❌ | 弹窗「企业微信 OA 审批流」 |
+| 所有跨月日期（上个月及下个月） | ❌ | 弹窗「企业微信 OA 审批流 / 不能填写下月工时」 |
 
 实现要点：
 
-- `editableFromKey(todayKey)` = 今天减 2 天，是历史窗口起点。
-- `isFutureMonthKey` 用「当月最后一天」作为上界，因此跨年、跨月都成立。
+- `editableFromKey(todayKey, backfillDays)` = 今天减 N 天，是历史窗口起点；0 表示仅今天。
+- `isLockedKey` 同时判断 `key` 与 `todayKey` 是否同月，以及是否早于窗口起点；跨月无论日期多近都锁定。
 - 日历、周视图、月视图、`Prefill one week` 全部复用同一套判定，避免边界不一致。
 - 保存入口 `saveDay` 会再次调用 `isLockedKey` 兜底，防止通过非正常路径写入锁定日期。
+- 后台修改 `backfillDays` 后立即影响日历锁态；该配置仅当前会话生效。
 
 ### 7.2 校验规则
 
@@ -599,7 +600,7 @@ Record<employeeId, Record<dateKey, DayRecord>>
 - [ ] `npm run typecheck` 通过
 - [ ] `npm run build` 通过，`dist/` 资源路径为相对路径
 - [ ] 月历：今天、选中、未填写、部分填写、已完成、锁定、节假日、调休 8 种状态显示正确
-- [ ] 可编辑范围：今天 / 前 2 天 / 本月未来日期可填；更早日期与下月日期被拦截
+- [ ] 可编辑范围：当前自然月内、今天及前 N 天、本月未来日期可填；跨月与更早日期被拦截
 - [ ] 校验：负数、超 24 小时、填工时未选工作项均被阻断
 - [ ] Prefill / Copy / Save 三个动作与 Toast 文案正确
 - [ ] 中英文切换后所有文案、日期格式、页面标题正确

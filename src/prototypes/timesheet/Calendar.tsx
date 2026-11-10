@@ -10,6 +10,7 @@ interface Props {
   selectedKey: string;
   todayKey: string;
   editableFrom: string;
+  backfillDays: number;
   days: Record<string, DayRecord>;
   onSelect: (key: string) => void;
   onPrev: () => void;
@@ -23,6 +24,7 @@ export default function Calendar({
   selectedKey,
   todayKey,
   editableFrom,
+  backfillDays,
   days,
   onSelect,
   onPrev,
@@ -68,7 +70,7 @@ export default function Calendar({
           const record = days[key];
           const total = dayTotal(record);
           const status = statusOf(record);
-          const locked = isLockedKey(key, todayKey);
+          const locked = isLockedKey(key, todayKey, backfillDays);
           const holiday = holidayInfo(key);
           const makeup = makeupWorkdayInfo(key);
           const weekend = isWeekend(date) && !makeup;

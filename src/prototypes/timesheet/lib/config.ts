@@ -24,6 +24,8 @@ export interface AdminConfig {
   products: string[];
   stages: string[];
   locations: LocationOption[];
+  /** 可补填最近 N 个自然日，0 = 仅今天；跨月始终锁定 */
+  backfillDays: number;
 }
 
 export const DEFAULT_CONFIG: AdminConfig = {
@@ -31,6 +33,7 @@ export const DEFAULT_CONFIG: AdminConfig = {
   products: ['OD', 'AirtimeLending', 'BL'],
   stages: ['运营', '交付'],
   locations: LOCATIONS.map((location) => ({ ...location })),
+  backfillDays: 2,
 };
 
 const CONFIG_KEY = 'deloitte-ics-config.v1';
@@ -47,6 +50,7 @@ export function loadConfig(): AdminConfig {
     products: [...DEFAULT_CONFIG.products],
     stages: [...DEFAULT_CONFIG.stages],
     locations: DEFAULT_CONFIG.locations.map((location) => ({ ...location })),
+    backfillDays: DEFAULT_CONFIG.backfillDays,
   };
 }
 

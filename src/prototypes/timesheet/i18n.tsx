@@ -58,6 +58,17 @@ const DICT: Record<string, Entry> = {
   'admin.products': { zh: '产品', en: 'Products' },
   'admin.stages': { zh: '业务阶段', en: 'Business stages' },
   'admin.locations': { zh: '工作地点', en: 'Work locations' },
+  'admin.ruleTitle': { zh: '填报规则', en: 'Entry rules' },
+  'admin.ruleDesc': {
+    zh: '控制用户可补填最近几天的工时；跨月日期始终锁定，不可填写。',
+    en: 'Controls how many recent days users can backfill. Dates outside the current month are always locked.',
+  },
+  'admin.backfillDays': { zh: '可补填天数', en: 'Backfill days' },
+  'admin.daysUnit': { zh: '天', en: 'days' },
+  'admin.ruleHint': {
+    zh: '0 = 仅今天，最大 7 天；按自然日计算。',
+    en: '0 = today only, maximum 7 days. Calendar days.',
+  },
   'admin.locationName': { zh: '地点名称', en: 'Location name' },
   'admin.locationSpecial': { zh: '不能包含特殊字符。', en: 'Special characters are not allowed.' },
   'admin.addPlaceholder': { zh: '输入名称后回车', en: 'Type a name and press Enter' },
