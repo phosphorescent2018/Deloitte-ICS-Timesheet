@@ -117,7 +117,7 @@ const DICT: Record<string, Entry> = {
     zh: '{{month}} · 团队工时与填报情况',
     en: '{{month}} · Team hours and completion',
   },
-  'insights.workdays': { zh: '应填 {{n}} 个工作日', en: '{{n}} workdays required' },
+  'insights.workdays': { zh: '截至今天应填 {{n}} 个工作日', en: '{{n}} workdays so far' },
   'insights.team': { zh: '团队人数', en: 'People' },
   'insights.peopleUnit': { zh: '人', en: 'people' },
   'insights.completion': { zh: '填报完成率', en: 'Completion' },

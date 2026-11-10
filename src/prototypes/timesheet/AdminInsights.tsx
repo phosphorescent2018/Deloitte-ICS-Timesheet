@@ -48,13 +48,21 @@ export default function AdminInsights({ users, days, config, year, month }: Prop
     const monthKeys = Array.from({ length: totalDays }, (_, index) =>
       toKey(new Date(year, month, index + 1)),
     );
-    const workdays = monthKeys.filter((key) => isWorkday(new Date(year, month, Number(key.slice(-2))))).length;
+    const todayKey = toKey(new Date());
+    const elapsedKeys = monthKeys.filter((key) => key <= todayKey);
+    const workdayKeys = elapsedKeys.filter((key) =>
+      isWorkday(new Date(year, month, Number(key.slice(-2)))),
+    );
+    const workdays = workdayKeys.length;
+    const workdaySet = new Set(workdayKeys);
 
-    const records = monthKeys
+    const records = elapsedKeys
       .map((key) => days[key])
       .filter((record): record is DayRecord => Boolean(record));
     const actualHours = records.reduce((sum, record) => sum + dayTotal(record), 0);
-    const actualFilled = records.filter((record) => dayTotal(record) > 0).length;
+    const actualFilled = records.filter(
+      (record) => workdaySet.has(record.date) && dayTotal(record) > 0,
+    ).length;
 
     const lineTotals = new Map<string, number>();
     records.forEach((record) => {
