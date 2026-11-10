@@ -6,6 +6,7 @@ import { formatMonth, useI18n } from './i18n';
 import mindigitalMark from './assets/mindigital-mark.svg';
 import AdminPage from './AdminPage';
 import { buildActivities, loadConfig, saveConfig, type AdminConfig } from './lib/config';
+import { loadUsers, saveUsers, type AppUser } from './lib/users';
 import { addDays, editableFromKey, fromKey, isFutureMonthKey, isLockedKey, shortDate, toKey } from './lib/date';
 import {
   blankDay,
@@ -58,10 +59,14 @@ export default function TimesheetApp() {
   const [futureKey, setFutureKey] = useState<string | null>(null);
   const [page, setPage] = useState<'timesheet' | 'admin'>('timesheet');
   const [config, setConfig] = useState<AdminConfig>(() => loadConfig());
+  const [users, setUsers] = useState<AppUser[]>(() => loadUsers());
+  const [currentUserId] = useState<string>(() => users[0]?.id ?? '');
   const toastTimer = useRef<number | null>(null);
 
   const todayKey = toKey(new Date());
   const editableFrom = editableFromKey(todayKey);
+  const currentUser = users.find((user) => user.id === currentUserId) ?? users[0];
+  const isSuperAdmin = currentUser?.role === 'super_admin';
   const activities = useMemo(() => buildActivities(config), [config]);
   const stats = useMemo(() => monthStats(state.days, view.y, view.m), [state.days, view]);
 
@@ -73,6 +78,15 @@ export default function TimesheetApp() {
       setDraft((current) => ({ ...current, location: fallback }));
     }
   };
+
+  const applyUsers = (next: AppUser[]) => {
+    setUsers(next);
+    saveUsers(next);
+  };
+
+  useEffect(() => {
+    if (page === 'admin' && !isSuperAdmin) setPage('timesheet');
+  }, [page, isSuperAdmin]);
 
   const pushToast = (text: string, tone: ToastTone = 'ok') => {
     if (toastTimer.current) window.clearTimeout(toastTimer.current);
@@ -394,21 +408,23 @@ export default function TimesheetApp() {
             </button>
           </div>
 
-          <button
-            type="button"
-            className="icon-btn nav-btn"
-            aria-label={page === 'admin' ? t('nav.timesheet') : t('nav.admin')}
-            title={page === 'admin' ? t('nav.timesheet') : t('nav.admin')}
-            onClick={() => setPage(page === 'admin' ? 'timesheet' : 'admin')}
-          >
-            {page === 'admin' ? <Icon.ChevronLeft size={16} /> : <Icon.Settings size={16} />}
-          </button>
+          {isSuperAdmin ? (
+            <button
+              type="button"
+              className="icon-btn nav-btn"
+              aria-label={page === 'admin' ? t('nav.timesheet') : t('nav.admin')}
+              title={page === 'admin' ? t('nav.timesheet') : t('nav.admin')}
+              onClick={() => setPage(page === 'admin' ? 'timesheet' : 'admin')}
+            >
+              {page === 'admin' ? <Icon.ChevronLeft size={16} /> : <Icon.Settings size={16} />}
+            </button>
+          ) : null}
 
           <div className="user-chip">
-            <span className="avatar">吕</span>
+            <span className="avatar">{currentUser?.name.slice(0, 1) ?? '—'}</span>
             <div>
-              <strong>吕薇庆</strong>
-              <span>{t('app.role')}</span>
+              <strong>{currentUser?.name ?? '—'}</strong>
+              <span>{currentUser ? t(`role.${currentUser.role}`) : ''}</span>
             </div>
           </div>
         </div>
@@ -427,7 +443,7 @@ export default function TimesheetApp() {
         </div>
       ) : null}
 
-      {page === 'admin' ? (
+      {page === 'admin' && isSuperAdmin ? (
         <main className="admin-main">
           <AdminPage
             config={config}
@@ -435,7 +451,9 @@ export default function TimesheetApp() {
             days={state.days}
             year={view.y}
             month={view.m}
+            users={users}
             onChange={applyConfig}
+            onUsersChange={applyUsers}
             onBack={() => setPage('timesheet')}
           />
         </main>

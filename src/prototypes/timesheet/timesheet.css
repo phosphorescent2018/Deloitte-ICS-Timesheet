@@ -2017,7 +2017,7 @@ input[type='number'] {
   font-weight: 600;
 }
 
-.role-badge.is-admin {
+.role-badge.is-super_admin {
   background: #eef7e3;
   border-color: #d9e9bd;
   color: #3f5e14;

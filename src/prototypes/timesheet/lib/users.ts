@@ -1,4 +1,4 @@
-export type UserRole = 'employee' | 'manager' | 'admin';
+export type UserRole = 'super_admin' | 'employee';
 
 export interface AppUser {
   id: string;
@@ -17,7 +17,7 @@ export const DEFAULT_USERS: AppUser[] = [
     name: '吕薇庆',
     employeeId: 'MG-0001',
     department: 'Mindigital 全球交付中心',
-    role: 'admin',
+    role: 'super_admin',
     active: true,
   },
   {
@@ -25,7 +25,7 @@ export const DEFAULT_USERS: AppUser[] = [
     name: '胡雅洁',
     employeeId: 'MG-0002',
     department: 'Mindigital 全球交付中心',
-    role: 'manager',
+    role: 'employee',
     active: true,
   },
   {

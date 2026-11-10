@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { formatMonth, formatWeekdayShort, useI18n } from './i18n';
 import { locationLabel, type LocationOption } from './lib/catalog';
 import type { ActivityCode, AdminConfig } from './lib/config';
 import { daysInMonth, toKey } from './lib/date';
 import { dayTotal, statusOf, type DayRecord } from './lib/model';
-import { loadUsers, newUserId, saveUsers, type AppUser, type UserRole } from './lib/users';
+import { newUserId, type AppUser, type UserRole } from './lib/users';
 import { Icon, Modal } from './ui';
 
 interface Props {
@@ -13,7 +13,9 @@ interface Props {
   days: Record<string, DayRecord>;
   year: number;
   month: number;
+  users: AppUser[];
   onChange: (next: AdminConfig) => void;
+  onUsersChange: (users: AppUser[]) => void;
   onBack: () => void;
 }
 
@@ -236,16 +238,21 @@ const COLUMN_KEYS = [
   'col.savedAt',
 ];
 
-export default function AdminPage({ config, activities, days, year, month, onChange, onBack }: Props) {
+export default function AdminPage({
+  config,
+  activities,
+  days,
+  year,
+  month,
+  users,
+  onChange,
+  onUsersChange,
+  onBack,
+}: Props) {
   const { t, lang } = useI18n();
-  const [users, setUsers] = useState<AppUser[]>(() => loadUsers());
   const [userForm, setUserForm] = useState<AppUser | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [userError, setUserError] = useState('');
-
-  useEffect(() => {
-    saveUsers(users);
-  }, [users]);
 
   const openNewUser = () => {
     setEditingId('new');
@@ -281,14 +288,23 @@ export default function AdminPage({ config, activities, days, year, month, onCha
       setUserError(t('admin.duplicateEmployeeId'));
       return;
     }
+    const editing = users.find((user) => user.id === userForm.id);
+    if (
+      editing?.role === 'super_admin' &&
+      userForm.role !== 'super_admin' &&
+      users.filter((user) => user.role === 'super_admin').length <= 1
+    ) {
+      setUserError(t('admin.lastAdmin'));
+      return;
+    }
     const next: AppUser = {
       ...userForm,
       name,
       employeeId,
       department: userForm.department.trim() || t('admin.department'),
     };
-    setUsers((prev) =>
-      editingId === 'new' ? [...prev, next] : prev.map((user) => (user.id === next.id ? next : user)),
+    onUsersChange(
+      editingId === 'new' ? [...users, next] : users.map((user) => (user.id === next.id ? next : user)),
     );
     setUserForm(null);
     setEditingId(null);
@@ -296,8 +312,8 @@ export default function AdminPage({ config, activities, days, year, month, onCha
   };
 
   const removeUser = (user: AppUser) => {
-    if (user.role === 'admin' && users.filter((item) => item.role === 'admin').length <= 1) return;
-    setUsers((prev) => prev.filter((item) => item.id !== user.id));
+    if (user.role === 'super_admin' && users.filter((item) => item.role === 'super_admin').length <= 1) return;
+    onUsersChange(users.filter((item) => item.id !== user.id));
   };
 
   const updateList = (field: 'businessLines' | 'products' | 'stages', next: string[]) => {
@@ -480,7 +496,8 @@ export default function AdminPage({ config, activities, days, year, month, onCha
             <tbody>
               {users.map((user) => {
                 const lastAdmin =
-                  user.role === 'admin' && users.filter((item) => item.role === 'admin').length <= 1;
+                  user.role === 'super_admin' &&
+                  users.filter((item) => item.role === 'super_admin').length <= 1;
                 return (
                   <tr key={user.id}>
                     <td>{user.name}</td>
@@ -612,8 +629,7 @@ export default function AdminPage({ config, activities, days, year, month, onCha
                 onChange={(event) => setUserForm({ ...userForm, role: event.target.value as UserRole })}
               >
                 <option value="employee">{t('role.employee')}</option>
-                <option value="manager">{t('role.manager')}</option>
-                <option value="admin">{t('role.admin')}</option>
+                <option value="super_admin">{t('role.super_admin')}</option>
               </select>
             </label>
             <label className="user-form-check">
