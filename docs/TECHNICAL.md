@@ -339,6 +339,7 @@ statusOf(day):
 | `ActivityPicker` | 可搜索下拉 | `activities`、`value`、`onChange`；按业务线分组，支持键盘与搜索 |
 | `MonthView` | 按月表格 | `year/month`、`days`、`stats`、`onSelect` |
 | `AdminPage` | 基础数据 / 用户 / 匿名反馈 / 导出 | `config`、`activities`、`days`、`year/month`、`users`、`feedback`、`onChange`、`onUsersChange`、`onFeedbackChange`、`onBack` |
+| `FeedbackWordCloud` | 匿名反馈空状态的反馈热词动效 | 仅 `feedback.length === 0` 时渲染；canvas 词云，支持中英文、`prefers-reduced-motion` 静态降级 |
 | `ui.tsx` | `Icon`、`Modal`、`Toast`、`StatusPill` | 纯展示组件 |
 
 `DayEditor` 的列结构：Work item / 日期列（`MM/DD`）/ Remark / Operation。Operation 列只保留红色删除按钮；Work item 选择器右侧有复制图标（复制工作项代码，成功后短暂变绿勾）；客户名称列与工作项详情弹窗已在迭代中移除。

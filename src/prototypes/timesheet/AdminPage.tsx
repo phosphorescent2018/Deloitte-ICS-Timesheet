@@ -8,6 +8,7 @@ import { newUserId, type AppUser, type UserRole } from './lib/users';
 import type { FeedbackItem } from './lib/feedback';
 import { Icon, Modal } from './ui';
 import AdminInsights from './AdminInsights';
+import FeedbackWordCloud from './FeedbackWordCloud';
 
 interface Props {
   config: AdminConfig;
@@ -743,7 +744,7 @@ export default function AdminPage({
         </header>
 
         {feedback.length === 0 ? (
-          <p className="admin-empty">{t('admin.feedbackEmpty')}</p>
+          <FeedbackWordCloud />
         ) : (
           <div className="admin-table-wrap">
             <table className="admin-table admin-feedback-table">
