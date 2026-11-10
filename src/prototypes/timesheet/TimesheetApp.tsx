@@ -177,16 +177,16 @@ export default function TimesheetApp() {
     setDirty(true);
   };
 
-  const saveDay = () => {
+  const saveDay = (): boolean => {
     if (isLockedKey(draft.date, todayKey)) {
       setApprovalKey(draft.date);
-      return;
+      return false;
     }
     const found = validateDay(draft);
     setIssues(found);
     if (found.length > 0) {
       pushToast(t('toast.fixIssues'), 'error');
-      return;
+      return false;
     }
     const record: DayRecord = { ...draft, savedAt: new Date().toISOString() };
     const nextState: AppState = {
@@ -199,6 +199,15 @@ export default function TimesheetApp() {
     setDraft(record);
     setDirty(false);
     pushToast(t('toast.saved', { date: shortDate(record.date), hours: dayTotal(record).toFixed(1) }), 'ok');
+    return true;
+  };
+
+  const saveAndContinue = () => {
+    if (!pending) return;
+    const action = pending.run;
+    const saved = saveDay();
+    setPending(null);
+    if (saved) action();
   };
 
   const prefillWeek = () => {
@@ -529,6 +538,9 @@ export default function TimesheetApp() {
           onClose={() => setPending(null)}
           footer={
             <>
+              <button type="button" className="btn btn-blue" onClick={saveAndContinue}>
+                {t('btn.saveAndSwitch')}
+              </button>
               <button type="button" className="btn btn-ghost" onClick={() => setPending(null)}>
                 {t('btn.keepEditing')}
               </button>

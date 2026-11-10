@@ -186,16 +186,17 @@ const DICT: Record<string, Entry> = {
   'foot.changeDay': { zh: '切换日期', en: 'change day' },
   'foot.save': { zh: '保存', en: 'save' },
 
-  'discard.title': { zh: '放弃未保存的修改？', en: 'Discard unsaved changes?' },
+  'discard.title': { zh: '当前修改尚未保存', en: 'Unsaved changes' },
   'discard.subtitle': { zh: '{{date}} 的修改尚未保存。', en: 'Your edits to {{date}} have not been saved.' },
   'discard.body': {
-    zh: '即将{{action}}，未保存的工时将丢失；如需保留请先保存。',
-    en: 'You are about to {{action}}. Unsaved time will be lost — save first if you want to keep it.',
+    zh: '即将{{action}}。你可以先保存当前工时，或放弃本次修改。',
+    en: 'You are about to {{action}}. Save your edits first, or discard them.',
   },
   'action.switch': { zh: '切换到 {{date}}', en: 'switch to {{date}}' },
   'action.month': { zh: '切换月份', en: 'change month' },
   'action.today': { zh: '回到今天', en: 'jump to today' },
   'btn.keepEditing': { zh: '继续编辑', en: 'Keep editing' },
+  'btn.saveAndSwitch': { zh: '保存并切换', en: 'Save & switch' },
   'btn.discard': { zh: '放弃修改', en: 'Discard changes' },
 
   'approval.title': { zh: '企业微信 OA 审批流', en: 'WeCom OA approval' },
