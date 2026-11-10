@@ -8,7 +8,7 @@
 
 ## 1. 先说明：原型与生产系统的边界
 
-当前 `ics-timesheet` 是**纯前端高保真原型**：
+当前 `ics-timesheet` 是**纯前端高保真原型**（`backend/` 另有可运行的 Axum + SQLx + PostgreSQL 骨架，但前端默认仍走内存）：
 
 - 数据只存在浏览器内存，刷新即重置
 - 角色权限只在前端判断
@@ -52,7 +52,7 @@ Browser (React)
 Nginx / Ingress
    ├── /            → 静态前端（dist）
    └── /api/*       → Rust API（Axum + Tokio）
-                         ├── SQLite（本地）/ MySQL 8（生产，建议）
+                         ├── PostgreSQL（本地 5433 / 生产 17）
                          ├── Redis（会话/幂等，可选）
                          ├── 企业微信 SSO
                          ├── 企业微信 OA 审批
@@ -62,8 +62,8 @@ Nginx / Ingress
 建议：
 
 - 前端继续用 React + TypeScript + Vite，直接复用现有组件
-- 后端采用 **Rust + Axum + SQLx + Tokio**，本地用 SQLite，生产可切 MySQL 8
-- 数据库生产环境 MySQL 8，字符集 `utf8mb4`，时区统一 `Asia/Shanghai`
+- 后端采用 **Rust + Axum + SQLx + Tokio**，本地开发用 PostgreSQL（5433），生产用 PostgreSQL 17，同一套 SQL、同一套迁移
+- 数据库编码 `UTF8`，时区统一 `Asia/Shanghai`；连接由 `DATABASE_URL` 注入，不在代码里拼
 - 部署 Docker + Docker Compose（小规模）或 Kubernetes（公司平台）
 - 所有环境变量管理密钥，不写进代码与镜像
 
@@ -124,15 +124,16 @@ Nginx / Ingress
 
 ```sql
 CREATE TABLE ts_user (
-  id            BIGINT PRIMARY KEY AUTO_INCREMENT,
+  id            BIGSERIAL PRIMARY KEY,
   employee_no   VARCHAR(32)  NOT NULL UNIQUE,
   name          VARCHAR(64)  NOT NULL,
   email         VARCHAR(128),
   department    VARCHAR(128),
-  role          VARCHAR(20)  NOT NULL COMMENT 'SUPER_ADMIN / TIMESHEET_USER',
-  active        TINYINT(1)   NOT NULL DEFAULT 1,
-  created_at    DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at    DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  role          VARCHAR(20)  NOT NULL
+                CHECK (role IN ('SUPER_ADMIN', 'TIMESHEET_USER')),
+  active        BOOLEAN      NOT NULL DEFAULT TRUE,
+  created_at    TIMESTAMPTZ  NOT NULL DEFAULT now(),
+  updated_at    TIMESTAMPTZ  NOT NULL DEFAULT now()
 );
 ```
 
@@ -141,26 +142,27 @@ CREATE TABLE ts_user (
 - 至少保留 1 个启用的 `SUPER_ADMIN`
 - 不能删除/停用最后一个超级管理员
 - 工号唯一
+- `updated_at` 由应用层在 UPDATE 时写入 `now()`（PG 无 `ON UPDATE`，需要时加触发器）
 
 ### 5.2 基础数据
 
 ```sql
 CREATE TABLE ts_activity_dim (
-  id         BIGINT PRIMARY KEY AUTO_INCREMENT,
-  dim_type   VARCHAR(20) NOT NULL COMMENT 'BUSINESS_LINE / PRODUCT / STAGE',
+  id         BIGSERIAL PRIMARY KEY,
+  dim_type   VARCHAR(20) NOT NULL,  -- BUSINESS_LINE / PRODUCT / STAGE
   value      VARCHAR(64) NOT NULL,
   sort_no    INT NOT NULL DEFAULT 0,
-  active     TINYINT(1) NOT NULL DEFAULT 1,
-  UNIQUE KEY uk_dim_value (dim_type, value)
+  active     BOOLEAN NOT NULL DEFAULT TRUE,
+  CONSTRAINT uk_dim_value UNIQUE (dim_type, value)
 );
 
 CREATE TABLE ts_location (
-  id         BIGINT PRIMARY KEY AUTO_INCREMENT,
+  id         BIGSERIAL PRIMARY KEY,
   code       VARCHAR(32)  NOT NULL UNIQUE,
   name_zh    VARCHAR(64)  NOT NULL,
   name_en    VARCHAR(64)  NOT NULL,
   sort_no    INT NOT NULL DEFAULT 0,
-  active     TINYINT(1) NOT NULL DEFAULT 1
+  active     BOOLEAN NOT NULL DEFAULT TRUE
 );
 ```
 
@@ -170,37 +172,37 @@ CREATE TABLE ts_location (
 
 ```sql
 CREATE TABLE ts_timesheet_day (
-  id            BIGINT PRIMARY KEY AUTO_INCREMENT,
-  user_id       BIGINT NOT NULL,
+  id            BIGSERIAL PRIMARY KEY,
+  user_id       BIGINT NOT NULL REFERENCES ts_user(id),
   work_date     DATE   NOT NULL,
   location_code VARCHAR(32) NOT NULL,
-  target_hours  DECIMAL(4,1) NOT NULL DEFAULT 8.0,
+  target_hours  NUMERIC(4,1) NOT NULL DEFAULT 8.0,
   version       INT NOT NULL DEFAULT 0,
-  saved_at      DATETIME,
-  created_at    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE KEY uk_user_date (user_id, work_date),
-  KEY idx_date (work_date)
+  saved_at      TIMESTAMPTZ,
+  created_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
+  CONSTRAINT uk_user_date UNIQUE (user_id, work_date)
 );
+CREATE INDEX idx_day_date ON ts_timesheet_day (work_date);
 
 CREATE TABLE ts_timesheet_entry (
-  id            BIGINT PRIMARY KEY AUTO_INCREMENT,
-  day_id        BIGINT NOT NULL,
+  id            BIGSERIAL PRIMARY KEY,
+  day_id        BIGINT NOT NULL REFERENCES ts_timesheet_day(id) ON DELETE CASCADE,
   activity_code VARCHAR(128) NOT NULL,
-  hours         DECIMAL(4,1) NOT NULL,
+  hours         NUMERIC(4,1) NOT NULL CHECK (hours >= 0),
   remark        VARCHAR(255) NOT NULL DEFAULT '',
-  sort_no       INT NOT NULL DEFAULT 0,
-  KEY idx_day (day_id)
+  sort_no       INT NOT NULL DEFAULT 0
 );
+CREATE INDEX idx_entry_day ON ts_timesheet_entry (day_id);
 ```
 
 服务层校验：
 
-- `hours >= 0`
+- `hours >= 0`（数据库 CHECK 兜底）
 - 同一天所有 `hours` 合计 `<= 24.0`
 - 填了工时必须选择工作项代码
 - `target_hours` 固定 8.0，只用于状态判定（≥8 为 complete）
 
-> 数据库层可加 `CHECK (hours >= 0)`；合计 24 小时建议服务层事务内校验，必要时加触发器兜底。
+> 合计 24 小时在服务层同一事务内校验；如需更强保障可加 `CONSTRAINT` 触发器或延迟约束兜底。
 
 ### 5.4 节假日 / 调休
 
@@ -208,7 +210,8 @@ CREATE TABLE ts_timesheet_entry (
 CREATE TABLE ts_holiday (
   holiday_date DATE PRIMARY KEY,
   year         SMALLINT NOT NULL,
-  day_type     VARCHAR(16) NOT NULL COMMENT 'HOLIDAY / WORKDAY',
+  day_type     VARCHAR(16) NOT NULL
+               CHECK (day_type IN ('HOLIDAY', 'WORKDAY')),
   name_zh      VARCHAR(64) NOT NULL,
   name_en      VARCHAR(64) NOT NULL,
   source       VARCHAR(64) NOT NULL DEFAULT 'STATE_COUNCIL'
@@ -224,17 +227,18 @@ CREATE TABLE ts_holiday (
 
 ```sql
 CREATE TABLE ts_approval_request (
-  id             BIGINT PRIMARY KEY AUTO_INCREMENT,
-  user_id        BIGINT NOT NULL,
+  id             BIGSERIAL PRIMARY KEY,
+  user_id        BIGINT NOT NULL REFERENCES ts_user(id),
   work_date      DATE   NOT NULL,
   reason         VARCHAR(500) NOT NULL,
-  oa_request_no  VARCHAR(64),
-  status         VARCHAR(16) NOT NULL COMMENT 'PENDING / APPROVED / REJECTED / CANCELLED / EXPIRED',
-  approved_at    DATETIME,
-  expires_at     DATETIME,
-  created_at     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  KEY idx_user_date (user_id, work_date)
+  oa_request_no  VARCHAR(64) UNIQUE,
+  status         VARCHAR(16) NOT NULL
+                 CHECK (status IN ('PENDING', 'APPROVED', 'REJECTED', 'CANCELLED', 'EXPIRED')),
+  approved_at    TIMESTAMPTZ,
+  expires_at     TIMESTAMPTZ,
+  created_at     TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+CREATE INDEX idx_approval_user_date ON ts_approval_request (user_id, work_date);
 ```
 
 规则：
@@ -247,17 +251,17 @@ CREATE TABLE ts_approval_request (
 
 ```sql
 CREATE TABLE ts_audit_log (
-  id          BIGINT PRIMARY KEY AUTO_INCREMENT,
+  id          BIGSERIAL PRIMARY KEY,
   actor_id    BIGINT NOT NULL,
   action      VARCHAR(64) NOT NULL,
   target_type VARCHAR(32) NOT NULL,
   target_id   VARCHAR(64),
-  before_json JSON,
-  after_json  JSON,
+  before_json JSONB,
+  after_json  JSONB,
   ip          VARCHAR(64),
-  created_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  KEY idx_actor_time (actor_id, created_at)
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+CREATE INDEX idx_audit_actor_time ON ts_audit_log (actor_id, created_at);
 ```
 
 记录：保存工时、删除行、修改配置、用户角色变更、导出、审批操作。
@@ -414,8 +418,8 @@ N = 后台「可补填天数」，0–7，默认 2，按自然日计算；跨月
 
 ### 8.2 服务端权限
 
-- `@PreAuthorize("hasRole('SUPER_ADMIN')")` 或等价中间件
-- 数据级过滤：`WHERE user_id = :currentUserId`
+- Axum 中间件/路由层统一校验角色（等价 `hasRole('SUPER_ADMIN')` 的守卫），不靠 handler 自觉
+- 数据级过滤：`WHERE user_id = $current_user_id`
 - 导出接口单独鉴权 + 审计
 
 ---
@@ -442,7 +446,7 @@ N = 后台「可补填天数」，0–7，默认 2，按自然日计算；跨月
 
 ## 10. 导出
 
-- 服务端生成 `.xlsx`（建议 `exceljs` 或 Apache POI）
+- 服务端生成 `.xlsx`，用 `rust_xlsxwriter`（与现后端一致，不必引入 Java/Node 侧库）
 - 文件名：`工时明细_YYYY-MM.xlsx`
 - 列与原型保持一致（15 列）：
 
@@ -483,12 +487,12 @@ N = 后台「可补填天数」，0–7，默认 2，按自然日计算；跨月
 
 | 项 | 建议 |
 | --- | --- |
-| 时区 | 服务端统一 `Asia/Shanghai`；数据库存 DATE/DATETIME |
+| 时区 | 服务端统一 `Asia/Shanghai`；数据库用 `DATE` / `TIMESTAMPTZ`，不存本地时间字符串 |
 | 性能 | 单用户月查询 < 200ms；导出 1 万人月数据 < 30s（异步） |
 | 可用性 | 工作时间 99.5%；保存失败可重试 |
 | 安全 | HTTPS、CSRF、XSS、SQL 注入防护、接口限流 |
 | 审计 | 保存/审批/配置/导出/角色变更全部留痕，至少 1 年 |
-| 备份 | MySQL 每日全量 + binlog；保留 30 天 |
+| 备份 | PostgreSQL 每日全量 + WAL 归档（支持 PITR）；保留 30 天 |
 | 日志 | JSON 日志 + traceId；Prometheus 指标 + 告警 |
 
 ---
@@ -506,14 +510,25 @@ services:
     image: registry/ics-timesheet-api:${TAG}
     environment:
       - TZ=Asia/Shanghai
-      - DB_URL=jdbc:mysql://mysql:3306/ics_timesheet
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/ics_timesheet
       - WECOM_CORP_ID=${WECOM_CORP_ID}
       - WECOM_SECRET=${WECOM_SECRET}
-  mysql:
-    image: mysql:8.0
-    volumes: ["mysql-data:/var/lib/mysql"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      - POSTGRES_DB=ics_timesheet
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ics_timesheet"]
+      interval: 5s
+      retries: 10
+volumes:
+  pgdata:
 ```
 
 ### 13.2 环境
@@ -521,7 +536,7 @@ services:
 - 开发 / 测试 / 生产三套
 - 生产数据库独立账号，最小权限
 - 密钥放 K8s Secret / 公司配置中心，不进 Git
-- 数据库迁移用 Flyway/Liquibase，版本化执行
+- 数据库迁移用 `sqlx::migrate!`（`backend/migrations/`，启动时自动执行），已执行的迁移文件不再修改，只能追加
 
 ### 13.3 发布
 

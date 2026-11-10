@@ -23,7 +23,7 @@ pub async fn create_feedback(
     }
 
     let id = Uuid::new_v4().to_string();
-    sqlx::query("INSERT INTO feedback (id, content, status) VALUES (?, ?, 'open')")
+    sqlx::query("INSERT INTO feedback (id, content, status) VALUES ($1, $2, 'open')")
         .bind(&id)
         .bind(content)
         .execute(&state.db)
@@ -58,7 +58,7 @@ pub async fn update_feedback(
     }
 
     let mut tx = state.db.begin().await?;
-    let affected = sqlx::query("UPDATE feedback SET status = ? WHERE id = ?")
+    let affected = sqlx::query("UPDATE feedback SET status = $1 WHERE id = $2")
         .bind(&body.status)
         .bind(&id)
         .execute(&mut *tx)
@@ -88,7 +88,7 @@ pub async fn delete_feedback(
 ) -> ApiResult<StatusCode> {
     auth.require_admin()?;
     let mut tx = state.db.begin().await?;
-    let affected = sqlx::query("DELETE FROM feedback WHERE id = ?")
+    let affected = sqlx::query("DELETE FROM feedback WHERE id = $1")
         .bind(&id)
         .execute(&mut *tx)
         .await?
@@ -111,7 +111,7 @@ pub async fn delete_feedback(
 
 async fn fetch_feedback(state: &AppState, id: &str) -> ApiResult<FeedbackRow> {
     sqlx::query_as::<_, FeedbackRow>(
-        "SELECT id, content, status, created_at FROM feedback WHERE id = ?",
+        "SELECT id, content, status, created_at FROM feedback WHERE id = $1",
     )
     .bind(id)
     .fetch_optional(&state.db)

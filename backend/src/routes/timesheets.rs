@@ -50,7 +50,7 @@ pub async fn save_day(
     }
 
     let location_exists: i64 =
-        sqlx::query_scalar("SELECT COUNT(*) FROM locations WHERE code = ? AND active = 1")
+        sqlx::query_scalar("SELECT COUNT(*) FROM locations WHERE code = $1 AND active = TRUE")
             .bind(&body.location)
             .fetch_one(&state.db)
             .await?;
@@ -103,7 +103,7 @@ pub async fn save_day(
     let day_id: String = sqlx::query_scalar(
         r#"INSERT INTO timesheet_day
            (id, user_id, work_date, location_code, target_hours, version, saved_at, created_at, updated_at)
-           VALUES (?, ?, ?, ?, ?, 0, ?, ?, ?)
+           VALUES ($1, $2, $3, $4, $5, 0, $6, $7, $8)
            ON CONFLICT(user_id, work_date) DO UPDATE SET
              location_code = excluded.location_code,
              target_hours = excluded.target_hours,
@@ -123,7 +123,7 @@ pub async fn save_day(
     .fetch_one(&mut *tx)
     .await?;
 
-    sqlx::query("DELETE FROM timesheet_entry WHERE day_id = ?")
+    sqlx::query("DELETE FROM timesheet_entry WHERE day_id = $1")
         .bind(&day_id)
         .execute(&mut *tx)
         .await?;
@@ -134,14 +134,14 @@ pub async fn save_day(
         }
         sqlx::query(
             "INSERT INTO timesheet_entry (id, day_id, activity_code, hours, remark, sort_no)
-             VALUES (?, ?, ?, ?, ?, ?)",
+             VALUES ($1, $2, $3, $4, $5, $6)",
         )
         .bind(Uuid::new_v4().to_string())
         .bind(&day_id)
         .bind(entry.activity_code.trim())
         .bind(entry.hours)
         .bind(entry.remark.trim())
-        .bind(sort_no as i64)
+        .bind(sort_no as i32)
         .execute(&mut *tx)
         .await?;
     }
@@ -187,7 +187,7 @@ pub async fn list_month(
 
     let dates = sqlx::query_scalar::<_, String>(
         "SELECT work_date FROM timesheet_day
-         WHERE user_id = ? AND work_date >= ? AND work_date <= ?
+         WHERE user_id = $1 AND work_date >= $2 AND work_date <= $3
          ORDER BY work_date",
     )
     .bind(&auth.id)
@@ -217,7 +217,7 @@ async fn load_day(
     let date_key = work_date.format("%Y-%m-%d").to_string();
     let day = sqlx::query(
         "SELECT id, location_code, target_hours, saved_at
-         FROM timesheet_day WHERE user_id = ? AND work_date = ?",
+         FROM timesheet_day WHERE user_id = $1 AND work_date = $2",
     )
     .bind(user_id)
     .bind(&date_key)
@@ -226,7 +226,7 @@ async fn load_day(
 
     let Some(day) = day else {
         let location: String = sqlx::query_scalar(
-            "SELECT code FROM locations WHERE active = 1 ORDER BY sort_no LIMIT 1",
+            "SELECT code FROM locations WHERE active = TRUE ORDER BY sort_no LIMIT 1",
         )
         .fetch_optional(&state.db)
         .await?
@@ -250,7 +250,7 @@ async fn load_day(
 
     let entries = sqlx::query_as::<_, TimesheetEntryRow>(
         "SELECT id, activity_code, hours, remark, sort_no
-         FROM timesheet_entry WHERE day_id = ? ORDER BY sort_no, id",
+         FROM timesheet_entry WHERE day_id = $1 ORDER BY sort_no, id",
     )
     .bind(&day_id)
     .fetch_all(&state.db)
@@ -278,7 +278,7 @@ async fn load_day(
 
 async fn load_activity_codes(state: &AppState) -> ApiResult<HashSet<String>> {
     let dims = sqlx::query_as::<_, crate::models::ActivityDimRow>(
-        "SELECT dim_type, value, sort_no FROM activity_dims WHERE active = 1",
+        "SELECT dim_type, value, sort_no FROM activity_dims WHERE active = TRUE",
     )
     .fetch_all(&state.db)
     .await?;

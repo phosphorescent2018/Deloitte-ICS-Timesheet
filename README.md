@@ -53,11 +53,12 @@ Mindigital GDC 内部服务工时系统（原 Internal Client Service Timesheet�
 
 ## 技术栈
 
-React 18 + TypeScript + Vite 5，无 UI 组件库，纯手写 CSS（企业灰 + 品牌绿 `#86BC25`），产物为纯静态站点。
+- **前端**：React 18 + TypeScript + Vite 5，无 UI 组件库，纯手写 CSS（企业灰 + 品牌绿 `#86BC25`），产物为纯静态站点。
+- **后端**：Rust（edition 2024）+ Axum 0.8 + SQLx 0.9 + PostgreSQL；本地实例 5433，生产建议 PostgreSQL 17。
 
 ## Rust 后端（本地）
 
-`backend/` 是本地可运行的 Rust API，使用 Axum + SQLx + SQLite，已实现：
+`backend/` 是本地可运行的 Rust API，使用 Axum + SQLx + PostgreSQL，已实现：
 
 - JWT 登录与角色权限
 - 工时保存/读取、服务端日期窗口与 24 小时校验
@@ -69,11 +70,12 @@ React 18 + TypeScript + Vite 5，无 UI 组件库，纯手写 CSS（企业灰 + 
 
 ```bash
 cd backend
-cp .env.example .env
-cargo run
+cp .env.example .env          # DATABASE_URL 默认指向本地 5433
+./scripts/pg-start.sh         # 启动本地 PostgreSQL（5433，数据目录 backend/.pgdata）
+cargo run                     # 启动时自动执行 migrations
 ```
 
-默认 `http://127.0.0.1:8080`，同时把 `../dist` 作为静态站点。首次启动会创建 `MG-0001` 管理员，密码由 `BOOTSTRAP_ADMIN_PASSWORD` 指定。详细接口见 [`backend/README.md`](backend/README.md)。
+默认 `http://127.0.0.1:8080`，同时把 `../dist` 作为静态站点。首次启动会在空库创建 `MG-0001`（超级管理员）与 `MG-0002`（填报用户），密码由 `BOOTSTRAP_ADMIN_PASSWORD` 指定；`./scripts/pg-stop.sh` 停止本地数据库。也可以用 `POSTGRES_PASSWORD=... docker compose up -d` 起一个 PostgreSQL 17 容器（宿主端口 5434，`POSTGRES_PORT` 可覆盖），详见 [`backend/README.md`](backend/README.md)。
 
 ## 本地运行
 
@@ -140,4 +142,4 @@ npm run typecheck  # TypeScript 全量检查
 ## 说明
 
 界面默认英文（右上角可切中文），代码注释与文档为中文。
-本项目为原型演示，不含真实后端、审批流与权限体系，所有数据仅存在当前页面内存，刷新即重置。
+前端为原型演示：页面数据只存在内存，刷新即重置，不含真实审批流；演示站仍为纯前端，真实登录、持久化与权限由本地 `backend/` 的 Rust API 承担。

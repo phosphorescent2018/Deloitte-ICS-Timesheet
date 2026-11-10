@@ -51,13 +51,13 @@ pub async fn create_user(
 
     let password_hash = hash_password(&body.password).map_err(ApiError::Internal)?;
     let id = Uuid::new_v4().to_string();
-    let active = if body.active.unwrap_or(true) { 1 } else { 0 };
+    let active = body.active.unwrap_or(true);
 
     let mut tx = state.db.begin().await?;
     sqlx::query(
         "INSERT INTO users
          (id, employee_no, name, email, department, role, active, password_hash, wecom_userid)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
     )
     .bind(&id)
     .bind(body.employee_no.trim())
@@ -105,9 +105,9 @@ pub async fn update_user(
         validate_role(role)?;
     }
     let next_role = body.role.clone().unwrap_or_else(|| current.role.clone());
-    let next_active = body.active.unwrap_or(current.active == 1);
+    let next_active = body.active.unwrap_or(current.active);
     if current.role == "SUPER_ADMIN"
-        && current.active == 1
+        && current.active
         && (next_role != "SUPER_ADMIN" || !next_active)
     {
         ensure_not_last_admin(&state, &id).await?;
@@ -126,21 +126,21 @@ pub async fn update_user(
     let mut tx = state.db.begin().await?;
     sqlx::query(
         "UPDATE users SET
-           name = ?,
-           email = ?,
-           department = ?,
-           role = ?,
-           active = ?,
-           password_hash = COALESCE(?, password_hash),
-           wecom_userid = ?,
-           updated_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
-         WHERE id = ?",
+           name = $1,
+           email = $2,
+           department = $3,
+           role = $4,
+           active = $5,
+           password_hash = COALESCE($6, password_hash),
+           wecom_userid = $7,
+           updated_at = now()::text
+         WHERE id = $8",
     )
     .bind(body.name.as_deref().unwrap_or(&current.name))
     .bind(body.email.as_deref().or(current.email.as_deref()))
     .bind(body.department.as_deref().or(current.department.as_deref()))
     .bind(&next_role)
-    .bind(if next_active { 1 } else { 0 })
+    .bind(next_active)
     .bind(password_hash)
     .bind(
         body.wecom_userid
@@ -170,12 +170,12 @@ pub async fn delete_user(
 ) -> ApiResult<StatusCode> {
     auth.require_admin()?;
     let current = fetch_user(&state, &id).await?;
-    if current.role == "SUPER_ADMIN" && current.active == 1 {
+    if current.role == "SUPER_ADMIN" && current.active {
         ensure_not_last_admin(&state, &id).await?;
     }
 
     let mut tx = state.db.begin().await?;
-    sqlx::query("DELETE FROM users WHERE id = ?")
+    sqlx::query("DELETE FROM users WHERE id = $1")
         .bind(&id)
         .execute(&mut *tx)
         .await?;
@@ -201,7 +201,7 @@ pub async fn audit_list(
     let limit = query.limit.unwrap_or(100).clamp(1, 500);
     let rows = sqlx::query_as::<_, AuditRow>(
         "SELECT id, actor_id, action, entity_type, entity_id, detail, created_at
-         FROM audit_log ORDER BY created_at DESC LIMIT ?",
+         FROM audit_log ORDER BY created_at DESC LIMIT $1",
     )
     .bind(limit)
     .fetch_all(&state.db)
@@ -239,7 +239,7 @@ pub async fn export_month(
            FROM timesheet_day d
            JOIN users u ON u.id = d.user_id
            LEFT JOIN timesheet_entry e ON e.day_id = d.id
-           WHERE d.work_date >= ? AND d.work_date <= ?
+           WHERE d.work_date >= $1 AND d.work_date <= $2
            ORDER BY d.work_date, u.employee_no, e.sort_no"#,
     )
     .bind(first.format("%Y-%m-%d").to_string())
@@ -383,7 +383,7 @@ pub async fn export_month(
 async fn fetch_user(state: &AppState, id: &str) -> ApiResult<UserRow> {
     sqlx::query_as::<_, UserRow>(
         "SELECT id, employee_no, name, email, department, role, active, wecom_userid
-         FROM users WHERE id = ?",
+         FROM users WHERE id = $1",
     )
     .bind(id)
     .fetch_optional(&state.db)
@@ -393,7 +393,7 @@ async fn fetch_user(state: &AppState, id: &str) -> ApiResult<UserRow> {
 
 async fn ensure_not_last_admin(state: &AppState, id: &str) -> ApiResult<()> {
     let count: i64 = sqlx::query_scalar(
-        "SELECT COUNT(*) FROM users WHERE role = 'SUPER_ADMIN' AND active = 1 AND id <> ?",
+        "SELECT COUNT(*) FROM users WHERE role = 'SUPER_ADMIN' AND active = TRUE AND id <> $1",
     )
     .bind(id)
     .fetch_one(&state.db)

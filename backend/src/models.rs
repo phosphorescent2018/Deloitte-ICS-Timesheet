@@ -9,7 +9,7 @@ pub struct UserRow {
     pub email: Option<String>,
     pub department: Option<String>,
     pub role: String,
-    pub active: i64,
+    pub active: bool,
     pub wecom_userid: Option<String>,
 }
 
@@ -18,7 +18,7 @@ pub struct UserRow {
 pub struct ActivityDimRow {
     pub dim_type: String,
     pub value: String,
-    pub sort_no: i64,
+    pub sort_no: i32,
 }
 
 #[derive(Debug, Clone, Serialize, sqlx::FromRow)]
@@ -27,7 +27,7 @@ pub struct LocationRow {
     pub code: String,
     pub name_zh: String,
     pub name_en: String,
-    pub sort_no: i64,
+    pub sort_no: i32,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -40,7 +40,9 @@ pub struct ConfigResponse {
 }
 
 #[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct LoginRequest {
+    #[serde(alias = "employee_no")]
     pub employee_no: String,
     pub password: String,
 }
@@ -59,7 +61,7 @@ pub struct TimesheetEntryRow {
     pub activity_code: String,
     pub hours: f64,
     pub remark: String,
-    pub sort_no: i64,
+    pub sort_no: i32,
 }
 
 #[derive(Debug, Serialize)]

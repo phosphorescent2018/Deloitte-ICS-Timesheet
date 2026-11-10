@@ -19,7 +19,7 @@ pub async fn login(
 
     let row = sqlx::query(
         "SELECT id, employee_no, name, email, department, role, active, wecom_userid, password_hash
-         FROM users WHERE employee_no = ? OR email = ? LIMIT 1",
+         FROM users WHERE employee_no = $1 OR email = $2 LIMIT 1",
     )
     .bind(employee_no)
     .bind(employee_no)
@@ -27,8 +27,8 @@ pub async fn login(
     .await?
     .ok_or_else(|| ApiError::Unauthorized("工号或密码错误".to_string()))?;
 
-    let active: i64 = row.get("active");
-    if active != 1 {
+    let active: bool = row.get("active");
+    if !active {
         return Err(ApiError::Forbidden("账号已停用".to_string()));
     }
 
@@ -56,7 +56,7 @@ pub async fn login(
 pub async fn me(State(state): State<AppState>, auth: AuthUser) -> ApiResult<Json<UserRow>> {
     let user = sqlx::query_as::<_, UserRow>(
         "SELECT id, employee_no, name, email, department, role, active, wecom_userid
-         FROM users WHERE id = ?",
+         FROM users WHERE id = $1",
     )
     .bind(&auth.id)
     .fetch_optional(&state.db)
