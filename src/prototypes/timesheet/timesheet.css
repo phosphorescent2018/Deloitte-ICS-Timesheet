@@ -525,11 +525,6 @@ input[type='number'] {
   color: #b3261e;
 }
 
-.cal-day.is-makeup {
-  background: #f2f9fd;
-  border-color: #cfe3f0;
-}
-
 .cal-day-tag {
   position: absolute;
   top: 2px;
@@ -544,11 +539,6 @@ input[type='number'] {
 .cal-day-tag.is-holiday {
   background: #fdecea;
   color: #b3261e;
-}
-
-.cal-day-tag.is-makeup {
-  background: #e8f2fb;
-  color: #1d5f8f;
 }
 
 .cal-day.is-locked,
@@ -704,11 +694,6 @@ input[type='number'] {
 .swatch-locked {
   background: #eef1f4;
   border-color: #dde2e7;
-}
-
-.swatch-makeup {
-  background: #e8f2fb;
-  border-color: #9ec7e3;
 }
 
 

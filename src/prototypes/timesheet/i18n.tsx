@@ -174,7 +174,6 @@ const DICT: Record<string, Entry> = {
   'legend.today': { zh: '今天', en: 'Today' },
   'legend.selected': { zh: '选中', en: 'Selected' },
   'legend.locked': { zh: '已锁定', en: 'Locked' },
-  'legend.makeup': { zh: '调休', en: 'Make-up day' },
 
   'status.empty': { zh: '未填写', en: 'Not filled' },
   'status.partial': { zh: '部分填写', en: 'Partial' },

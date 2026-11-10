@@ -79,7 +79,6 @@ export default function Calendar({
           if (date.getMonth() !== month) classes.push('is-out');
           if (weekend) classes.push('is-weekend');
           if (holiday) classes.push('is-holiday');
-          if (makeup) classes.push('is-makeup');
           if (status === 'complete') classes.push('is-done');
           if (status === 'partial') classes.push('is-partial');
           const inEditableWindow = key >= editableFrom && key <= todayKey;
@@ -113,10 +112,6 @@ export default function Calendar({
                 <span className="cal-day-tag is-holiday" title={lang === 'zh' ? holiday.nameZh : holiday.nameEn}>
                   休
                 </span>
-              ) : makeup ? (
-                <span className="cal-day-tag is-makeup" title={lang === 'zh' ? makeup.nameZh : makeup.nameEn}>
-                  班
-                </span>
               ) : null}
               {locked ? (
                 <span className="cal-lock" aria-hidden="true">
@@ -146,9 +141,6 @@ export default function Calendar({
         </span>
         <span className="legend-item">
           <i className="swatch swatch-locked" /> {t('legend.locked')}
-        </span>
-        <span className="legend-item">
-          <i className="swatch swatch-makeup" /> {t('legend.makeup')}
         </span>
       </div>
     </section>
