@@ -541,9 +541,6 @@ export default function TimesheetApp() {
               <button type="button" className="btn btn-blue" onClick={saveAndContinue}>
                 {t('btn.saveAndSwitch')}
               </button>
-              <button type="button" className="btn btn-ghost" onClick={() => setPending(null)}>
-                {t('btn.keepEditing')}
-              </button>
               <button
                 type="button"
                 className="btn btn-danger"

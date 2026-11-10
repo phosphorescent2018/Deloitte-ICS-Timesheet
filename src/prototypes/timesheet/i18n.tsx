@@ -195,7 +195,6 @@ const DICT: Record<string, Entry> = {
   'action.switch': { zh: '切换到 {{date}}', en: 'switch to {{date}}' },
   'action.month': { zh: '切换月份', en: 'change month' },
   'action.today': { zh: '回到今天', en: 'jump to today' },
-  'btn.keepEditing': { zh: '继续编辑', en: 'Keep editing' },
   'btn.saveAndSwitch': { zh: '保存并切换', en: 'Save & switch' },
   'btn.discard': { zh: '放弃修改', en: 'Discard changes' },
 
