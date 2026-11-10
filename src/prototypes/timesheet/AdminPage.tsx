@@ -135,11 +135,11 @@ interface LocationEditorProps {
   title: string;
   lang: 'zh' | 'en';
   items: LocationOption[];
-  zhPlaceholder: string;
-  enPlaceholder: string;
+  placeholder: string;
   addLabel: string;
   removeLabel: string;
   duplicateLabel: string;
+  specialLabel: string;
   atLeastOneLabel: string;
   onChange: (items: LocationOption[]) => void;
 }
@@ -148,39 +148,36 @@ function LocationEditor({
   title,
   lang,
   items,
-  zhPlaceholder,
-  enPlaceholder,
+  placeholder,
   addLabel,
   removeLabel,
   duplicateLabel,
+  specialLabel,
   atLeastOneLabel,
   onChange,
 }: LocationEditorProps) {
-  const [zh, setZh] = useState('');
-  const [en, setEn] = useState('');
+  const [name, setName] = useState('');
   const [error, setError] = useState('');
 
   const submit = () => {
-    const labelZh = zh.trim();
-    const enText = en.trim();
-    const label = enText ? `${enText} ${labelZh}` : labelZh;
-    if (!labelZh) return;
+    const value = name.trim();
+    if (!value) return;
+    if (!/^[\p{L}\p{N}\s]+$/u.test(value)) {
+      setError(specialLabel);
+      return;
+    }
     if (
       items.some(
         (item) =>
-          item.labelZh.toLowerCase() === labelZh.toLowerCase() ||
-          item.label.toLowerCase() === label.toLowerCase(),
+          item.labelZh.toLowerCase() === value.toLowerCase() ||
+          item.label.toLowerCase() === value.toLowerCase(),
       )
     ) {
       setError(duplicateLabel);
       return;
     }
-    onChange([
-      ...items,
-      { value: `loc-${Date.now().toString(36)}`, label, labelZh },
-    ]);
-    setZh('');
-    setEn('');
+    onChange([...items, { value: `loc-${Date.now().toString(36)}`, label: value, labelZh: value }]);
+    setName('');
     setError('');
   };
 
@@ -210,24 +207,10 @@ function LocationEditor({
       </div>
       <div className="admin-add admin-add-location">
         <input
-          value={zh}
-          placeholder={zhPlaceholder}
+          value={name}
+          placeholder={placeholder}
           onChange={(event) => {
-            setZh(event.target.value);
-            setError('');
-          }}
-          onKeyDown={(event) => {
-            if (event.key === 'Enter') {
-              event.preventDefault();
-              submit();
-            }
-          }}
-        />
-        <input
-          value={en}
-          placeholder={enPlaceholder}
-          onChange={(event) => {
-            setEn(event.target.value);
+            setName(event.target.value);
             setError('');
           }}
           onKeyDown={(event) => {
@@ -481,8 +464,8 @@ export default function AdminPage({
         title={t('admin.locations')}
         lang={lang}
         items={config.locations}
-        zhPlaceholder={t('admin.locationZh')}
-        enPlaceholder={t('admin.locationEn')}
+        placeholder={t('admin.locationName')}
+        specialLabel={t('admin.locationSpecial')}
         addLabel={t('admin.add')}
         removeLabel={t('admin.remove')}
         duplicateLabel={t('admin.duplicate')}
