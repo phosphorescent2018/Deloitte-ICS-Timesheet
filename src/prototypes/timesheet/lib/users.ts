@@ -25,7 +25,7 @@ export const DEFAULT_USERS: AppUser[] = [
     name: '胡雅洁',
     employeeId: 'MG-0002',
     department: 'Mindigital 全球交付中心',
-    role: 'employee',
+    role: 'super_admin',
     active: true,
   },
   {
