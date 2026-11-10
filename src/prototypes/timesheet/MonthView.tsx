@@ -48,10 +48,6 @@ export default function MonthView({ year, month, days, stats, locations, onSelec
         </div>
         <div className="mv-stats">
           <div className="mv-stat">
-            <span>{t('mv.hours')}</span>
-            <strong>{stats.hours.toFixed(1)}</strong>
-          </div>
-          <div className="mv-stat">
             <span>{t('mv.completion')}</span>
             <strong>{completion}%</strong>
           </div>

@@ -1284,10 +1284,10 @@ input[type='number'] {
 
 .mv-stats {
   display: grid;
-  grid-template-columns: repeat(2, auto);
-  gap: 4px 22px;
+  grid-template-columns: 1fr;
+  gap: 4px;
   align-items: end;
-  min-width: 260px;
+  min-width: 160px;
 }
 
 .mv-stat {
