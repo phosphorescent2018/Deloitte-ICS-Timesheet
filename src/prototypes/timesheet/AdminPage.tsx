@@ -473,16 +473,6 @@ export default function AdminPage({
         onChange={(locations) => onChange({ ...config, locations })}
       />
 
-      <div className="admin-summary">
-        <span>{t('admin.combinations', { count: activities.length })}</span>
-        <div className="admin-combos">
-          {activities.slice(0, 10).map((activity) => (
-            <code key={activity.code}>{activity.code}</code>
-          ))}
-          {activities.length > 10 ? <span className="muted">…</span> : null}
-        </div>
-      </div>
-
       <section className="card admin-users">
         <header className="admin-users-head">
           <div>

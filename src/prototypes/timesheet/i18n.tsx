@@ -43,7 +43,6 @@ const DICT: Record<string, Entry> = {
   'admin.remove': { zh: '删除', en: 'Remove' },
   'admin.duplicate': { zh: '已存在', en: 'Already exists' },
   'admin.atLeastOne': { zh: '至少保留一项', en: 'Keep at least one item' },
-  'admin.combinations': { zh: '当前共 {{count}} 个可选组合', en: '{{count}} combinations' },
   'admin.exportTitle': { zh: '数据导出', en: 'Data export' },
   'admin.exportDesc': {
     zh: '导出当月全部员工明细（CSV，Excel 可直接打开）。',
