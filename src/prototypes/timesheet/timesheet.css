@@ -3011,7 +3011,7 @@ kbd {
 
 /* ---------------- Responsive ---------------- */
 
-@media (max-width: 1240px) {
+@media (max-width: 1100px) {
   .layout {
     grid-template-columns: 1fr;
   }
